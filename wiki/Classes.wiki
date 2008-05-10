@@ -24,9 +24,10 @@ Methods that return most of the data.  A method that determines a move's strengt
 == public class Move ==
 This class will store:
   * power
-  * image
+  * animation
   * element
   * name
+  * accuracy
 
 Methods that access these data values.
 
