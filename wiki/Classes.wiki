@@ -6,6 +6,7 @@
 This is really important, so spend a lot of time perfecting this
 
 
+
 == public class Pokemon ==
 
 === Description ===
@@ -28,6 +29,8 @@ Methods that return most of the data.  A method that determines a move's strengt
 
 started, not sure how far along it is.
 
+
+
 == public class Move ==
 
 === Description ===
@@ -44,6 +47,8 @@ Methods that access these data values.
 === Status ===
 
 Non started yet.
+
+
 
 == public class Character ==
 
