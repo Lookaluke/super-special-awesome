@@ -14,6 +14,16 @@ defense
 special
 speed
 image
-Moves moves = new Moves[4]
+moves
 
-It will also have methods that will determine an type's effectiveness against another type.
+It will have a method that will determine an type's effectiveness against another type.
+Methods that return most of the data. A method that determines a move's strength based on stats. Also a method to level up.
+
+== public class Move ==
+This class will store:
+power
+image
+type
+name
+
+Methods that access these data values.
