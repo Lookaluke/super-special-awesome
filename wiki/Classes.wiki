@@ -16,16 +16,16 @@ This class will store:
   * speed
   * image
   * moves
-  * type1
-  * type2
+  * element 1
+  * element 2
 
-Methods that return most of the data. A method that determines a move's strength based on stats. Also a method to gain experience.
+Methods that return most of the data.  A method that determines a move's strength based on stats. Also a method to gain experience.
 
 == public class Move ==
 This class will store:
   * power
   * image
-  * type
+  * element
   * name
 
 Methods that access these data values.
