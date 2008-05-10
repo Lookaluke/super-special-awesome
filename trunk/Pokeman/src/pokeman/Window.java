@@ -34,7 +34,7 @@ public class Window extends JComponent{
     private ArrayList<String> imgNames = new ArrayList<String>(20); 
         
     public static final int COLUMNS = 25,ROWS=18,WIDTH = 800,HEIGHT = 576,BACKGROUND = 0,STATIC = 1,DYNAMIC = 2;
-    private static final int numberOfCounts = 4;
+    private static final int numberOfCounts = 8;
     private BufferedImage background;
     private String levelName;
     private int levelX,levelY;
@@ -155,6 +155,7 @@ public class Window extends JComponent{
         public void keyPressed(KeyEvent keyEvent) {   
 
             if(timerCounter==0){
+                System.out.println("here");
                 if(keyEvent.getKeyCode()==KeyEvent.VK_UP)
                     upPressed = true;
                 else
@@ -185,7 +186,7 @@ public class Window extends JComponent{
      */
     public class Action implements ActionListener{
         public void actionPerformed(ActionEvent event){  
-            if(timerCounter==0 || timerCounter==3 || timerCounter==6)
+            if(timerCounter==0 || timerCounter==4 || timerCounter==8)
             {
                 if(upPressed)
                     player.direction(Annimation.UP);   
@@ -213,13 +214,14 @@ public class Window extends JComponent{
                 timerCounter = 0;
             
             if(timerCounter==numberOfCounts)
-            {/*
+            {
                 upPressed = false;
                 downPressed = false;
                 rightPressed = false;
-                leftPressed = false;*/
+                leftPressed = false;
                 timerCounter=0;
             }
+            System.out.println(timerCounter);
         }
     }
     
