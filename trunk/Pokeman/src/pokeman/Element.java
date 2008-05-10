@@ -9,6 +9,7 @@ package pokeman;
  *
  * @author Kunal
  */
+/*
 public enum Element {
     FIRE({Element.GRASS, Element.ICE, Element.BUG},
         {Element.FIRE, Element.WATER, Element.GROUND, Element.ROCK}, {} ),
@@ -38,4 +39,4 @@ public enum Element {
         this.cantHurt = cantHurt;
     }
         
-}
+}*/
