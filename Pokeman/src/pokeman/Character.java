@@ -12,14 +12,14 @@ import java.awt.Graphics2D;
  * @author Mark
  */
 public class Character {
-    private Annimation walking;
+    private Animation walking;
     private int direction;
     private boolean press;
     
     public Character(){
-        walking = new Annimation("Walking");
+        walking = new Animation("Walking");
         press = false;
-        direction = Annimation.DOWN;
+        direction = Animation.DOWN;
     }
     
     public void draw(Graphics2D g){
