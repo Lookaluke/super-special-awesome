@@ -24,10 +24,10 @@ Methods that return most of the data. A method that determines a move's strength
 
 == public class Move ==
 This class will store:
-power
-image
-type
-name
+  * power
+  * image
+  * type
+  * name
 
 Methods that access these data values.
 
