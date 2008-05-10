@@ -43,6 +43,8 @@ public class Window extends JComponent{
     private int[][] collision;
     
     private boolean upPressed,downPressed,leftPressed,rightPressed;
+    private boolean stopUp,stopDown,stopRight,stopLeft;
+    private int pressBuffer;
     
     private Character player = new Character();
     
@@ -68,6 +70,7 @@ public class Window extends JComponent{
         t.start();
         
         timerCounter = 0;
+        pressBuffer = Animation.NONE;
         
     }
     
@@ -150,35 +153,35 @@ public class Window extends JComponent{
      */
     public class KeyListen implements KeyListener
     {
+        
         public void keyTyped(KeyEvent keyEvent) {        
         }
 
         public void keyPressed(KeyEvent keyEvent) {   
 
-            if(timerCounter==0){
-                System.out.println("here");
+            
+            if(true){
                 if(keyEvent.getKeyCode()==KeyEvent.VK_UP)
-                    upPressed = true;
-                else
-                    upPressed = false;
+                    pressBuffer = Animation.UP;
                 if(keyEvent.getKeyCode()==KeyEvent.VK_DOWN)
-                    downPressed = true;
-                else
-                    downPressed = false;
+                    pressBuffer = Animation.DOWN;
                 if(keyEvent.getKeyCode()==KeyEvent.VK_RIGHT)
-                    rightPressed = true;
-                else
-                    rightPressed = false;
+                    pressBuffer = Animation.RIGHT;
                 if(keyEvent.getKeyCode()==KeyEvent.VK_LEFT)
-                    leftPressed = true;
-                else
-                    leftPressed = false;
+                    pressBuffer = Animation.LEFT;
             }
 
         }
         
         public void keyReleased(KeyEvent keyEvent){
-
+                if(keyEvent.getKeyCode()==KeyEvent.VK_UP)
+                    stopUp = true;
+                if(keyEvent.getKeyCode()==KeyEvent.VK_DOWN)
+                    stopDown = true;
+                if(keyEvent.getKeyCode()==KeyEvent.VK_RIGHT)
+                    stopRight = true;
+                if(keyEvent.getKeyCode()==KeyEvent.VK_LEFT)
+                    stopLeft = true;
         }
     }
     
@@ -187,26 +190,47 @@ public class Window extends JComponent{
      */
     public class Action implements ActionListener{
         public void actionPerformed(ActionEvent event){  
+            
+                        
+            if(timerCounter==0 && !(upPressed || downPressed || rightPressed || leftPressed))
+            {
+       
+                upPressed = pressBuffer == Animation.UP;
+                downPressed = pressBuffer == Animation.DOWN;
+                rightPressed = pressBuffer == Animation.RIGHT;
+                leftPressed = pressBuffer == Animation.LEFT;
+                
+
+            }
+            
             if(timerCounter==0 || timerCounter==4 || timerCounter==8)
             {
                 if(upPressed)
                     player.direction(Animation.UP);   
+
                 if(downPressed)
                     player.direction(Animation.DOWN); 
+
                 if(rightPressed)
                     player.direction(Animation.RIGHT);   
+
                 if(leftPressed)
-                    player.direction(Animation.LEFT);    
+                    player.direction(Animation.LEFT); 
+
             }
             
             if(upPressed)
                 y+=HEIGHT/ROWS/numberOfCounts; 
+
             if(downPressed)
                 y-=HEIGHT/ROWS/numberOfCounts;
+
             if(rightPressed)
                 x-=WIDTH/COLUMNS/numberOfCounts;   
+
             if(leftPressed)
-                x+=WIDTH/COLUMNS/numberOfCounts;    
+                x+=WIDTH/COLUMNS/numberOfCounts;   
+
             
             repaint();
             if(upPressed || downPressed || rightPressed || leftPressed)
@@ -214,15 +238,39 @@ public class Window extends JComponent{
             else
                 timerCounter = 0;
             
-            if(timerCounter==numberOfCounts)
-            {
-                upPressed = false;
-                downPressed = false;
-                rightPressed = false;
-                leftPressed = false;
+            if(timerCounter==8){
                 timerCounter=0;
+                if(stopUp && upPressed){
+                    upPressed = false;
+                    stopUp = false;
+                    if(pressBuffer == Animation.UP)
+                        pressBuffer = Animation.NONE;
+                }
+                    
+                if(stopDown && downPressed){
+                    downPressed = false;
+                    stopDown = false;
+                    if(pressBuffer == Animation.DOWN)
+                        pressBuffer = Animation.NONE;
+                    
+                }
+                if(stopRight && rightPressed){
+                    rightPressed = false;
+                    stopRight = false;
+                    if(pressBuffer == Animation.RIGHT)
+                        pressBuffer = Animation.NONE;
+                }
+                if(stopLeft && leftPressed){
+                    leftPressed = false;
+                    stopLeft = false;
+                    if(pressBuffer == Animation.LEFT)
+                        pressBuffer = Animation.NONE;
+                }      
+                
+                
+                
             }
-            System.out.println(timerCounter);
+
         }
     }
     
