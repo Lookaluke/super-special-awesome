@@ -31,16 +31,21 @@ This class will store:
 
 Methods that access these data values.
 
-== public abstract class Person ==
 
 == public class Character ==
 
 == public class Trainer extends NPC ==
 
-== public class NPC extends Person ==
+== public class NPC ==
 
 == public class GymLeader extends Trainer ==
 
 == public enum Element ==
 
+=== Description ===
+
 Defines the different elements of pokemon. Has methods like `double getMultiplierAgainst(Element other)` to get the attack multiplier
+
+=== Status ===
+
+completed, unless we decide to update to gold/silver/more recent
