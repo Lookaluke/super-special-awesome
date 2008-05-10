@@ -33,7 +33,7 @@ Methods that access these data values.
 
 == public abstract class Person ==
 
-== public class Character extends Person ==
+== public class Character ==
 
 == public class Trainer extends NPC ==
 
