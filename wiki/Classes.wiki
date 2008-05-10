@@ -1,0 +1,8 @@
+#summary Where the cool kids are
+
+= Class design =
+
+This is really important
+
+
+== public class Pokemon ==
