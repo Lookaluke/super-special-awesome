@@ -7,6 +7,9 @@ This is really important, so spend a lot of time perfecting this
 
 
 == public class Pokemon ==
+
+=== Description ===
+
 This class will store:
   * name
   * level (and experience)
@@ -21,7 +24,14 @@ This class will store:
 
 Methods that return most of the data.  A method that determines a move's strength based on stats. Also a method to gain experience.
 
+=== Status ===
+
+started, not sure how far along it is.
+
 == public class Move ==
+
+=== Description ===
+
 This class will store:
   * power
   * animation
@@ -31,6 +41,9 @@ This class will store:
 
 Methods that access these data values.
 
+=== Status ===
+
+Non started yet.
 
 == public class Character ==
 
