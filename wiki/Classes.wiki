@@ -36,3 +36,7 @@ Methods that access these data values.
 == public class Trainer ==
 
 == public class NPC ==
+
+== public enum Element ==
+
+Defines the different elements of pokemon. Has methods like `double multiplier(Element other)` to get the attack multiplier
