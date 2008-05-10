@@ -27,3 +27,9 @@ type
 name
 
 Methods that access these data values.
+
+== public class Character ==
+
+== public class Trainer ==
+
+== public class NPC ==
