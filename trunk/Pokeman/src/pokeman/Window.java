@@ -17,6 +17,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Scanner;
 
 import javax.imageio.ImageIO;
@@ -40,7 +41,7 @@ public class Window extends JComponent{
     private String levelName;
     private int levelX,levelY;
     private int x,y;
-    private int[][] collision;
+    private ArrayList<Collideable> collision = new ArrayList<Collideable>();
     
     private boolean upPressed,downPressed,leftPressed,rightPressed;
     private boolean stopUp,stopDown,stopRight,stopLeft;
@@ -130,7 +131,6 @@ public class Window extends JComponent{
     
     private void load(String name){
         try {
-            collision = new int[COLUMNS][ROWS];
             Scanner input = new Scanner(new File(name + "collision.txt"));
             String str = "";
             while (input.hasNextLine()) {
@@ -139,10 +139,13 @@ public class Window extends JComponent{
             
             for (int y1 = 0; y1 < ROWS; y1++) {
                 for (int x1 = 0; x1 < COLUMNS; x1++) {
-                    collision[x1][y1] = Integer.parseInt(str.substring(0,str.indexOf(",")));
+                    collision.add(new Collideable(x1,y1,Integer.parseInt(str.substring(0,str.indexOf(",")))));
                     str = str.substring(str.indexOf(",")+1);
                 }
             }
+            
+            Collections.sort(collision);
+            
         } catch (FileNotFoundException ex) {
             System.out.println("File" + name + "not found");
         }
@@ -194,15 +197,26 @@ public class Window extends JComponent{
             int col = (WIDTH/2-player.getWidth()/2-x)/TILE_WIDTH;
             int row = (HEIGHT/2-player.getHeight()/2-y)/TILE_HEIGHT+1;
 
+            boolean collisionRight = false,collisionLeft = false,collisionUp = false,collisionDown = false;
+            
+            if(collision.get(Collections.binarySearch(collision,new Collideable(col,row-1,0))).getNumber()!=1)
+                collisionUp = true;
+            if(collision.get(Collections.binarySearch(collision,new Collideable(col,row+1,0))).getNumber()!=1)
+                collisionDown = true;
+            if(collision.get(Collections.binarySearch(collision,new Collideable(col+1,row,0))).getNumber()!=1)
+                collisionRight = true;
+            if(collision.get(Collections.binarySearch(collision,new Collideable(col-1,row,0))).getNumber()!=1)
+                collisionLeft = true;
             
             if(timerCounter==0 && !(upPressed || downPressed || rightPressed || leftPressed))
             {
        
-                
-                upPressed = pressBuffer == Animation.UP && collision[col][row-1]!=1;
-                downPressed = pressBuffer == Animation.DOWN && collision[col][row+1]!=1;
-                rightPressed = pressBuffer == Animation.RIGHT && collision[col+1][row]!=1;
-                leftPressed = pressBuffer == Animation.LEFT && collision[col-1][row]!=1;
+
+                            
+                upPressed = pressBuffer == Animation.UP && collisionUp;
+                downPressed = pressBuffer == Animation.DOWN && collisionDown;
+                rightPressed = pressBuffer == Animation.RIGHT && collisionRight;
+                leftPressed = pressBuffer == Animation.LEFT && collisionLeft;
                 
 
             }
@@ -247,27 +261,27 @@ public class Window extends JComponent{
             
             if(timerCounter==numberOfCounts){
                 timerCounter=0;
-                if((stopUp && upPressed) || collision[col][row-1]==1){
+                if((stopUp && upPressed) || !collisionUp){
                     upPressed = false;
                     stopUp = false;
                     if(pressBuffer == Animation.UP)
                         pressBuffer = Animation.NONE;
                 }
                     
-                if((stopDown && downPressed) || collision[col][row+2]==1){
+                if((stopDown && downPressed) || !collisionDown){
                     downPressed = false;
                     stopDown = false;
                     if(pressBuffer == Animation.DOWN)
                         pressBuffer = Animation.NONE;
                     
                 }
-                if((stopRight && rightPressed) || collision[col+2][row]==1){
+                if((stopRight && rightPressed) || !collisionRight){
                     rightPressed = false;
                     stopRight = false;
                     if(pressBuffer == Animation.RIGHT)
                         pressBuffer = Animation.NONE;
                 }
-                if((stopLeft && leftPressed) || collision[col-1][row]==1){
+                if((stopLeft && leftPressed) || !collisionLeft){
                     leftPressed = false;
                     stopLeft = false;
                     if(pressBuffer == Animation.LEFT)
