@@ -7,17 +7,19 @@ This is really important
 
 == public class Pokemon ==
 This class will store:
-name
-level
-attack
-defense
-special
-speed
-image
-moves
+  *name
+  *level
+  *attack
+  *defense
+  *special
+  *speed
+  *image
+  *moves
+  *type1
+  *type2
 
 It will have a method that will determine an type's effectiveness against another type.
-Methods that return most of the data. A method that determines a move's strength based on stats. Also a method to level up.
+Methods that return most of the data. A method that determines a move's strength based on stats. Also a method to gain experience.
 
 == public class Move ==
 This class will store:
