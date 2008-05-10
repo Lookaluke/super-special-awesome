@@ -82,6 +82,8 @@ public class Animation {
         currentDirection = direction;
         currentFrame++;
         currentFrame %= numberOfFrames[direction];
+        if(currentFrame==0)
+            currentFrame = 1;
     } 
     
     public void setFrame(int direction,int frameNum){
