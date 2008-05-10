@@ -207,7 +207,7 @@ public class Window extends JComponent{
 
             }
             
-            if(timerCounter==0 || timerCounter==numberOfCounts/2 || timerCounter==numberOfCounts)
+            if(timerCounter==0)
             {
                 if(upPressed)
                     player.direction(Animation.UP);   
