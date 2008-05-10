@@ -15,19 +15,20 @@ import java.awt.Rectangle;
 public class Character {
     private Animation walking;
     private int direction;
-    private boolean press;
+    private int press;
 
     public Character(){
         walking = new Animation("Walking");
-        press = false;
+        press = 0;
         direction = Animation.DOWN;
     }
     
     public void draw(Graphics2D g){
-        
+        if(press>4)
+            walking.standingFrame();
+        press++;
         g.drawImage(walking.getFrame(),null,Window.WIDTH/2-walking.getFrame().getWidth()/2,Window.HEIGHT/2-walking.getFrame().getHeight()/2);
         g.draw(new Rectangle(Window.WIDTH/2-walking.getFrame().getWidth()/2,Window.HEIGHT/2-walking.getFrame().getHeight()/2,walking.getFrame().getWidth(),walking.getFrame().getHeight()));
-        press = false;
     }
     
     public int getWidth(){
@@ -45,7 +46,7 @@ public class Character {
             walking.setFrame(dir,0);
         }
         walking.nextFrame(direction);
-        press = true;
+        press=0;
         
     }
 }
