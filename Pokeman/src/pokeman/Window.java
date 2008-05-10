@@ -33,7 +33,7 @@ public class Window extends JComponent{
     private ArrayList<BufferedImage> img = new ArrayList<BufferedImage>(20); 
     private ArrayList<String> imgNames = new ArrayList<String>(20); 
         
-    public static final int COLUMNS = 25,ROWS=18,WIDTH = 800,HEIGHT = 576,
+    public static final int COLUMNS = 25,ROWS=18,WIDTH = 800,HEIGHT = 576,TILE_WIDTH = WIDTH/COLUMNS,TILE_HEIGHT = HEIGHT/ROWS,
             BACKGROUND = 0,STATIC = 1,DYNAMIC = 2;
     private static final int numberOfCounts = 8;
     private BufferedImage background;
@@ -58,8 +58,8 @@ public class Window extends JComponent{
         frame.addKeyListener(new KeyListen());
         
         //loadImgs("Images\\Dynamic");
-        levelX = 50; 
-        levelY = 50;
+        levelX = 0; 
+        levelY = 0;
         levelName = "Levels\\level"+levelX+","+levelY;
         loadLevel(levelName);
         repaint();
@@ -137,9 +137,9 @@ public class Window extends JComponent{
                 str += input.nextLine();
             }
             
-            for (int y = 0; y < ROWS; y++) {
-                for (int x = 0; x < COLUMNS; x++) {
-                    collision[x][y] = Integer.parseInt(str.substring(0,str.indexOf(",")));
+            for (int y1 = 0; y1 < ROWS; y1++) {
+                for (int x1 = 0; x1 < COLUMNS; x1++) {
+                    collision[x1][y1] = Integer.parseInt(str.substring(0,str.indexOf(",")));
                     str = str.substring(str.indexOf(",")+1);
                 }
             }
@@ -190,20 +190,24 @@ public class Window extends JComponent{
      */
     public class Action implements ActionListener{
         public void actionPerformed(ActionEvent event){  
-            
                         
+            int col = (WIDTH/2-player.getWidth()/2-x)/TILE_WIDTH;
+            int row = (HEIGHT/2-player.getHeight()/2-y)/TILE_HEIGHT+1;
+
+            
             if(timerCounter==0 && !(upPressed || downPressed || rightPressed || leftPressed))
             {
        
-                upPressed = pressBuffer == Animation.UP;
-                downPressed = pressBuffer == Animation.DOWN;
-                rightPressed = pressBuffer == Animation.RIGHT;
-                leftPressed = pressBuffer == Animation.LEFT;
+                
+                upPressed = pressBuffer == Animation.UP && collision[col][row-1]!=1;
+                downPressed = pressBuffer == Animation.DOWN && collision[col][row+1]!=1;
+                rightPressed = pressBuffer == Animation.RIGHT && collision[col+1][row]!=1;
+                leftPressed = pressBuffer == Animation.LEFT && collision[col-1][row]!=1;
                 
 
             }
             
-            if(timerCounter==0 || timerCounter==4 || timerCounter==8)
+            if(timerCounter==0 || timerCounter==4)
             {
                 if(upPressed)
                     player.direction(Animation.UP);   
@@ -218,6 +222,8 @@ public class Window extends JComponent{
                     player.direction(Animation.LEFT); 
 
             }
+            
+
             
             if(upPressed)
                 y+=HEIGHT/ROWS/numberOfCounts; 
@@ -237,41 +243,37 @@ public class Window extends JComponent{
                 timerCounter++;
             else
                 timerCounter = 0;
+
             
             if(timerCounter==8){
                 timerCounter=0;
-                if(stopUp && upPressed){
+                if((stopUp && upPressed) || collision[col][row-1]==1){
                     upPressed = false;
                     stopUp = false;
                     if(pressBuffer == Animation.UP)
                         pressBuffer = Animation.NONE;
                 }
                     
-                if(stopDown && downPressed){
+                if((stopDown && downPressed) || collision[col][row+2]==1){
                     downPressed = false;
                     stopDown = false;
                     if(pressBuffer == Animation.DOWN)
                         pressBuffer = Animation.NONE;
                     
                 }
-                if(stopRight && rightPressed){
+                if((stopRight && rightPressed) || collision[col+2][row]==1){
                     rightPressed = false;
                     stopRight = false;
                     if(pressBuffer == Animation.RIGHT)
                         pressBuffer = Animation.NONE;
                 }
-                if(stopLeft && leftPressed){
+                if((stopLeft && leftPressed) || collision[col-1][row]==1){
                     leftPressed = false;
                     stopLeft = false;
                     if(pressBuffer == Animation.LEFT)
                         pressBuffer = Animation.NONE;
                 }      
-                
-                
-                
             }
-
         }
     }
-    
 }

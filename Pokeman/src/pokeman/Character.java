@@ -6,6 +6,7 @@
 package pokeman;
 
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 
 /**
  *
@@ -15,7 +16,7 @@ public class Character {
     private Animation walking;
     private int direction;
     private boolean press;
-    
+
     public Character(){
         walking = new Animation("Walking");
         press = false;
@@ -23,10 +24,18 @@ public class Character {
     }
     
     public void draw(Graphics2D g){
-        if(!press)
-            walking.standingFrame();
+        
         g.drawImage(walking.getFrame(),null,Window.WIDTH/2-walking.getFrame().getWidth()/2,Window.HEIGHT/2-walking.getFrame().getHeight()/2);
+        g.draw(new Rectangle(Window.WIDTH/2-walking.getFrame().getWidth()/2,Window.HEIGHT/2-walking.getFrame().getHeight()/2,walking.getFrame().getWidth(),walking.getFrame().getHeight()));
         press = false;
+    }
+    
+    public int getWidth(){
+        return walking.getFrame().getWidth();
+    }
+    
+    public int getHeight(){
+        return walking.getFrame().getHeight();
     }
     
     public void direction(int dir){
