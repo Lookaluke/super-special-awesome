@@ -1,8 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package pokeman;
 
 import java.io.File;
@@ -13,27 +8,27 @@ import javax.imageio.ImageIO;
  *
  * @author Mark Benjamin
  */
-public class Annimation {
+public class Animation {
     
     public static final int  NONE = -1,UP = 0,DOWN = 1,RIGHT = 2,LEFT = 3;
-    private BufferedImage[][] annimations;
+    private BufferedImage[][] animations;
     private int currentFrame,currentDirection;
     private int[] numberOfFrames = new int[4];
     
     
-    /** Creates a new instance of Annimation */
-    public Annimation(String name) {
+    /** Creates a new instance of Animation */
+    public Animation(String name) {
         
         for(int i=0;i<4;i++)
         {
             numberOfFrames[i] = 0;
         }
         
-        annimations = new BufferedImage[10][10];
+        animations = new BufferedImage[10][10];
         
         currentDirection = DOWN;
         
-        File f = new File("Annimations\\"+name);
+        File f = new File("Animations\\"+name);
         File[] files = f.listFiles();
         
         for(int i=0;i<files.length;i++)
@@ -65,8 +60,8 @@ public class Annimation {
                             break;                                    
                     }
                     numberOfFrames[number]++;
-                    annimations[number][Integer.parseInt(newName)-1] = ImageIO.read(files[i]);
-                }catch(Exception e){System.out.println("Cannot load annimation image");}
+                    animations[number][Integer.parseInt(newName)-1] = ImageIO.read(files[i]);
+                }catch(Exception e){System.out.println("Cannot load animation image");}
             }
         }        
     }   
@@ -75,7 +70,7 @@ public class Annimation {
         if(currentDirection>=0)
         {
             currentFrame %= numberOfFrames[currentDirection];
-            return annimations[currentDirection][currentFrame];
+            return animations[currentDirection][currentFrame];
         }
         else
             return null;

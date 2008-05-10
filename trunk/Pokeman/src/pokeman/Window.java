@@ -33,7 +33,8 @@ public class Window extends JComponent{
     private ArrayList<BufferedImage> img = new ArrayList<BufferedImage>(20); 
     private ArrayList<String> imgNames = new ArrayList<String>(20); 
         
-    public static final int COLUMNS = 25,ROWS=18,WIDTH = 800,HEIGHT = 576,BACKGROUND = 0,STATIC = 1,DYNAMIC = 2;
+    public static final int COLUMNS = 25,ROWS=18,WIDTH = 800,HEIGHT = 576,
+            BACKGROUND = 0,STATIC = 1,DYNAMIC = 2;
     private static final int numberOfCounts = 8;
     private BufferedImage background;
     private String levelName;
@@ -78,8 +79,8 @@ public class Window extends JComponent{
     
      /**
      * This method loads the current level. Link will interact with this level.
-     * This will actualy load the background image as well as the locations
-     * of the images that go on top so provided the root name of the level without
+     * This will actualy load the background image as well as the locations of
+     * the images that go on top so provided the root name of the level without
      * any extensions.
      * 
      * @param name This is the name of the level to load
@@ -189,13 +190,13 @@ public class Window extends JComponent{
             if(timerCounter==0 || timerCounter==4 || timerCounter==8)
             {
                 if(upPressed)
-                    player.direction(Annimation.UP);   
+                    player.direction(Animation.UP);   
                 if(downPressed)
-                    player.direction(Annimation.DOWN); 
+                    player.direction(Animation.DOWN); 
                 if(rightPressed)
-                    player.direction(Annimation.RIGHT);   
+                    player.direction(Animation.RIGHT);   
                 if(leftPressed)
-                    player.direction(Annimation.LEFT);    
+                    player.direction(Animation.LEFT);    
             }
             
             if(upPressed)
