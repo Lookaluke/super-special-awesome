@@ -6,3 +6,14 @@ This is really important
 
 
 == public class Pokemon ==
+This class will store:
+name
+level
+attack
+defense
+special
+speed
+image
+Moves moves = new Moves[4]
+
+It will also have methods that will determine an type's effectiveness against another type.
