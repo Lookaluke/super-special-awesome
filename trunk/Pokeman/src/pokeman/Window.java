@@ -35,7 +35,7 @@ public class Window extends JComponent{
         
     public static final int COLUMNS = 25,ROWS=18,WIDTH = 800,HEIGHT = 576,TILE_WIDTH = WIDTH/COLUMNS,TILE_HEIGHT = HEIGHT/ROWS,
             BACKGROUND = 0,STATIC = 1,DYNAMIC = 2;
-    private static final int numberOfCounts = 8;
+    private static final int numberOfCounts = 4;
     private BufferedImage background;
     private String levelName;
     private int levelX,levelY;
@@ -66,7 +66,7 @@ public class Window extends JComponent{
         frame.pack();  
         repaint();
         
-        Timer t = new Timer(20, new Action());
+        Timer t = new Timer(40, new Action());
         t.start();
         
         timerCounter = 0;
@@ -207,7 +207,7 @@ public class Window extends JComponent{
 
             }
             
-            if(timerCounter==0 || timerCounter==4)
+            if(timerCounter==0 || timerCounter==numberOfCounts/2 || timerCounter==numberOfCounts)
             {
                 if(upPressed)
                     player.direction(Animation.UP);   
@@ -245,7 +245,7 @@ public class Window extends JComponent{
                 timerCounter = 0;
 
             
-            if(timerCounter==8){
+            if(timerCounter==numberOfCounts){
                 timerCounter=0;
                 if((stopUp && upPressed) || collision[col][row-1]==1){
                     upPressed = false;
