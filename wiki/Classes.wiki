@@ -3,13 +3,13 @@
 
 = Class design =
 
-This is really important
+This is really important, so spend a lot of time perfecting this
 
 
 == public class Pokemon ==
 This class will store:
   * name
-  * level
+  * level (and experience)
   * attack
   * defense
   * special
@@ -31,12 +31,16 @@ This class will store:
 
 Methods that access these data values.
 
-== public class Character ==
+== public abstract class Person ==
 
-== public class Trainer ==
+== public class Character extends Person ==
 
-== public class NPC ==
+== public class Trainer extends NPC ==
+
+== public class NPC extends Person ==
+
+== public class GymLeader extends Trainer ==
 
 == public enum Element ==
 
-Defines the different elements of pokemon. Has methods like `double multiplier(Element other)` to get the attack multiplier
+Defines the different elements of pokemon. Has methods like `double getMultiplierAgainst(Element other)` to get the attack multiplier
