@@ -1,4 +1,4 @@
-#summary Where the cool kids are
+#summary Class an API design here
 
 = Class design =
 
