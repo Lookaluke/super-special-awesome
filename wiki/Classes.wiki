@@ -59,6 +59,14 @@ Non started yet.
 
 == public class GymLeader extends Trainer ==
 
+== Description ==
+
+Like a trainer, but they talk more and give you a TM and a Badge
+
+== Status ==
+
+not started yet
+
 == public enum Element ==
 
 === Description ===
