@@ -376,9 +376,10 @@ public class Window extends javax.swing.JFrame {
             for(int i=0;i<files.length;i++)
             {
                 list[i] = files[i].getName();
-                imgNames.add(files[i].getName());
+                
                 try{
                     img.add(ImageIO.read(files[i]));
+                    imgNames.add(files[i].getName());
                 }catch(java.io.IOException e){
                     System.out.println("File not found");
                 }
