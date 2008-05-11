@@ -53,7 +53,13 @@ Non started yet.
 
 == public class Character ==
 
-This class will hold a character's pokemon as well as the images for the character. The character is special because the world moves around him, he is always in the center of the screen, therefore most of the movement stuff is handled in the window class.
+=== Description ===
+
+This class will hold a character's pokemon as well as the images for the character. The character is special because the world moves around him, he is always in the center of the screen, therefore most of the movement stuff is handled in the window class. This class will be serialized and deserialized as the game saves and loads. The only other thing that may need to be serialized at load time is the location. Everything else will be loaded as normal, likely not serialized. Character also holds information about the PC. Most likely, it'll be an ArrayList of Pokemon sorted alphabetically. Character also holds information about the money available to the character.
+
+=== Status ===
+
+Started, and basic movement functionality is present. Serialization still needs to be implemented, and all game-related functionality is yet to be coded.
 
 == public class Trainer extends NPC ==
 
