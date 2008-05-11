@@ -36,7 +36,7 @@ public class Window extends JComponent{
         
     public static final int COLUMNS = 25,ROWS=18,WIDTH = 800,HEIGHT = 576,TILE_WIDTH = WIDTH/COLUMNS,TILE_HEIGHT = HEIGHT/ROWS,
             BACKGROUND = 0,STATIC = 1,DYNAMIC = 2;
-    private static final int numberOfCounts = 2;
+    private static final int numberOfCounts = 4;
     private BufferedImage[][] background = new BufferedImage[3][3];
     private String levelName;
     private int levelX,levelY;
@@ -66,12 +66,18 @@ public class Window extends JComponent{
         background[0][0] = background[1][1];
         background[0][1] = background[1][1];
         background[0][2] = background[1][1];
+        background[1][1] = background[1][1];
+        background[1][2] = background[1][1];
+        background[1][0] = background[1][1];
+        background[2][0] = background[1][1];
+        background[2][1] = background[1][1];
+        background[2][2] = background[1][1];
         //loadLevel(levelName,levelX-1,levelY);
         repaint();
         frame.pack();  
         repaint();
         
-        Timer t = new Timer(80, new Action());
+        Timer t = new Timer(40, new Action());
         t.start();
         
         timerCounter = 0;
