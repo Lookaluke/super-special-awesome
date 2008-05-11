@@ -37,7 +37,7 @@ public class Window extends JComponent{
     public static final int COLUMNS = 25,ROWS=18,WIDTH = 800,HEIGHT = 576,TILE_WIDTH = WIDTH/COLUMNS,TILE_HEIGHT = HEIGHT/ROWS,
             BACKGROUND = 0,STATIC = 1,DYNAMIC = 2;
     private static final int numberOfCounts = 4;
-    private BufferedImage background;
+    private BufferedImage[][] background = new BufferedImage[3][3];
     private String levelName;
     private int levelX,levelY;
     private int x,y;
@@ -61,8 +61,10 @@ public class Window extends JComponent{
         //loadImgs("Images\\Dynamic");
         levelX = 0; 
         levelY = 0;
-        levelName = "Levels\\level"+levelX+","+levelY;
-        loadLevel(levelName);
+        levelName = "Levels\\level";
+        loadLevel(levelName,levelX,levelY);
+        background[0][0] = background[1][1];
+        //loadLevel(levelName,levelX-1,levelY);
         repaint();
         frame.pack();  
         repaint();
@@ -77,7 +79,12 @@ public class Window extends JComponent{
     
     public void paintComponent(Graphics g){
         Graphics2D g2 = (Graphics2D)g;
-        g2.drawImage(background,null,x,y);
+        for(int i=0;i<3;i++){
+            for(int j=0;j<3;j++){
+                if(background[i][j]!=null)
+                    g2.drawImage(background[i][j],null,(levelX-(i-1))*WIDTH+x,(levelY-(j-1))*HEIGHT+y);
+            }
+        }
         player.draw(g2);
     }
     
@@ -89,13 +96,13 @@ public class Window extends JComponent{
      * 
      * @param name This is the name of the level to load
      */
-    public void loadLevel(String name)
+    public void loadLevel(String name,int xCoord,int yCoord)
     {
-        String temp = name;
-        load(name);
+        String temp = name+xCoord+","+yCoord;
+        load(temp,xCoord,yCoord);
         
         try {
-            background = ImageIO.read(new File(name+".png"));
+            background[1+levelX-xCoord][1+levelY-yCoord] = ImageIO.read(new File(temp+".png"));
         } catch (IOException ex) {
             ex.printStackTrace();
         }
@@ -129,7 +136,7 @@ public class Window extends JComponent{
         }       
     }
     
-    private void load(String name){
+    private void load(String name,int xCoord,int yCoord){
         try {
             Scanner input = new Scanner(new File(name + "collision.txt"));
             String str = "";
@@ -139,7 +146,7 @@ public class Window extends JComponent{
             
             for (int y1 = 0; y1 < ROWS; y1++) {
                 for (int x1 = 0; x1 < COLUMNS; x1++) {
-                    collision.add(new Collideable(x1,y1,Integer.parseInt(str.substring(0,str.indexOf(",")))));
+                    collision.add(new Collideable(x1+xCoord*WIDTH,y1+yCoord*HEIGHT,Integer.parseInt(str.substring(0,str.indexOf(",")))));
                     str = str.substring(str.indexOf(",")+1);
                 }
             }
@@ -198,14 +205,18 @@ public class Window extends JComponent{
             int row = (HEIGHT/2-player.getHeight()/2-y)/TILE_HEIGHT+1;
 
             boolean collisionRight = false,collisionLeft = false,collisionUp = false,collisionDown = false;
-            
-            if(collision.get(Collections.binarySearch(collision,new Collideable(col,row-1,0))).getNumber()!=1)
+            int c;
+            c = Collections.binarySearch(collision,new Collideable(col,row-1,0));
+            if(c>=0 && collision.get(c).getNumber()!=1)
                 collisionUp = true;
-            if(collision.get(Collections.binarySearch(collision,new Collideable(col,row+1,0))).getNumber()!=1)
+            c = Collections.binarySearch(collision,new Collideable(col,row+1,0));
+            if(c>=0 && collision.get(c).getNumber()!=1)
                 collisionDown = true;
-            if(collision.get(Collections.binarySearch(collision,new Collideable(col+1,row,0))).getNumber()!=1)
+            c = Collections.binarySearch(collision,new Collideable(col+1,row,0));
+            if(c>=0 && collision.get(c).getNumber()!=1)
                 collisionRight = true;
-            if(collision.get(Collections.binarySearch(collision,new Collideable(col-1,row,0))).getNumber()!=1)
+            c = Collections.binarySearch(collision,new Collideable(col-1,row,0));
+            if(c>=0 && collision.get(c).getNumber()!=1)
                 collisionLeft = true;
             
             if(timerCounter==0 && !(upPressed || downPressed || rightPressed || leftPressed))
@@ -266,16 +277,17 @@ public class Window extends JComponent{
                     stopUp = false;
                     if(pressBuffer == Animation.UP)
                         pressBuffer = Animation.NONE;
-                }
-                    
-                if((stopDown && downPressed) || !collisionDown){
+                }                
+                c = Collections.binarySearch(collision,new Collideable(col,row+2,0));                
+                if((stopDown && downPressed) || (c>=0 && collision.get(c).getNumber()==1)){
                     downPressed = false;
                     stopDown = false;
                     if(pressBuffer == Animation.DOWN)
                         pressBuffer = Animation.NONE;
                     
                 }
-                if((stopRight && rightPressed) || !collisionRight){
+                c = Collections.binarySearch(collision,new Collideable(col+2,row,0));
+                if((stopRight && rightPressed) || (c>=0 && collision.get(c).getNumber()==1)){
                     rightPressed = false;
                     stopRight = false;
                     if(pressBuffer == Animation.RIGHT)
