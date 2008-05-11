@@ -36,7 +36,7 @@ public class Window extends JComponent{
         
     public static final int COLUMNS = 25,ROWS=18,WIDTH = 800,HEIGHT = 576,TILE_WIDTH = WIDTH/COLUMNS,TILE_HEIGHT = HEIGHT/ROWS,
             BACKGROUND = 0,STATIC = 1,DYNAMIC = 2;
-    private static final int numberOfCounts = 4;
+    private static final int numberOfCounts = 2;
     private BufferedImage[][] background = new BufferedImage[3][3];
     private String levelName;
     private int levelX,levelY;
@@ -71,7 +71,7 @@ public class Window extends JComponent{
         frame.pack();  
         repaint();
         
-        Timer t = new Timer(40, new Action());
+        Timer t = new Timer(80, new Action());
         t.start();
         
         timerCounter = 0;
@@ -88,10 +88,14 @@ public class Window extends JComponent{
                     int yPos = (levelY-(j-1))*HEIGHT+y;
                     BufferedImage hold = background[i][j];
                     if(!(xPos>=hold.getWidth() || yPos>=hold.getHeight())){
-                        if(xPos<0)
+                        if(xPos<0){
                             hold = hold.getSubimage(-xPos,0,hold.getWidth()+xPos,hold.getHeight());
-                        if(yPos<0)
+                            xPos = 0;
+                        }
+                        if(yPos<0){
                             hold = hold.getSubimage(0,-yPos,hold.getWidth(),hold.getHeight()+yPos);
+                            yPos = 0;
+                        }
                         if(xPos>0)
                             hold = hold.getSubimage(0,0,hold.getWidth()-xPos,hold.getHeight());
                         if(yPos>0)
