@@ -64,6 +64,8 @@ public class Window extends JComponent{
         levelName = "Levels\\level";
         loadLevel(levelName,levelX,levelY);
         background[0][0] = background[1][1];
+        background[0][1] = background[1][1];
+        background[0][2] = background[1][1];
         //loadLevel(levelName,levelX-1,levelY);
         repaint();
         frame.pack();  
@@ -81,8 +83,22 @@ public class Window extends JComponent{
         Graphics2D g2 = (Graphics2D)g;
         for(int i=0;i<3;i++){
             for(int j=0;j<3;j++){
-                if(background[i][j]!=null)
-                    g2.drawImage(background[i][j],null,(levelX-(i-1))*WIDTH+x,(levelY-(j-1))*HEIGHT+y);
+                if(background[i][j]!=null){
+                    int xPos = (levelX-(i-1))*WIDTH+x;
+                    int yPos = (levelY-(j-1))*HEIGHT+y;
+                    BufferedImage hold = background[i][j];
+                    if(!(xPos>=hold.getWidth() || yPos>=hold.getHeight())){
+                        if(xPos<0)
+                            hold = hold.getSubimage(-xPos,0,hold.getWidth()+xPos,hold.getHeight());
+                        if(yPos<0)
+                            hold = hold.getSubimage(0,-yPos,hold.getWidth(),hold.getHeight()+yPos);
+                        if(xPos>0)
+                            hold = hold.getSubimage(0,0,hold.getWidth()-xPos,hold.getHeight());
+                        if(yPos>0)
+                            hold = hold.getSubimage(0,0,hold.getWidth(),hold.getHeight()-yPos);
+                        g2.drawImage(hold,null,xPos,yPos);
+                    }
+                }
             }
         }
         player.draw(g2);
@@ -207,16 +223,16 @@ public class Window extends JComponent{
             boolean collisionRight = false,collisionLeft = false,collisionUp = false,collisionDown = false;
             int c;
             c = Collections.binarySearch(collision,new Collideable(col,row-1,0));
-            if(c>=0 && collision.get(c).getNumber()!=1)
+            if(c<0 || collision.get(c).getNumber()!=1)
                 collisionUp = true;
             c = Collections.binarySearch(collision,new Collideable(col,row+1,0));
-            if(c>=0 && collision.get(c).getNumber()!=1)
+            if(c<0 || collision.get(c).getNumber()!=1)
                 collisionDown = true;
             c = Collections.binarySearch(collision,new Collideable(col+1,row,0));
-            if(c>=0 && collision.get(c).getNumber()!=1)
+            if(c<0 || collision.get(c).getNumber()!=1)
                 collisionRight = true;
             c = Collections.binarySearch(collision,new Collideable(col-1,row,0));
-            if(c>=0 && collision.get(c).getNumber()!=1)
+            if(c<0 || collision.get(c).getNumber()!=1)
                 collisionLeft = true;
             
             if(timerCounter==0 && !(upPressed || downPressed || rightPressed || leftPressed))
@@ -279,7 +295,7 @@ public class Window extends JComponent{
                         pressBuffer = Animation.NONE;
                 }                
                 c = Collections.binarySearch(collision,new Collideable(col,row+2,0));                
-                if((stopDown && downPressed) || (c>=0 && collision.get(c).getNumber()==1)){
+                if((stopDown && downPressed) || (c<0 || collision.get(c).getNumber()==1)){
                     downPressed = false;
                     stopDown = false;
                     if(pressBuffer == Animation.DOWN)
@@ -287,7 +303,7 @@ public class Window extends JComponent{
                     
                 }
                 c = Collections.binarySearch(collision,new Collideable(col+2,row,0));
-                if((stopRight && rightPressed) || (c>=0 && collision.get(c).getNumber()==1)){
+                if((stopRight && rightPressed) || (c<0 || collision.get(c).getNumber()==1)){
                     rightPressed = false;
                     stopRight = false;
                     if(pressBuffer == Animation.RIGHT)
