@@ -23,7 +23,7 @@ This class will store:
   * element 1
   * element 2
 
-Methods that return most of the data.  A method that determines a move's strength based on stats. Also a method to gain experience.
+Methods that return most of the data. Also a method to gain experience (which controls level-up stat increases), and a method to increase/reduce HP, and other stuff (used by Moves and Battle).
 
 === Status ===
 
@@ -67,3 +67,13 @@ Defines the different elements of pokemon. Has methods like `double getMultiplie
 === Status ===
 
 completed, unless we decide to update to gold/silver/more recent
+
+== public class Battle ==
+
+=== Description ===
+
+The Battle class does all the calculations based on the amazing guide at gamefaqs. Stores two Pokemon
+
+=== Status ===
+
+Barely started. Waiting for Move and Pokemon to finish
