@@ -87,7 +87,7 @@ public class Window extends JComponent{
                     int xPos = (levelX-(i-1))*WIDTH+x;
                     int yPos = (levelY-(j-1))*HEIGHT+y;
                     BufferedImage hold = background[i][j];
-                    if(!(xPos>=hold.getWidth() || yPos>=hold.getHeight())){
+                    if(!(Math.abs(xPos)>=hold.getWidth() || Math.abs(yPos)>=hold.getHeight())){
                         if(xPos<0){
                             hold = hold.getSubimage(-xPos,0,hold.getWidth()+xPos,hold.getHeight());
                             xPos = 0;
