@@ -53,6 +53,8 @@ Non started yet.
 
 == public class Character ==
 
+This class will hold a character's pokemon as well as the images for the character. The character is special because the world moves around him, he is always in the center of the screen, therefore most of the movement stuff is handled in the window class.
+
 == public class Trainer extends NPC ==
 
 == public class NPC ==
