@@ -125,7 +125,7 @@ public class Window extends JComponent{
     public void loadLevel(String name,int xCoord,int yCoord)
     {
         String temp = name+xCoord+","+yCoord;
-        load(temp,xCoord,yCoord);
+        load(name,xCoord,yCoord);
         
         try {
             background[1+levelX-xCoord][1+levelY-yCoord] = ImageIO.read(new File(temp+".png"));
@@ -164,6 +164,7 @@ public class Window extends JComponent{
     
     private void load(String name,int xCoord,int yCoord){
         try {
+            name = name+xCoord+","+yCoord;
             Scanner input = new Scanner(new File(name + "collision.txt"));
             String str = "";
             while (input.hasNextLine()) {
@@ -182,6 +183,10 @@ public class Window extends JComponent{
         } catch (FileNotFoundException ex) {
             System.out.println("File" + name + "not found");
         }
+    }
+    
+    private void unLoad(int xCoord,int yCoord){
+        
     }
     
      /**
