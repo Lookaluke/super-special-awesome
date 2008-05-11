@@ -22,8 +22,9 @@ This class will store:
   * moves
   * element 1
   * element 2
+  * status
 
-Methods that return most of the data. Also a method to gain experience (which controls level-up stat increases), and a method to increase/reduce HP, and other stuff (used by Moves and Battle).
+Methods that return most of the data. Also a method to gain experience (which controls level-up stat increases), and a method to temporarily increase/reduce HP, and other stuff (used by Moves and Battle). Also, a method for status changing.
 
 === Status ===
 
