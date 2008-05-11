@@ -12,7 +12,7 @@ public class Animation {
     
     public static final int  NONE = -1,UP = 0,DOWN = 1,RIGHT = 2,LEFT = 3;
     private BufferedImage[][] animations;
-    private int currentFrame,currentDirection;
+    private int currentFrame,currentDirection,oldFrame;
     private int[] numberOfFrames = new int[4];
     
     
@@ -77,6 +77,20 @@ public class Animation {
     }
     
     public void nextFrame(int direction){
+        
+        if(currentFrame!=0)
+        {
+            oldFrame = currentFrame;
+            currentFrame = 0;
+            return;
+        }
+        else{
+            int temp = oldFrame;
+            oldFrame = currentFrame;
+            currentFrame = temp;
+        }
+        
+        
         if(currentDirection!=direction)
             currentFrame = 0;
         currentDirection = direction;
@@ -84,6 +98,7 @@ public class Animation {
         currentFrame %= numberOfFrames[direction];
         if(currentFrame==0)
             currentFrame = 1;
+
     } 
     
     public void setFrame(int direction,int frameNum){
