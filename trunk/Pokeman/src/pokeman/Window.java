@@ -38,7 +38,7 @@ public class Window extends JComponent{
             BACKGROUND = 0,STATIC = 1,DYNAMIC = 2;
     private static final int numberOfCounts = 4;
     private BufferedImage[][] background = new BufferedImage[3][3];
-    private String levelName;
+    private static final String levelName = "Levels\\level";;
     private int levelX,levelY;
     private int x,y;
     private ArrayList<Collideable> collision = new ArrayList<Collideable>();
@@ -61,17 +61,10 @@ public class Window extends JComponent{
         //loadImgs("Images\\Dynamic");
         levelX = 0; 
         levelY = 0;
-        levelName = "Levels\\level";
-        loadLevel(levelName,levelX,levelY);
-        background[0][0] = background[1][1];
-        background[0][1] = background[1][1];
-        background[0][2] = background[1][1];
-        background[1][1] = background[1][1];
-        background[1][2] = background[1][1];
-        background[1][0] = background[1][1];
-        background[2][0] = background[1][1];
-        background[2][1] = background[1][1];
-        background[2][2] = background[1][1];
+        loadLevel(levelX,levelY);
+        loadLevel(levelX-1,levelY);
+        loadLevel(levelX,levelY-1);
+        loadLevel(levelX+1,levelY-1);
         //loadLevel(levelName,levelX-1,levelY);
         repaint();
         frame.pack();  
@@ -91,7 +84,7 @@ public class Window extends JComponent{
             for(int j=0;j<3;j++){
                 if(background[i][j]!=null){
                     int xPos = (levelX-(i-1))*WIDTH+x;
-                    int yPos = (levelY-(j-1))*HEIGHT+y;
+                    int yPos = (-levelY-(j-1))*HEIGHT+y;
                     BufferedImage hold = background[i][j];
                     if(!(Math.abs(xPos)>=hold.getWidth() || Math.abs(yPos)>=hold.getHeight())){
                         if(xPos<0){
@@ -122,13 +115,13 @@ public class Window extends JComponent{
      * 
      * @param name This is the name of the level to load
      */
-    public void loadLevel(String name,int xCoord,int yCoord)
+    public void loadLevel(int xCoord,int yCoord)
     {
-        String temp = name+xCoord+","+yCoord;
-        load(name,xCoord,yCoord);
+        String temp = levelName+xCoord+","+yCoord;
+        load(xCoord,yCoord);
         
         try {
-            background[1+levelX-xCoord][1+levelY-yCoord] = ImageIO.read(new File(temp+".png"));
+            background[1+levelX-xCoord][1+yCoord-levelY] = ImageIO.read(new File(temp+".png"));
         } catch (IOException ex) {
             ex.printStackTrace();
         }
@@ -162,9 +155,10 @@ public class Window extends JComponent{
         }       
     }
     
-    private void load(String name,int xCoord,int yCoord){
+    private void load(int xCoord,int yCoord){
+        String name="";
         try {
-            name = name+xCoord+","+yCoord;
+            name = levelName+xCoord+","+yCoord;
             Scanner input = new Scanner(new File(name + "collision.txt"));
             String str = "";
             while (input.hasNextLine()) {
@@ -185,7 +179,7 @@ public class Window extends JComponent{
         }
     }
     
-    private void unLoad(int xCoord,int yCoord){
+    private void unload(int xCoord,int yCoord){
         
     }
     
@@ -331,6 +325,61 @@ public class Window extends JComponent{
                         pressBuffer = Animation.NONE;
                 }      
             }
+            
+            int newX = -x/WIDTH;
+            int newY = y/HEIGHT;
+            if(newX!=levelX){
+                unload(2*levelX-newX,levelY);
+                unload(2*levelX-newX,levelY+1);
+                unload(2*levelX-newX,levelY-1);
+                
+                if(newX<levelX){
+                    for(int i=0;i<2;i++){
+                        for(int j=0;j<3;j++){
+                            background[i][j] = background[i+1][j];
+                        }
+                    }
+                }else{
+                    for(int i=1;i>=0;i--){
+                        for(int j=0;j<3;j++){
+                            background[i+1][j] = background[i][j];
+                        }
+                    } 
+                }
+                int temp = levelX;
+                levelX = newX;
+                System.out.println(2*newX-temp);
+                loadLevel(2*newX-temp,levelY);
+                loadLevel(2*newX-temp,levelY+1);
+                loadLevel(2*newX-temp,levelY-1);
+                
+            }
+            if(newY!=levelY){
+                unload(levelX,2*levelY-newY);
+                unload(levelX-1,2*levelY-newY);
+                unload(levelX+1,2*levelY-newY);
+                
+                if(newY>levelY){
+                    for(int i=0;i<2;i++){
+                        for(int j=0;j<3;j++){
+                            background[j][i] = background[j][i+1];
+                        }
+                    }
+                }else{
+                    for(int i=1;i>=0;i--){
+                        for(int j=0;j<3;j++){
+                            background[j][i+1] = background[j][i];
+                        }
+                    } 
+                }              
+                int temp = levelY;
+                levelY = newY;
+                loadLevel(levelX,2*newY-temp);
+                loadLevel(levelX+1,2*newY-temp);
+                loadLevel(levelX-1,2*newY-temp);
+                
+            }
+            
         }
     }
 }
