@@ -40,8 +40,10 @@ public class Window extends JComponent{
     public static final int COLUMNS = 25,ROWS=18,WIDTH = 800,HEIGHT = 576,TILE_WIDTH = WIDTH/COLUMNS,TILE_HEIGHT = HEIGHT/ROWS,
             BACKGROUND = 0,STATIC = 1,DYNAMIC = 2;
     private static final int numberOfCounts = 4;
+    private static final String levelName = "Levels\\level";
+    
     private BufferedImage[][] background = new BufferedImage[3][3];
-    private static final String levelName = "Levels\\level";;
+    
     private int levelX,levelY;
     private int x,y;
     private ArrayList<Collideable> collision = new ArrayList<Collideable>();
@@ -54,6 +56,10 @@ public class Window extends JComponent{
     
     private int timerCounter;
         
+    /**
+     * Makes a new window that draws all the specified stuff on
+     * @param frame The frame that this window is in
+     */
     public Window(JFrame frame){
         
         frame.add(this);
@@ -61,14 +67,14 @@ public class Window extends JComponent{
         frame.pack();
         frame.addKeyListener(new KeyListen());
         
-        //loadImgs("Images\\Dynamic");
+        loadImgs("Images\\Dynamic");
         levelX = 0; 
         levelY = 0;
-        loadLevel(levelX,levelY);
-        loadLevel(levelX-1,levelY);
-        loadLevel(levelX,levelY-1);
-        loadLevel(levelX+1,levelY-1);
-        //loadLevel(levelName,levelX-1,levelY);
+        for(int i=-1;i<=1;i++)
+            for(int j=-1;j<=1;j++)
+                loadLevel(levelX+i,levelY+j);
+
+        
         repaint();
         frame.pack();  
         repaint();
@@ -81,6 +87,10 @@ public class Window extends JComponent{
         
     }
     
+    /**
+     * This method paints the world and everything in it
+     * @param g Dont worry about this
+     */
     public void paintComponent(Graphics g){
         Graphics2D g2 = (Graphics2D)g;
         g2.setColor(Color.BLACK);
@@ -116,12 +126,10 @@ public class Window extends JComponent{
     }
     
      /**
-     * This method loads the current level. Link will interact with this level.
-     * This will actualy load the background image as well as the locations of
-     * the images that go on top so provided the root name of the level without
-     * any extensions.
+     * This method loads the current level. 
      * 
-     * @param name This is the name of the level to load
+     * @param xCoord The x coordinate of the level
+     * @param yCoord The y coordinate of the level
      */
     public void loadLevel(int xCoord,int yCoord)
     {
@@ -163,6 +171,13 @@ public class Window extends JComponent{
         }       
     }
     
+    /**
+     * This method is called when you call load level it loads the collision data
+     * and any dynamic images like walking characters
+     * 
+     * @param xCoord x coordinate of the level
+     * @param yCoord y coordinate of the level
+     */
     private void load(int xCoord,int yCoord){
         String name=levelName+xCoord+","+yCoord;
         try {
@@ -186,6 +201,12 @@ public class Window extends JComponent{
         }
     }
     
+    /**
+     * Unloads a level getting rid of the  collision data
+     * 
+     * @param xCoord x coordinate of the level
+     * @param yCoord y coordinate of the level
+     */
     private void unload(int xCoord,int yCoord){
 
             
@@ -199,6 +220,7 @@ public class Window extends JComponent{
     
      /**
      * The class that implments the keyListener
+     * This gets all the keyboard events
      */
     public class KeyListen implements KeyListener
     {
@@ -243,8 +265,9 @@ public class Window extends JComponent{
             int col = (WIDTH/2-player.getWidth()/2-x)/TILE_WIDTH;
             int row = (HEIGHT/2-player.getHeight()/2-y)/TILE_HEIGHT+1;
 
-            System.out.println("Col: "+col+" Row: "+row);
-            
+            /*
+             * This part determines in which directions the character can move 
+             */
             boolean collisionRight = false,collisionLeft = false,collisionUp = false,collisionDown = false;
             int c;
             c = Collections.binarySearch(collision,new Collideable(col,row-1,0));
@@ -260,19 +283,20 @@ public class Window extends JComponent{
             if(c<0 || collision.get(c).getNumber()!=1)
                 collisionLeft = true;
             
+            /*
+             * Determines which direction if any he is moving in
+             */ 
             if(timerCounter==0 && !(upPressed || downPressed || rightPressed || leftPressed))
             {
-       
-
-                            
                 upPressed = pressBuffer == Animation.UP && collisionUp;
                 downPressed = pressBuffer == Animation.DOWN && collisionDown;
                 rightPressed = pressBuffer == Animation.RIGHT && collisionRight;
                 leftPressed = pressBuffer == Animation.LEFT && collisionLeft;
-                
-
             }
             
+            /*
+             * Changes the animation 
+             */
             if(timerCounter==0)
             {
                 if(upPressed)
@@ -290,7 +314,10 @@ public class Window extends JComponent{
             }
             
 
-            
+            /*
+             * Moves the screen in the right direction, remember the character
+             * doesn't actualy move
+             */ 
             if(upPressed)
                 y+=HEIGHT/ROWS/numberOfCounts; 
 
@@ -305,12 +332,20 @@ public class Window extends JComponent{
 
             
             repaint();
+            
+            /*
+             * If he is moving it increases the timer if not it leaves it at 
+             * 0 to await a new move
+             */ 
             if(upPressed || downPressed || rightPressed || leftPressed)
                 timerCounter++;
             else
                 timerCounter = 0;
 
-            
+            /*
+             * When this move is done is the button still being pressed then go 
+             * ahead and continue moving if not stop
+             */ 
             if(timerCounter==numberOfCounts){
                 timerCounter=0;
                 if((stopUp && upPressed) || !collisionUp){
@@ -342,6 +377,10 @@ public class Window extends JComponent{
                 }      
             }
             
+            /*
+             * Determines what needs to be loaded or unloaded, moves the backgrounds
+             * acordingly
+             */ 
             int newX = -x/WIDTH;
             int newY = y/HEIGHT;
             if(newX!=levelX){

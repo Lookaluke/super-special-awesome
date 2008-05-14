@@ -30,4 +30,12 @@ public class Person
         g.drawImage(walk.getFrame(),null,x,y);
         walk.nextFrame(direction);
     }
+    
+    public int getX(){
+        return x;
+    }
+    
+    public int getY(){
+        return y;
+    }
 }
