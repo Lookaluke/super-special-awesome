@@ -47,6 +47,5 @@ public class Character {
         }
         walking.nextFrame(direction);
         press=0;
-        
     }
 }
