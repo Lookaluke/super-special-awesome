@@ -5,13 +5,16 @@
 
 package pokeman;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.geom.RoundRectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -80,6 +83,9 @@ public class Window extends JComponent{
     
     public void paintComponent(Graphics g){
         Graphics2D g2 = (Graphics2D)g;
+        g2.setColor(Color.BLACK);
+        g2.fill(new Rectangle(0,0,WIDTH,HEIGHT));
+        
         for(int i=0;i<3;i++){
             for(int j=0;j<3;j++){
                 if(background[i][j]!=null){
@@ -105,6 +111,8 @@ public class Window extends JComponent{
             }
         }
         player.draw(g2);
+        g2.setColor(Color.RED);
+        g2.fill(new RoundRectangle2D.Double(0,0,100,100,50,50));
     }
     
      /**
@@ -118,12 +126,13 @@ public class Window extends JComponent{
     public void loadLevel(int xCoord,int yCoord)
     {
         String temp = levelName+xCoord+","+yCoord;
-        load(xCoord,yCoord);
+        
         
         try {
             background[1+levelX-xCoord][1+yCoord-levelY] = ImageIO.read(new File(temp+".png"));
+            load(xCoord,yCoord);
         } catch (IOException ex) {
-            ex.printStackTrace();
+            background[1+levelX-xCoord][1+yCoord-levelY] = null;
         }
     }
     
@@ -149,7 +158,6 @@ public class Window extends JComponent{
                 try{
                     img.add(ImageIO.read(files[i]));
                 }catch(java.io.IOException e){
-                    System.out.println("File not found");
                 }                
             }            
         }       
