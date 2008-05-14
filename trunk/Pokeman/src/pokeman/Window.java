@@ -156,9 +156,8 @@ public class Window extends JComponent{
     }
     
     private void load(int xCoord,int yCoord){
-        String name="";
+        String name=levelName+xCoord+","+yCoord;
         try {
-            name = levelName+xCoord+","+yCoord;
             Scanner input = new Scanner(new File(name + "collision.txt"));
             String str = "";
             while (input.hasNextLine()) {
@@ -167,7 +166,7 @@ public class Window extends JComponent{
             
             for (int y1 = 0; y1 < ROWS; y1++) {
                 for (int x1 = 0; x1 < COLUMNS; x1++) {
-                    collision.add(new Collideable(x1+xCoord*WIDTH,y1+yCoord*HEIGHT,Integer.parseInt(str.substring(0,str.indexOf(",")))));
+                    collision.add(new Collideable(x1+xCoord*COLUMNS,y1+yCoord*-ROWS,Integer.parseInt(str.substring(0,str.indexOf(",")))));
                     str = str.substring(str.indexOf(",")+1);
                 }
             }
@@ -180,7 +179,14 @@ public class Window extends JComponent{
     }
     
     private void unload(int xCoord,int yCoord){
-        
+
+            
+        for (int y1 = 0; y1 < ROWS; y1++) {
+            for (int x1 = 0; x1 < COLUMNS; x1++) {
+                collision.remove(new Collideable(x1+xCoord*COLUMNS,y1+yCoord*-ROWS,0));
+            }
+        }
+      
     }
     
      /**
@@ -229,6 +235,8 @@ public class Window extends JComponent{
             int col = (WIDTH/2-player.getWidth()/2-x)/TILE_WIDTH;
             int row = (HEIGHT/2-player.getHeight()/2-y)/TILE_HEIGHT+1;
 
+            System.out.println("Col: "+col+" Row: "+row);
+            
             boolean collisionRight = false,collisionLeft = false,collisionUp = false,collisionDown = false;
             int c;
             c = Collections.binarySearch(collision,new Collideable(col,row-1,0));
