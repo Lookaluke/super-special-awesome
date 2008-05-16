@@ -1,35 +1,26 @@
-#summary I kinda need some help designing the battle system + pokemon features.
+#summary How to make pokemon sprites
 #labels Phase-Design
 
 = Introduction =
 
-OMG HALP SO MUCH DAMN STUFF
+This is where you can find most of the information regarding sprite creation
 
+= Type =
 
-= Problems =
+Our Pokemon game will be based on red/blue/yellow for pokemon types and battle calculations, and possibly moves. This means that there will be no steel/dark type pokemon. Also, no evolution stones will be used in this game.
 
-Right now, I'm kinda stuck. There's a lot of thinks to implement so please help me design the classes.
+= Size =
 
-1) how should i take the next move. the move could be using an item or swapping pokemon. Swapping pokemon takes precedence over using an item which is over making a move, and I'm not sure about running.
+Both front and back sprites should be 80x80 pixels in size. An icon would also be helpful, size 32x32 2-frame animation. Save the two frames as two files, instead of one .gif animation.
 
-2) where do we store information about how much experience is given after you kill a pokemon? do enemy pokemon "gain experience" when they kill your pokemon or do i have to make  it so that it actually recognizes the difference between your pokemon and someone else's pokemon?
+= Naming Conventions =
 
-3) how are we going to set up move-learning? is there going to be a method in pokemon that sees if the current move list is full and if user input is required and it displays stuff.
+Name it whatever you want, but just remember that it is not followed by the prefix -mon. That's DIGIMON not POKEMON.
 
-4) how do we define how moves reduce stats? Do we have to make an `enum` called `Stat` and define `ATTACK, DEFENSE, SPEED and SPECIAL`?
+= Giving us the sprites =
 
-5) what methods does battle system have? how much of the functionality will be written in lower classes like `Pokemon` and `Move` and just called by `Battle`? How much will be controlled by `Battle`?
+All images are preferably in .png format, but .bmp is acceptable and .gif is tolerable, but highly advised against (.jpg, .png, and other compressed or proprietary formats will not be accepted). Create a zip file called `PokemonName`.zip where `PokemonName` is the name of your pokemon. Put the sprites in named `front`, `back`, `icon1`, and `icon2`. Also include a text file called `info.txt` which includes pokemon type(s) (up to two are allowed), suggested move set (based on pokemon red/blue moves), suggested new moves, if any, suggested stats, and a pokedex entry (description, type e.g. `mouse`, height, weight).
 
-6) How do i differentiate between wild pokemon battles and trainer battles? Does that go into the constructor? if it does, how do i save it within the class? Should i just make two different Battle classes? `TrainerBattle` and `PokemonBattle`? would that make things easier?
+= Questions/Concerns =
 
-alright...now that that's over, i suppose i can make room for suggesting design decisions and what i already have.
-
-{{{
-
-public class Battle{
-
-  private Pokemon yours;
-  private Pokemon[] theirs;
-}
-
-}}}
+If you're not sure what to do, email Kunal or Mark at their emails specified on the forum.
