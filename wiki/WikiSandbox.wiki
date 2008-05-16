@@ -10,5 +10,5 @@ shit
 = Details =
 
   # shit
-  shit
-  sphincter
+  # shit
+  # sphincter
