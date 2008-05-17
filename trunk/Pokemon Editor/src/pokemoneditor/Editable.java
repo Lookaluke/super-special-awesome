@@ -8,6 +8,8 @@ package pokemoneditor;
 
 import java.awt.geom.*;
 import java.awt.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JComponent;
 import java.awt.image.BufferedImage;
 import java.awt.event.MouseListener;
@@ -15,6 +17,7 @@ import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseEvent;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class Editable extends JComponent implements MouseListener,MouseMotionListener{
  
@@ -124,7 +127,7 @@ public class Editable extends JComponent implements MouseListener,MouseMotionLis
                 {                
                     if(images[layer][x][y]!=null)
                         str+=imgNames.get(img.indexOf(images[layer][x][y]));
-                    if(extraImageData[layer][x][y]!=null && !extraImageData[layer][x][y].equals(""))
+                    if(layer!=STATIC && extraImageData[layer][x][y]!=null && !extraImageData[layer][x][y].equals(""))
                         str+=":"+extraImageData[layer][x][y];
                     str+=",";
                 }
@@ -139,20 +142,24 @@ public class Editable extends JComponent implements MouseListener,MouseMotionLis
             PrintWriter writer = new PrintWriter(new File(name + "collision.txt"));
             int width = WIDTH/COLUMNS;
             int height = HEIGHT/ROWS;
-            int arr[][] = new int[COLUMNS][ROWS];
+            String arr[][] = new String[COLUMNS][ROWS];
             for(int y=0;y<ROWS;y++)
             {
                 for(int x = 0;x<COLUMNS;x++)
                 {                
                     if(images[STATIC][x][y]!=null){
-                        int code = 1;
+                        String code = "1";
                         if(extraImageData[STATIC][x][y]!=null && !extraImageData[STATIC][x][y].equals(""))
-                            code = Integer.parseInt(extraImageData[STATIC][x][y]);
+                            code = extraImageData[STATIC][x][y];
                         for(int i=0;i<=(images[STATIC][x][y].getWidth()-.001)/width;i++){
                             for(int j=0;j<=(images[STATIC][x][y].getHeight()-.001)/height;j++){
                                 arr[x+i][y+j] = code;
+                                
                             }
                         }
+                    }else{
+                        if(arr[x][y]==null || arr[x][y].equals(""))
+                            arr[x][y] = "0";
                     }
                 }
             }
@@ -173,56 +180,70 @@ public class Editable extends JComponent implements MouseListener,MouseMotionLis
     
     public void load(String name)
     {
-        for(int layer=0;layer<3;layer++)
-        {
+
+        for (int layer = 0; layer < 3; layer++) {
             BufferedReader b = null;
             try {
                 b = new BufferedReader(new FileReader(name + "." + layer + ".txt"));
             } catch (FileNotFoundException ex) {
                 ex.printStackTrace();
             }
-            for(int y=0;y<ROWS;y++)
-            {
-                String str=null;
+            for (int y = 0; y < ROWS; y++) {
+                String str = null;
                 try {
                     str = b.readLine();
                 } catch (IOException ex) {
                     ex.printStackTrace();
                 }
-                int x=0;
-                String currentString="";
+                int x = 0;
+                String currentString = "";
                 String extraData = "";
                 boolean colon = false;
-                for(int i=0;i<str.length();i++)
-                {
-                    
-                    
-                    if(str.charAt(i)==',')
-                    {                        
-                        if(imgNames.indexOf(currentString)!=-1)
+                for (int i = 0; i < str.length(); i++) {
+
+
+                    if (str.charAt(i) == ',') {
+                        if (imgNames.indexOf(currentString) != -1) {
                             images[layer][x][y] = img.get(imgNames.indexOf(currentString));
-                        else
+                        } else {
                             images[layer][x][y] = null;
+                        }
                         extraImageData[layer][x][y] = extraData;
                         x++;
-                        currentString="";
-                        extraData="";
+                        currentString = "";
+                        extraData = "";
                         colon = false;
-                        
-                    }else{
-                        if(colon)
-                            extraData+=str.charAt(i);
-                        if(str.charAt(i)==':')
-                        {
+                    } else {
+                        if (colon) {
+                            extraData += str.charAt(i);
+                        }
+                        if (str.charAt(i) == ':') {
                             colon = true;
                         }
-                        if(!colon)
-                            currentString+=str.charAt(i);
+                        if (!colon) {
+                            currentString += str.charAt(i);
+                        }
                     }
-                    
                 }
             }
-        }            
+        }
+        
+        try {
+            Scanner input = new Scanner(new File(name + "collision.txt"));
+            String line = "";
+            while(input.hasNextLine()){
+                 line += input.nextLine();
+            }
+            for (int y = 0; y < ROWS; y++) {
+                for (int x = 0; x < COLUMNS; x++) {
+                    extraImageData[STATIC][x][y] = line.substring(0,line.indexOf(","));
+                    line = line.substring(line.indexOf(",")+1);
+                    System.out.println(extraImageData[STATIC][x][y]);
+                }
+            }
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(Editable.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
     
