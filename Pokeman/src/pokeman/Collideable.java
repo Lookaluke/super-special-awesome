@@ -12,10 +12,13 @@ package pokeman;
  */
 public class Collideable implements Comparable<Collideable>{
 
-    private int xTile,yTile,collisionNumber;
+    private int xTile,yTile;
+    private int[] collisionNumber = new int[3];
     
-    public Collideable(int x,int y,int collisionNumber){
-        this.collisionNumber = collisionNumber;
+    public Collideable(int x,int y,int collisionNumber1,int collisionNumber2,int collisionNumber3){
+        collisionNumber[0] = collisionNumber1;
+        collisionNumber[1] = collisionNumber2;
+        collisionNumber[2] = collisionNumber3;
         xTile = x;
         yTile = y;
     }
@@ -40,8 +43,8 @@ public class Collideable implements Comparable<Collideable>{
     * Gets the collision number
     * @return the CollisionNumber
     */   
-    public int getNumber(){
-        return collisionNumber;
+    public int getNumber(int number){
+        return collisionNumber[number];
     }
 
     public int compareTo(Collideable c) {

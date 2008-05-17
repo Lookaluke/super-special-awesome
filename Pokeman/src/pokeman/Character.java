@@ -15,7 +15,7 @@ import java.awt.Rectangle;
 public class Character {
     private Animation walking;
     private int direction;
-    private int press;
+    private int press,jumping;
 
     public Character(){
         walking = new Animation("Walking");
@@ -27,8 +27,15 @@ public class Character {
         if(press>4)
             walking.standingFrame();
         press++;
-        g.drawImage(walking.getFrame(),null,Window.WIDTH/2-walking.getFrame().getWidth()/2,Window.HEIGHT/2-walking.getFrame().getHeight()/2);
-        g.draw(new Rectangle(Window.WIDTH/2-walking.getFrame().getWidth()/2,Window.HEIGHT/2-walking.getFrame().getHeight()/2,walking.getFrame().getWidth(),walking.getFrame().getHeight()));
+        int moreHeight = 0;
+        if(jumping>=4)
+            moreHeight = (jumping-8)*4;
+        if(jumping<4)
+            moreHeight = (jumping)*4;
+        if(jumping>0)
+            jumping--;
+        g.drawImage(walking.getFrame(),null,Window.WIDTH/2-walking.getFrame().getWidth()/2,Window.HEIGHT/2-walking.getFrame().getHeight()/2+moreHeight);
+        //g.draw(new Rectangle(Window.WIDTH/2-walking.getFrame().getWidth()/2,Window.HEIGHT/2-walking.getFrame().getHeight()/2,walking.getFrame().getWidth(),walking.getFrame().getHeight()));
     }
     
     public int getWidth(){
@@ -48,4 +55,9 @@ public class Character {
         walking.nextFrame(direction);
         press=0;
     }
+    
+    public void jump(){
+        jumping=8;
+    }
+    
 }

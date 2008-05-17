@@ -50,7 +50,9 @@ public class Window extends JComponent{
     
     private boolean upPressed,downPressed,leftPressed,rightPressed;
     private boolean stopUp,stopDown,stopRight,stopLeft;
+    private boolean rightJump = false,leftJump = false, downJump = false;
     private int pressBuffer;
+    private int jump;
     
     private Character player = new Character();
     
@@ -96,6 +98,8 @@ public class Window extends JComponent{
         g2.setColor(Color.BLACK);
         g2.fill(new Rectangle(0,0,WIDTH,HEIGHT));
         
+
+        
         for(int i=0;i<3;i++){
             for(int j=0;j<3;j++){
                 if(background[i][j]!=null){
@@ -121,8 +125,14 @@ public class Window extends JComponent{
             }
         }
         player.draw(g2);
-        g2.setColor(Color.RED);
-        g2.fill(new RoundRectangle2D.Double(0,0,100,100,50,50));
+        //g2.setColor(Color.RED);
+        
+        for(Collideable c:collision){
+            if(c.getNumber(0)!=0)
+            g2.draw(new Rectangle(c.getX()*TILE_WIDTH+x, c.getY()*TILE_HEIGHT+y, TILE_WIDTH, TILE_HEIGHT));
+        }
+        
+        //g2.fill(new RoundRectangle2D.Double(0,0,100,100,50,50));
     }
     
      /**
@@ -189,7 +199,23 @@ public class Window extends JComponent{
             
             for (int y1 = 0; y1 < ROWS; y1++) {
                 for (int x1 = 0; x1 < COLUMNS; x1++) {
-                    collision.add(new Collideable(x1+xCoord*COLUMNS,y1+yCoord*-ROWS,Integer.parseInt(str.substring(0,str.indexOf(",")))));
+                    String smallString = str.substring(0,str.indexOf(","));
+                    int index = 0;
+                    int i=0;
+                    int[] values = new int[3];
+                    while(i<smallString.length() && index<3){
+                        if(smallString.charAt(i)==':')
+                        {
+                            values[index] = Integer.parseInt(smallString.substring(0,i));
+                            smallString = smallString.substring(i+1);
+                            index++;
+                            i=0;
+                        }else
+                            i++;
+                    }
+                    if(index<3 && !smallString.equals(""))
+                        values[index] = Integer.parseInt(smallString.substring(0));
+                    collision.add(new Collideable(x1+xCoord*COLUMNS,y1+yCoord*-ROWS,values[0],values[1],values[2]));
                     str = str.substring(str.indexOf(",")+1);
                 }
             }
@@ -212,7 +238,7 @@ public class Window extends JComponent{
             
         for (int y1 = 0; y1 < ROWS; y1++) {
             for (int x1 = 0; x1 < COLUMNS; x1++) {
-                collision.remove(new Collideable(x1+xCoord*COLUMNS,y1+yCoord*-ROWS,0));
+                collision.remove(new Collideable(x1+xCoord*COLUMNS,y1+yCoord*-ROWS,0,0,0));
             }
         }
       
@@ -265,23 +291,53 @@ public class Window extends JComponent{
             int col = (WIDTH/2-player.getWidth()/2-x)/TILE_WIDTH;
             int row = (HEIGHT/2-player.getHeight()/2-y)/TILE_HEIGHT+1;
 
+            int c;
+            
+            c = Collections.binarySearch(collision,new Collideable(col,row,0,0,0));
+            if(jump>0)
+            {
+                if(jump == 1){
+                    upPressed = false;
+                    downPressed = false;
+                    rightPressed = false;
+                    leftPressed = false;
+                }
+                if(jump == 2){
+                    if(upPressed)
+                }
+                
+            }
+            
             /*
              * This part determines in which directions the character can move 
              */
             boolean collisionRight = false,collisionLeft = false,collisionUp = false,collisionDown = false;
-            int c;
-            c = Collections.binarySearch(collision,new Collideable(col,row-1,0));
-            if(c<0 || collision.get(c).getNumber()!=1)
+            
+            
+            c = Collections.binarySearch(collision,new Collideable(col,row-1,0,0,0));
+            if(c<0 || (collision.get(c).getNumber(0)<1 || collision.get(c).getNumber(0)>4))
                 collisionUp = true;
-            c = Collections.binarySearch(collision,new Collideable(col,row+1,0));
-            if(c<0 || collision.get(c).getNumber()!=1)
+            c = Collections.binarySearch(collision,new Collideable(col,row+1,0,0,0));
+            if(c<0 || (collision.get(c).getNumber(0)<1 || collision.get(c).getNumber(0)>4 || collision.get(c).getNumber(0)==2))
+            {
                 collisionDown = true;
-            c = Collections.binarySearch(collision,new Collideable(col+1,row,0));
-            if(c<0 || collision.get(c).getNumber()!=1)
+                if(collision.get(c).getNumber(0)==2)
+                    downJump = true;
+            }
+            c = Collections.binarySearch(collision,new Collideable(col+1,row,0,0,0));
+            if(c<0 || (collision.get(c).getNumber(0)<1 || collision.get(c).getNumber(0)>4 || collision.get(c).getNumber(0)==3))
+            {
                 collisionRight = true;
-            c = Collections.binarySearch(collision,new Collideable(col-1,row,0));
-            if(c<0 || collision.get(c).getNumber()!=1)
+                if(collision.get(c).getNumber(0)==3)
+                    rightJump = true;
+            }
+            c = Collections.binarySearch(collision,new Collideable(col-1,row,0,0,0));
+            if(c<0 || (collision.get(c).getNumber(0)<1 || collision.get(c).getNumber(0)>4 || collision.get(c).getNumber(0)==4))
+            {
                 collisionLeft = true;
+                if(collision.get(c).getNumber(0)==4)
+                    leftJump = true;
+            }
             
             /*
              * Determines which direction if any he is moving in
@@ -293,6 +349,8 @@ public class Window extends JComponent{
                 rightPressed = pressBuffer == Animation.RIGHT && collisionRight;
                 leftPressed = pressBuffer == Animation.LEFT && collisionLeft;
             }
+            
+
             
             /*
              * Changes the animation 
@@ -310,9 +368,16 @@ public class Window extends JComponent{
 
                 if(leftPressed)
                     player.direction(Animation.LEFT); 
-
+                
+                if(jump>0)
+                    jump--;
             }
             
+            
+            if((rightPressed && rightJump) || (collisionLeft && leftJump) || (collisionDown && downJump)){
+                jump = 2;
+                player.jump();
+            }
 
             /*
              * Moves the screen in the right direction, remember the character
@@ -354,16 +419,16 @@ public class Window extends JComponent{
                     if(pressBuffer == Animation.UP)
                         pressBuffer = Animation.NONE;
                 }                
-                c = Collections.binarySearch(collision,new Collideable(col,row+2,0));                
-                if((stopDown && downPressed) || (c<0 || collision.get(c).getNumber()==1)){
+                c = Collections.binarySearch(collision,new Collideable(col,row+2,0,0,0));                
+                if((stopDown && downPressed) || !(c<0 || (collision.get(c).getNumber(0)<1 || collision.get(c).getNumber(0)>4 || collision.get(c).getNumber(0)==2))){
                     downPressed = false;
                     stopDown = false;
                     if(pressBuffer == Animation.DOWN)
                         pressBuffer = Animation.NONE;
                     
                 }
-                c = Collections.binarySearch(collision,new Collideable(col+2,row,0));
-                if((stopRight && rightPressed) || (c<0 || collision.get(c).getNumber()==1)){
+                c = Collections.binarySearch(collision,new Collideable(col+2,row,0,0,0));
+                if((stopRight && rightPressed) || !(c<0 || (collision.get(c).getNumber(0)<1 || collision.get(c).getNumber(0)>4 || collision.get(c).getNumber(0)==3))){
                     rightPressed = false;
                     stopRight = false;
                     if(pressBuffer == Animation.RIGHT)
@@ -403,7 +468,6 @@ public class Window extends JComponent{
                 }
                 int temp = levelX;
                 levelX = newX;
-                System.out.println(2*newX-temp);
                 loadLevel(2*newX-temp,levelY);
                 loadLevel(2*newX-temp,levelY+1);
                 loadLevel(2*newX-temp,levelY-1);
