@@ -146,7 +146,7 @@ public class Window extends JComponent{
         
         
         try {
-            System.out.println("XCoord: "+xCoord+" YCoord: "+yCoord);
+            //System.out.println("XCoord: "+xCoord+" YCoord: "+yCoord);
             background[1+levelX-xCoord][1+yCoord-levelY] = ImageIO.read(new File(temp+".png"));
             load(xCoord,yCoord);
         } catch (IOException ex) {
@@ -238,7 +238,9 @@ public class Window extends JComponent{
             
         for (int y1 = 0; y1 < ROWS; y1++) {
             for (int x1 = 0; x1 < COLUMNS; x1++) {
-                collision.remove(new Collideable(x1+xCoord*COLUMNS,y1+yCoord*-ROWS,0,0,0));
+                int c = Collections.binarySearch(collision,new Collideable(x1+xCoord*COLUMNS,y1+yCoord*-ROWS,0,0,0));
+                if(c>=0)
+                    collision.remove(collision.get(c));
             }
         }
       
@@ -291,6 +293,8 @@ public class Window extends JComponent{
             int col = (WIDTH/2-player.getWidth()/2-x)/TILE_WIDTH;
             int row = (HEIGHT/2-player.getHeight()/2-y)/TILE_HEIGHT+1;
 
+            System.out.println("Col: "+col+" Row: "+row);
+            
             int c;
             
             c = Collections.binarySearch(collision,new Collideable(col,row,0,0,0));
@@ -298,41 +302,44 @@ public class Window extends JComponent{
                 int number = collision.get(c).getNumber(0);
                 if(number>=-4 && number<=-1){
                     player.direction(-(number+1));
-                    for(int i=-1;i<=1;i++)
-                        for(int j=-1;j<=1;j++)
-                            unload(levelX+i,levelY+j);
+                    
                     int oldX = levelX;
                     int oldY = levelY;
                     levelX = collision.get(c).getNumber(1);
                     levelY = collision.get(c).getNumber(2);
+                    
+                    for(int i=-1;i<=1;i++)
+                        for(int j=-1;j<=1;j++)
+                            unload(oldX+i,oldY+j);
+                   
+
                     x = -levelX*WIDTH;
                     y = levelY*HEIGHT;
                     
                     for(int i=-1;i<=1;i++)
                         for(int j=-1;j<=1;j++)
                             loadLevel(levelX+i,levelY+j);
-                    
+                    System.out.println("OldX: "+oldX+" OldY: "+oldY);
                     for(Collideable door:collision){
-                        if(door.getNumber(1)==oldX && door.getNumber(2)==oldY){
-                            x = -(-door.getX()*TILE_WIDTH);// + WIDTH/2 - player.getWidth()/2);
-                            y = (door.getY()*TILE_HEIGHT);// + HEIGHT/2 - player.getHeight()/2);
+                        if(door.getNumber(0)>=-4 && door.getNumber(0)<=-1 && Math.abs(door.getNumber(1)-oldX)<=1 && Math.abs(door.getNumber(2)-oldY)<=1){
+                            x = (-door.getX()*TILE_WIDTH + WIDTH/2 - player.getWidth()/2);
+                            y = -(door.getY()-1)*TILE_HEIGHT + HEIGHT/2 - player.getHeight()/2;
 
                             if(player.getDirection()==Animation.UP)
-                                y+=HEIGHT/ROWS; 
+                                y+=TILE_HEIGHT; 
 
                             if(player.getDirection()==Animation.DOWN)
-                                y-=HEIGHT/ROWS;
+                                y-=TILE_HEIGHT;
 
                             if(player.getDirection()==Animation.RIGHT)
-                                x-=WIDTH/COLUMNS;   
+                                x-=TILE_WIDTH;   
 
                             if(player.getDirection()==Animation.LEFT)
-                                x+=WIDTH/COLUMNS;   
-                            System.out.println(door.getX());
+                                x+=TILE_WIDTH;   
                         }
                     }
                     
-                    System.out.println(y);
+                    System.out.println(x);
                     
                 }
             }
