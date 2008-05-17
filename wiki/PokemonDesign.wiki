@@ -7,7 +7,7 @@ This is where you can find most of the information regarding sprite creation
 
 = Type =
 
-Our Pokemon game will be based on red/blue/yellow for pokemon types and battle calculations, and possibly moves. This means that there will be no steel/dark type pokemon. Also, no evolution stones will be used in this game.
+Our Pokemon game will be based on red/blue/yellow for pokemon types and battle calculations, and possibly moves. This means that there will be no steel/dark type pokemon. Also, we are not planing to use evolution stones. (Its at the very bottom of the list of things to do.)
 
 = Size =
 
