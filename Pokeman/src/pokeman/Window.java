@@ -465,13 +465,28 @@ public class Window extends JComponent{
             if(timerCounter==numberOfCounts){
                 timerCounter=0;
                 if(jump == 0){
-                    if((stopUp && upPressed) || !collisionUp){
+                    // I have absolutely no idea why this works... but it does...
+                    int r1=2;
+                    int r2=2;
+                    int c1=2;
+                    int c2=2;
+                    
+                    if(col<0 || row<0)
+                    {
+                        r1 = 1;
+                        c1 =1;
+                    }else{
+                        r2 = 1;
+                        c2 = 1;
+                    }
+                    c = Collections.binarySearch(collision,new Collideable(col,row-r2,0,0,0)); 
+                    if((stopUp && upPressed) || !(c<0 || (collision.get(c).getNumber(0)<1 || collision.get(c).getNumber(0)>4))){
                         upPressed = false;
                         stopUp = false;
                         if(pressBuffer == Animation.UP)
                             pressBuffer = Animation.NONE;
                     }                
-                    c = Collections.binarySearch(collision,new Collideable(col,row+2,0,0,0));                
+                    c = Collections.binarySearch(collision,new Collideable(col,row+r1,0,0,0));                
                     if((stopDown && downPressed) || !(c<0 || (collision.get(c).getNumber(0)<1 || collision.get(c).getNumber(0)>4 || collision.get(c).getNumber(0)==2))){
                         downPressed = false;
                         stopDown = false;
@@ -479,14 +494,15 @@ public class Window extends JComponent{
                             pressBuffer = Animation.NONE;
 
                     }
-                    c = Collections.binarySearch(collision,new Collideable(col+2,row,0,0,0));
+                    c = Collections.binarySearch(collision,new Collideable(col+c1,row,0,0,0));
                     if((stopRight && rightPressed) || !(c<0 || (collision.get(c).getNumber(0)<1 || collision.get(c).getNumber(0)>4 || collision.get(c).getNumber(0)==3))){
                         rightPressed = false;
                         stopRight = false;
                         if(pressBuffer == Animation.RIGHT)
                             pressBuffer = Animation.NONE;
                     }
-                    if((stopLeft && leftPressed) || !collisionLeft){
+                    c = Collections.binarySearch(collision,new Collideable(col-c2,row,0,0,0));
+                    if((stopLeft && leftPressed) || !(c<0 || (collision.get(c).getNumber(0)<1 || collision.get(c).getNumber(0)>4 || collision.get(c).getNumber(0)==4))){
                         leftPressed = false;
                         stopLeft = false;
                         if(pressBuffer == Animation.LEFT)
