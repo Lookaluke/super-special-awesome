@@ -50,7 +50,6 @@ public class Window extends JComponent{
     
     private boolean upPressed,downPressed,leftPressed,rightPressed;
     private boolean stopUp,stopDown,stopRight,stopLeft;
-    private boolean rightJump = false,leftJump = false, downJump = false;
     private int pressBuffer;
     private int jump;
     
@@ -147,6 +146,7 @@ public class Window extends JComponent{
         
         
         try {
+            System.out.println("XCoord: "+xCoord+" YCoord: "+yCoord);
             background[1+levelX-xCoord][1+yCoord-levelY] = ImageIO.read(new File(temp+".png"));
             load(xCoord,yCoord);
         } catch (IOException ex) {
@@ -294,25 +294,54 @@ public class Window extends JComponent{
             int c;
             
             c = Collections.binarySearch(collision,new Collideable(col,row,0,0,0));
-            if(jump>0)
-            {
-                if(jump == 1){
-                    upPressed = false;
-                    downPressed = false;
-                    rightPressed = false;
-                    leftPressed = false;
+            if(timerCounter == 0 && c>=0){
+                int number = collision.get(c).getNumber(0);
+                if(number>=-4 && number<=-1){
+                    player.direction(-(number+1));
+                    for(int i=-1;i<=1;i++)
+                        for(int j=-1;j<=1;j++)
+                            unload(levelX+i,levelY+j);
+                    int oldX = levelX;
+                    int oldY = levelY;
+                    levelX = collision.get(c).getNumber(1);
+                    levelY = collision.get(c).getNumber(2);
+                    x = -levelX*WIDTH;
+                    y = levelY*HEIGHT;
+                    
+                    for(int i=-1;i<=1;i++)
+                        for(int j=-1;j<=1;j++)
+                            loadLevel(levelX+i,levelY+j);
+                    
+                    for(Collideable door:collision){
+                        if(door.getNumber(1)==oldX && door.getNumber(2)==oldY){
+                            x = -(-door.getX()*TILE_WIDTH);// + WIDTH/2 - player.getWidth()/2);
+                            y = (door.getY()*TILE_HEIGHT);// + HEIGHT/2 - player.getHeight()/2);
+
+                            if(player.getDirection()==Animation.UP)
+                                y+=HEIGHT/ROWS; 
+
+                            if(player.getDirection()==Animation.DOWN)
+                                y-=HEIGHT/ROWS;
+
+                            if(player.getDirection()==Animation.RIGHT)
+                                x-=WIDTH/COLUMNS;   
+
+                            if(player.getDirection()==Animation.LEFT)
+                                x+=WIDTH/COLUMNS;   
+                            System.out.println(door.getX());
+                        }
+                    }
+                    
+                    System.out.println(y);
+                    
                 }
-                if(jump == 2){
-                    if(upPressed)
-                }
-                
             }
             
             /*
              * This part determines in which directions the character can move 
              */
             boolean collisionRight = false,collisionLeft = false,collisionUp = false,collisionDown = false;
-            
+            boolean rightJump = false,leftJump = false, downJump = false;
             
             c = Collections.binarySearch(collision,new Collideable(col,row-1,0,0,0));
             if(c<0 || (collision.get(c).getNumber(0)<1 || collision.get(c).getNumber(0)>4))
@@ -321,21 +350,21 @@ public class Window extends JComponent{
             if(c<0 || (collision.get(c).getNumber(0)<1 || collision.get(c).getNumber(0)>4 || collision.get(c).getNumber(0)==2))
             {
                 collisionDown = true;
-                if(collision.get(c).getNumber(0)==2)
+                if(c>0 && collision.get(c).getNumber(0)==2)
                     downJump = true;
             }
             c = Collections.binarySearch(collision,new Collideable(col+1,row,0,0,0));
             if(c<0 || (collision.get(c).getNumber(0)<1 || collision.get(c).getNumber(0)>4 || collision.get(c).getNumber(0)==3))
             {
                 collisionRight = true;
-                if(collision.get(c).getNumber(0)==3)
+                if(c>0 && collision.get(c).getNumber(0)==3)
                     rightJump = true;
             }
             c = Collections.binarySearch(collision,new Collideable(col-1,row,0,0,0));
             if(c<0 || (collision.get(c).getNumber(0)<1 || collision.get(c).getNumber(0)>4 || collision.get(c).getNumber(0)==4))
             {
                 collisionLeft = true;
-                if(collision.get(c).getNumber(0)==4)
+                if(c>0 && collision.get(c).getNumber(0)==4)
                     leftJump = true;
             }
             
@@ -374,10 +403,25 @@ public class Window extends JComponent{
             }
             
             
-            if((rightPressed && rightJump) || (collisionLeft && leftJump) || (collisionDown && downJump)){
-                jump = 2;
-                player.jump();
+            if((rightPressed && rightJump) || (leftPressed && leftJump) || (downPressed && downJump)){
+                jump = 3;
+                player.jump(numberOfCounts);
             }
+            
+            if(jump>0)
+            {
+                if(jump == 1){
+                    upPressed = false;
+                    downPressed = false;
+                    rightPressed = false;
+                    leftPressed = false;
+                    pressBuffer = Animation.NONE;
+                }
+                if(jump == 2){
+                    pressBuffer = player.getDirection();
+                }                
+            }
+            
 
             /*
              * Moves the screen in the right direction, remember the character
@@ -413,33 +457,35 @@ public class Window extends JComponent{
              */ 
             if(timerCounter==numberOfCounts){
                 timerCounter=0;
-                if((stopUp && upPressed) || !collisionUp){
-                    upPressed = false;
-                    stopUp = false;
-                    if(pressBuffer == Animation.UP)
-                        pressBuffer = Animation.NONE;
-                }                
-                c = Collections.binarySearch(collision,new Collideable(col,row+2,0,0,0));                
-                if((stopDown && downPressed) || !(c<0 || (collision.get(c).getNumber(0)<1 || collision.get(c).getNumber(0)>4 || collision.get(c).getNumber(0)==2))){
-                    downPressed = false;
-                    stopDown = false;
-                    if(pressBuffer == Animation.DOWN)
-                        pressBuffer = Animation.NONE;
-                    
+                if(jump == 0){
+                    if((stopUp && upPressed) || !collisionUp){
+                        upPressed = false;
+                        stopUp = false;
+                        if(pressBuffer == Animation.UP)
+                            pressBuffer = Animation.NONE;
+                    }                
+                    c = Collections.binarySearch(collision,new Collideable(col,row+2,0,0,0));                
+                    if((stopDown && downPressed) || !(c<0 || (collision.get(c).getNumber(0)<1 || collision.get(c).getNumber(0)>4 || collision.get(c).getNumber(0)==2))){
+                        downPressed = false;
+                        stopDown = false;
+                        if(pressBuffer == Animation.DOWN)
+                            pressBuffer = Animation.NONE;
+
+                    }
+                    c = Collections.binarySearch(collision,new Collideable(col+2,row,0,0,0));
+                    if((stopRight && rightPressed) || !(c<0 || (collision.get(c).getNumber(0)<1 || collision.get(c).getNumber(0)>4 || collision.get(c).getNumber(0)==3))){
+                        rightPressed = false;
+                        stopRight = false;
+                        if(pressBuffer == Animation.RIGHT)
+                            pressBuffer = Animation.NONE;
+                    }
+                    if((stopLeft && leftPressed) || !collisionLeft){
+                        leftPressed = false;
+                        stopLeft = false;
+                        if(pressBuffer == Animation.LEFT)
+                            pressBuffer = Animation.NONE;
+                    }     
                 }
-                c = Collections.binarySearch(collision,new Collideable(col+2,row,0,0,0));
-                if((stopRight && rightPressed) || !(c<0 || (collision.get(c).getNumber(0)<1 || collision.get(c).getNumber(0)>4 || collision.get(c).getNumber(0)==3))){
-                    rightPressed = false;
-                    stopRight = false;
-                    if(pressBuffer == Animation.RIGHT)
-                        pressBuffer = Animation.NONE;
-                }
-                if((stopLeft && leftPressed) || !collisionLeft){
-                    leftPressed = false;
-                    stopLeft = false;
-                    if(pressBuffer == Animation.LEFT)
-                        pressBuffer = Animation.NONE;
-                }      
             }
             
             /*
