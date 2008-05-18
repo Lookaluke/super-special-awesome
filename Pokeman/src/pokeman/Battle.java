@@ -12,7 +12,7 @@ package pokeman;
  */
 
 public class Battle {
-    private Pokemon yours;
+    /*private Pokemon yours;
     private Pokemon[] theirs;
     
     
@@ -23,5 +23,5 @@ public class Battle {
     
     public Battle(Character you, Trainer enemy){
         theirs = enemy.getPokemonArray();
-    }
+    }*/
 }
