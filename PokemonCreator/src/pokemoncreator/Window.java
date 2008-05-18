@@ -384,8 +384,8 @@ public class Window extends javax.swing.JFrame {
             f = new File("Pokemon\\"+name.getText());
             if(!f.exists()){
                 f.mkdir();
-                ImageIO.write(back, ".png", new File("Pokemon\\"+name.getText()+"\\"+"back.png"));
-                ImageIO.write(front, ".png", new File("Pokemon\\"+name.getText()+"\\"+"front.png"));
+                System.out.println(ImageIO.write(back, "png", new File("Pokemon\\"+name.getText()+"\\"+"back.png")));
+                ImageIO.write(front, "png", new File("Pokemon\\"+name.getText()+"\\"+"front.png"));
                 PrintWriter p = new PrintWriter(new File("Pokemon\\"+name.getText()+"\\Info.txt"));
                 p.println("Speed: "+(String)(speed.getSelectedItem()));
                 
