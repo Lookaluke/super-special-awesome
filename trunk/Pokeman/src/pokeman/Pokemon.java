@@ -10,23 +10,54 @@ package pokeman;
 
 import java.awt.image.*;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 
 public class Pokemon
 {
     private String name;
-    private int totalHP, currentHP, level, experience, attack, defense,
-            special, speed;
-    BufferedImage image;
+    private int totalHP, currentHP, level, experience, levelGrowth, attack, defense,
+            special, speed, attackGrowth, defenseGrowth,specialGrowth, speedGrowth,HPGrowth;
+    BufferedImage front,back;
     Move[] moves = new Move[4];
     Element element1, element2;
+    Status status;
     //Status status;
     
     /**
-     * takes a file
-     * @param f
+     * Takes a file and the pokemon's level. The pokemon
+     * file defines any pokemon.
+     * 
+     * @param f The file for the pokemon
+     * @param l The level of that pokemon
      */
-    public Pokemon(File f){
-        
+    public Pokemon(File f,int l){
+        try {
+            front = ImageIO.read(new File(f.getAbsolutePath() + "front.png"));
+            back = ImageIO.read(new File(f.getAbsolutePath() + "back.png"));
+            name = f.getName();
+            
+            status = Status.NORMAL;
+
+            experience = 0;
+            Scanner input = new Scanner(new File(f.getAbsolutePath() + "info.txt"));
+            totalHP = 100;
+            currentHP = 100;
+        } catch (IOException ex) {
+            System.out.println("File doesn't exist");
+        }
+    }
+    
+    private String getInfo(String s,String after){
+        int index = s.indexOf(after)+after.length()+1;
+        int index2 = s.indexOf(",",index);
+        if(index2==-1)
+            return s.substring(index).trim();
+        return s.substring(index,index2).trim();
     }
     
     /**
@@ -35,35 +66,49 @@ public class Pokemon
      * @param t total HP
      * @param h current HP
      * @param l level
+     * @param l levelGrowth
      * @param e exp
      * @param a attack power
      * @param d defense
      * @param s special
      * @param sp peed
-     * @param i image
+     * @param ag attack power growth
+     * @param dg defense growth
+     * @param sg special growth
+     * @param spg peed growth
+     * @param hg health growth
+     * @param f front image
+     * @param b back image
      * @param m moves
      * @param e1 element one
      * @param e2 element two
      * @param stat status
      */
-    public Pokemon(String n,int t, int h, int l, int e, int a, int d, int s,
-            int sp, BufferedImage i, Move[] m, Element e1,
+    public Pokemon(String n,int t, int h, int l, int lg, int e, int a, int d, int s,
+            int sp, int ag, int dg, int sg,int spg, int hg, BufferedImage f, BufferedImage b, Move[] m, Element e1,
             Element e2, Status stat)
     {
         name = n;
         totalHP = t;
         currentHP = h;
         level = l;
+        levelGrowth = lg;
+        attackGrowth = ag;
+        defenseGrowth =dg; 
+        specialGrowth = sg;
+        speedGrowth = spg;
+        HPGrowth = hg;
         experience = e;
         attack = a;
         defense = d;
         special = s;
         speed = sp;
-        image = i;
+        front = f;
+        back = b;
         moves = m;
         element1 = e1;
         element2 = e2;
-        //status = stat;
+        status = stat;
     }
     
     /**
@@ -130,12 +175,21 @@ public class Pokemon
     }
     
     /**
-     * Returns the image
+     * Returns the front image
      */
     
-    public BufferedImage getImage()
+    public BufferedImage getFront()
     {
-        return image;
+        return front;
+    }
+    
+     /**
+     * Returns the back image
+     */
+    
+    public BufferedImage getBack()
+    {
+        return back;
     }
     
     /**
