@@ -14,8 +14,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.JOptionPane;
-import javax.swing.table.TableColumnModel;
-import javax.swing.table.TableModel;
 
 /**
  *
@@ -258,6 +256,11 @@ public class Window extends javax.swing.JFrame {
         jLabel6.setText("Speed");
 
         speed.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Fast", "Medium", "Slow", "Fading" }));
+        speed.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                speedActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -386,13 +389,12 @@ public class Window extends javax.swing.JFrame {
             f = new File("Pokemon\\"+name.getText());
             if(!f.exists()){
                 f.mkdir();
-                System.out.println(ImageIO.write(back, "png", new File("Pokemon\\"+name.getText()+"\\"+"back.png")));
+                ImageIO.write(back, "png", new File("Pokemon\\"+name.getText()+"\\"+"back.png"));
                 ImageIO.write(front, "png", new File("Pokemon\\"+name.getText()+"\\"+"front.png"));
                 PrintWriter p = new PrintWriter(new File("Pokemon\\"+name.getText()+"\\Info.txt"));
                 p.println("Speed: "+(String)(speed.getSelectedItem()));
-                
-                p.println("Base Stats:");
-                p.println("Special:"+statTable.getValueAt(0,1)+" Attack:"+statTable.getValueAt(0,2)+" Defense:"+statTable.getValueAt(0,3)+" Speed:"+statTable.getValueAt(0,4)+" HP:"+statTable.getValueAt(0,5));
+                p.println("Element1: "+element1.getSelectedItem()+", Element2: "+element2.getSelectedItem());
+                p.println("Base Stats: Special:"+statTable.getValueAt(0,1)+", Attack:"+statTable.getValueAt(0,2)+", Defense:"+statTable.getValueAt(0,3)+", Speed:"+statTable.getValueAt(0,4)+", HP:"+statTable.getValueAt(0,5));
                 p.println("Moves:");
                 for(int i=0;i<moveTable.getRowCount();i++){
                     if(moveTable.getValueAt(i,0)!=null)
@@ -406,6 +408,10 @@ public class Window extends javax.swing.JFrame {
             Logger.getLogger(Window.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+                private void speedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_speedActionPerformed
+                    // TODO add your handling code here:
+                }//GEN-LAST:event_speedActionPerformed
+
     
     /**
      * @param args the command line arguments
