@@ -10,5 +10,5 @@ package pokeman;
  * @author Kunal
  */
 public enum Status {
-    POISON, NORMAL, FROZEN, PARALYZED, FAINTED,
+    POISON, NORMAL, FROZEN, PARALYZED, BURN, FAINTED, CONFUSION, SLEEP;
 }
