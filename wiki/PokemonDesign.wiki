@@ -19,7 +19,7 @@ Name it whatever you want, but just remember that it is not followed by the pref
 
 = Giving us the sprites =
 
-All images are preferably in .png format, but .bmp is acceptable and .gif is tolerable, but highly advised against (.jpg, .png, and other compressed or proprietary formats will not be accepted). Create a zip file called `PokemonName`.zip where `PokemonName` is the name of your pokemon. Put the sprites in named `front`, `back`, `icon1`, and `icon2`. Also include a text file called `info.txt` which includes pokemon type(s) (up to two are allowed), suggested move set (based on pokemon red/blue moves), suggested new moves, if any, suggested stats, and a pokedex entry (description, type e.g. `mouse`, height, weight).
+All images are preferably in .png format, but .bmp is acceptable. NO OTHER FORMATS WILL BE ACCEPTED. Mark is currently working on a program that creates the necessary files. It may or may not zip them together...but if it doesn't then put all the files into a zip file and send that to us.
 
 = Questions/Concerns =
 
