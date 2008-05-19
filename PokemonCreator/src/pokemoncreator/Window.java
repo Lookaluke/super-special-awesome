@@ -228,8 +228,7 @@ public class Window extends javax.swing.JFrame {
 
         statTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {"Growth Rate", null, null, null, null, null},
-                {"Level 0 ", null, null, null, null, null}
+                {"Base Stats", null, null, null, null, null}
             },
             new String [] {
                 "", "Special", "Attack", "Defense", "Speed", "HP"
@@ -265,22 +264,20 @@ public class Window extends javax.swing.JFrame {
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, 364, Short.MAX_VALUE))
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, 395, Short.MAX_VALUE)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 395, Short.MAX_VALUE))
+                        .addContainerGap())
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 364, Short.MAX_VALUE)))
-                .addContainerGap())
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
-                .addContainerGap(187, Short.MAX_VALUE)
+                        .addComponent(speed, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(165, 165, 165))))
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addGap(184, 184, 184)
                 .addComponent(jLabel6)
-                .addGap(165, 165, 165))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
-                .addContainerGap(148, Short.MAX_VALUE)
-                .addComponent(speed, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(129, 129, 129))
+                .addContainerGap(199, Short.MAX_VALUE))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -314,6 +311,7 @@ public class Window extends javax.swing.JFrame {
                             .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
                         .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(0, 0, 0)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -393,13 +391,12 @@ public class Window extends javax.swing.JFrame {
                 PrintWriter p = new PrintWriter(new File("Pokemon\\"+name.getText()+"\\Info.txt"));
                 p.println("Speed: "+(String)(speed.getSelectedItem()));
                 
-                p.println("Stat growth:");
+                p.println("Base Stats:");
                 p.println("Special:"+statTable.getValueAt(0,1)+" Attack:"+statTable.getValueAt(0,2)+" Defense:"+statTable.getValueAt(0,3)+" Speed:"+statTable.getValueAt(0,4)+" HP:"+statTable.getValueAt(0,5));
-                p.println("Stat at 0:");
-                p.println("Special:"+statTable.getValueAt(1,1)+" Attack:"+statTable.getValueAt(1,2)+" Defense:"+statTable.getValueAt(1,3)+" Speed:"+statTable.getValueAt(1,4)+" HP:"+statTable.getValueAt(1,5));
                 p.println("Moves:");
                 for(int i=0;i<moveTable.getRowCount();i++){
-                    p.println((String)moveTable.getValueAt(i,0)+": "+moveTable.getValueAt(i,1));
+                    if(moveTable.getValueAt(i,0)!=null)
+                        p.println((String)moveTable.getValueAt(i,0)+": "+moveTable.getValueAt(i,1));
                 }
                 p.close();
             }else{
