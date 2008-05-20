@@ -62,7 +62,7 @@ public class Window extends JComponent{
      * @param frame The frame that this window is in
      */
     public Window(JFrame frame){
-        
+        Pokemon p = new Pokemon("Meh",5);
         frame.add(this);
         this.setPreferredSize(new Dimension(WIDTH,HEIGHT));
         frame.pack();
