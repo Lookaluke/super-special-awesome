@@ -6,6 +6,8 @@
     </Component>
     <Component class="javax.swing.ButtonGroup" name="buttonGroup2">
     </Component>
+    <Component class="javax.swing.ButtonGroup" name="buttonGroup3">
+    </Component>
   </NonVisualComponents>
   <Properties>
     <Property name="defaultCloseOperation" type="int" value="3"/>
@@ -28,29 +30,17 @@
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="1" attributes="0">
+              <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="1" attributes="0">
+                  <Component id="jPanel7" alignment="0" max="32767" attributes="0"/>
                   <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="jPanel7" max="32767" attributes="0"/>
-                  </Group>
-                  <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace max="-2" attributes="0"/>
                       <Component id="jPanel1" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace pref="73" max="32767" attributes="0"/>
+                      <EmptySpace pref="100" max="32767" attributes="0"/>
                       <Component id="jPanel2" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <Group type="102" alignment="1" attributes="0">
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="jPanel4" max="32767" attributes="0"/>
-                  </Group>
-                  <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="jPanel6" max="32767" attributes="0"/>
-                  </Group>
-                  <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="jPanel5" max="32767" attributes="0"/>
-                  </Group>
+                  <Component id="jPanel4" alignment="1" max="32767" attributes="0"/>
+                  <Component id="jPanel6" alignment="0" max="32767" attributes="0"/>
+                  <Component id="jPanel5" alignment="0" max="32767" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
@@ -186,10 +176,10 @@
       <Layout>
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Component id="accuracySlider" alignment="0" pref="394" max="32767" attributes="0"/>
+              <Component id="accuracySlider" alignment="0" pref="421" max="32767" attributes="0"/>
               <Group type="102" alignment="1" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="accuracyLabel" pref="370" max="32767" attributes="0"/>
+                  <Component id="accuracyLabel" pref="397" max="32767" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
           </Group>
@@ -227,12 +217,12 @@
       <Layout>
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Group type="102" attributes="0">
+              <Group type="102" alignment="0" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="powerSlider" pref="370" max="32767" attributes="0"/>
-                      <Component id="powerLabel" alignment="0" pref="370" max="32767" attributes="0"/>
                       <Component id="jPanel3" alignment="1" max="32767" attributes="0"/>
+                      <Component id="powerSlider" pref="397" max="32767" attributes="0"/>
+                      <Component id="powerLabel" alignment="0" pref="397" max="32767" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
@@ -246,8 +236,7 @@
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="powerSlider" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="jPanel3" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace max="32767" attributes="0"/>
+                  <Component id="jPanel3" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -274,23 +263,23 @@
             <DimensionLayout dim="0">
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" attributes="0">
+                      <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Group type="102" attributes="0">
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="lowersDefense" pref="239" max="32767" attributes="0"/>
-                                  <Component id="lowersAttack" alignment="0" min="-2" max="-2" attributes="0"/>
-                              </Group>
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="lowersSpecial" min="-2" max="-2" attributes="0"/>
-                                  <Component id="lowersSpeed" alignment="0" min="-2" max="-2" attributes="0"/>
-                              </Group>
-                          </Group>
+                          <Component id="hP" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="defense" alignment="0" pref="302" max="32767" attributes="0"/>
                           <Group type="102" alignment="0" attributes="0">
-                              <EmptySpace min="-2" pref="74" max="-2" attributes="0"/>
-                              <Component id="lowersHP" min="-2" max="-2" attributes="0"/>
+                              <Component id="attack" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="46" max="-2" attributes="0"/>
+                              <Component id="lowers" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace type="separate" max="-2" attributes="0"/>
+                              <Component id="raises" min="-2" max="-2" attributes="0"/>
                           </Group>
+                      </Group>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="accuracy" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="special" min="-2" max="-2" attributes="0"/>
+                          <Component id="speed" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
@@ -299,60 +288,98 @@
             <DimensionLayout dim="1">
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
-                      <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="lowersAttack" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="lowersSpeed" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Group type="102" alignment="0" attributes="0">
+                              <EmptySpace min="-2" pref="17" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="1" attributes="0">
+                                  <Component id="speed" min="-2" max="-2" attributes="0"/>
+                                  <Component id="attack" alignment="1" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                          </Group>
+                          <Group type="103" alignment="0" groupAlignment="3" attributes="0">
+                              <Component id="lowers" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="raises" alignment="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                      </Group>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="1" attributes="0">
+                          <Component id="defense" min="-2" max="-2" attributes="0"/>
+                          <Component id="special" alignment="1" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="lowersDefense" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="lowersSpecial" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="accuracy" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="hP" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace max="32767" attributes="0"/>
-                      <Component id="lowersHP" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
           </Layout>
           <SubComponents>
-            <Component class="javax.swing.JCheckBox" name="lowersAttack">
+            <Component class="javax.swing.JCheckBox" name="attack">
               <Properties>
                 <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
                   <ComponentRef name="buttonGroup2"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="Lowers Attack"/>
+                <Property name="text" type="java.lang.String" value="Attack"/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JCheckBox" name="lowersDefense">
+            <Component class="javax.swing.JCheckBox" name="defense">
               <Properties>
                 <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
                   <ComponentRef name="buttonGroup2"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="Lowers Defense"/>
+                <Property name="text" type="java.lang.String" value="Defense"/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JCheckBox" name="lowersSpeed">
+            <Component class="javax.swing.JCheckBox" name="speed">
               <Properties>
                 <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
                   <ComponentRef name="buttonGroup2"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="Lowers Speed"/>
+                <Property name="text" type="java.lang.String" value="Speed"/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JCheckBox" name="lowersSpecial">
+            <Component class="javax.swing.JCheckBox" name="special">
               <Properties>
                 <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
                   <ComponentRef name="buttonGroup2"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="Lowers Special"/>
+                <Property name="text" type="java.lang.String" value="Special"/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JCheckBox" name="lowersHP">
+            <Component class="javax.swing.JCheckBox" name="hP">
               <Properties>
                 <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
                   <ComponentRef name="buttonGroup2"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="Lowers HP"/>
+                <Property name="text" type="java.lang.String" value="HP"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JCheckBox" name="accuracy">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Accuracy"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="accuracyActionPerformed"/>
+              </Events>
+            </Component>
+            <Component class="javax.swing.JCheckBox" name="lowers">
+              <Properties>
+                <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
+                  <ComponentRef name="buttonGroup3"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value="Lowers"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JCheckBox" name="raises">
+              <Properties>
+                <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
+                  <ComponentRef name="buttonGroup3"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value="Raises"/>
               </Properties>
             </Component>
           </SubComponents>
@@ -373,7 +400,7 @@
                               <Component id="frozen" alignment="0" min="-2" max="-2" attributes="0"/>
                               <Component id="burn" alignment="0" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <EmptySpace pref="206" max="32767" attributes="0"/>
+                          <EmptySpace pref="233" max="32767" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Component id="poison" alignment="0" min="-2" max="-2" attributes="0"/>
                               <Component id="paralyzed" alignment="0" min="-2" max="-2" attributes="0"/>
@@ -387,8 +414,8 @@
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
-              <Component id="chanceSlider" alignment="1" pref="394" max="32767" attributes="0"/>
-              <Component id="statusChanceLabel" alignment="0" pref="394" max="32767" attributes="0"/>
+              <Component id="chanceSlider" alignment="1" pref="421" max="32767" attributes="0"/>
+              <Component id="statusChanceLabel" alignment="0" pref="421" max="32767" attributes="0"/>
           </Group>
         </DimensionLayout>
         <DimensionLayout dim="1">
@@ -510,7 +537,7 @@
                       <Component id="pp" alignment="0" max="32767" attributes="1"/>
                       <Component id="save" alignment="0" max="32767" attributes="1"/>
                   </Group>
-                  <EmptySpace pref="170" max="32767" attributes="0"/>
+                  <EmptySpace pref="197" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
