@@ -33,6 +33,7 @@ public class Window extends javax.swing.JFrame {
 
         buttonGroup1 = new javax.swing.ButtonGroup();
         buttonGroup2 = new javax.swing.ButtonGroup();
+        buttonGroup3 = new javax.swing.ButtonGroup();
         jPanel2 = new javax.swing.JPanel();
         element = new javax.swing.JComboBox();
         jLabel2 = new javax.swing.JLabel();
@@ -46,11 +47,14 @@ public class Window extends javax.swing.JFrame {
         powerSlider = new javax.swing.JSlider();
         powerLabel = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
-        lowersAttack = new javax.swing.JCheckBox();
-        lowersDefense = new javax.swing.JCheckBox();
-        lowersSpeed = new javax.swing.JCheckBox();
-        lowersSpecial = new javax.swing.JCheckBox();
-        lowersHP = new javax.swing.JCheckBox();
+        attack = new javax.swing.JCheckBox();
+        defense = new javax.swing.JCheckBox();
+        speed = new javax.swing.JCheckBox();
+        special = new javax.swing.JCheckBox();
+        hP = new javax.swing.JCheckBox();
+        accuracy = new javax.swing.JCheckBox();
+        lowers = new javax.swing.JCheckBox();
+        raises = new javax.swing.JCheckBox();
         jPanel6 = new javax.swing.JPanel();
         burn = new javax.swing.JRadioButton();
         poison = new javax.swing.JRadioButton();
@@ -132,10 +136,10 @@ public class Window extends javax.swing.JFrame {
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(accuracySlider, javax.swing.GroupLayout.DEFAULT_SIZE, 394, Short.MAX_VALUE)
+            .addComponent(accuracySlider, javax.swing.GroupLayout.DEFAULT_SIZE, 421, Short.MAX_VALUE)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(accuracyLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 370, Short.MAX_VALUE)
+                .addComponent(accuracyLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 397, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel4Layout.setVerticalGroup(
@@ -158,53 +162,78 @@ public class Window extends javax.swing.JFrame {
         powerLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         powerLabel.setText("Power: 0");
 
-        buttonGroup2.add(lowersAttack);
-        lowersAttack.setText("Lowers Attack");
+        buttonGroup2.add(attack);
+        attack.setText("Attack");
 
-        buttonGroup2.add(lowersDefense);
-        lowersDefense.setText("Lowers Defense");
+        buttonGroup2.add(defense);
+        defense.setText("Defense");
 
-        buttonGroup2.add(lowersSpeed);
-        lowersSpeed.setText("Lowers Speed");
+        buttonGroup2.add(speed);
+        speed.setText("Speed");
 
-        buttonGroup2.add(lowersSpecial);
-        lowersSpecial.setText("Lowers Special");
+        buttonGroup2.add(special);
+        special.setText("Special");
 
-        buttonGroup2.add(lowersHP);
-        lowersHP.setText("Lowers HP");
+        buttonGroup2.add(hP);
+        hP.setText("HP");
+
+        accuracy.setText("Accuracy");
+        accuracy.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                accuracyActionPerformed(evt);
+            }
+        });
+
+        buttonGroup3.add(lowers);
+        lowers.setText("Lowers");
+
+        buttonGroup3.add(raises);
+        raises.setText("Raises");
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(hP)
+                    .addComponent(defense, javax.swing.GroupLayout.DEFAULT_SIZE, 302, Short.MAX_VALUE)
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lowersDefense, javax.swing.GroupLayout.DEFAULT_SIZE, 239, Short.MAX_VALUE)
-                            .addComponent(lowersAttack))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lowersSpecial)
-                            .addComponent(lowersSpeed)))
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGap(74, 74, 74)
-                        .addComponent(lowersHP)))
+                        .addComponent(attack)
+                        .addGap(46, 46, 46)
+                        .addComponent(lowers)
+                        .addGap(18, 18, 18)
+                        .addComponent(raises)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(accuracy)
+                    .addComponent(special)
+                    .addComponent(speed))
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lowersAttack)
-                    .addComponent(lowersSpeed))
+                .addContainerGap()
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGap(17, 17, 17)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(speed)
+                            .addComponent(attack)))
+                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(lowers)
+                        .addComponent(raises)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(defense)
+                    .addComponent(special))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lowersDefense)
-                    .addComponent(lowersSpecial))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(lowersHP))
+                    .addComponent(accuracy)
+                    .addComponent(hP))
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
@@ -214,9 +243,9 @@ public class Window extends javax.swing.JFrame {
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(powerSlider, javax.swing.GroupLayout.DEFAULT_SIZE, 370, Short.MAX_VALUE)
-                    .addComponent(powerLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 370, Short.MAX_VALUE)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(powerSlider, javax.swing.GroupLayout.DEFAULT_SIZE, 397, Short.MAX_VALUE)
+                    .addComponent(powerLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 397, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel5Layout.setVerticalGroup(
@@ -227,8 +256,7 @@ public class Window extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(powerSlider, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         buttonGroup1.add(burn);
@@ -274,7 +302,7 @@ public class Window extends javax.swing.JFrame {
                             .addComponent(sleep)
                             .addComponent(frozen)
                             .addComponent(burn))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 206, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 233, Short.MAX_VALUE)
                         .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(poison)
                             .addComponent(paralyzed)
@@ -283,8 +311,8 @@ public class Window extends javax.swing.JFrame {
                         .addGap(141, 141, 141)
                         .addComponent(normal)))
                 .addContainerGap())
-            .addComponent(chanceSlider, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 394, Short.MAX_VALUE)
-            .addComponent(statusChanceLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 394, Short.MAX_VALUE)
+            .addComponent(chanceSlider, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 421, Short.MAX_VALUE)
+            .addComponent(statusChanceLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 421, Short.MAX_VALUE)
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -339,7 +367,7 @@ public class Window extends javax.swing.JFrame {
                     .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(pp, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(save, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(170, Short.MAX_VALUE))
+                .addContainerGap(197, Short.MAX_VALUE))
         );
         jPanel7Layout.setVerticalGroup(
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -356,24 +384,16 @@ public class Window extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jPanel7, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                        .addContainerGap()
                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 73, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 100, Short.MAX_VALUE)
                         .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel6, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel5, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -428,16 +448,21 @@ public class Window extends javax.swing.JFrame {
                 p.println("Power: "+powerSlider.getValue());
                 p.println("Accuracy: "+accuracySlider.getValue());
                 p.println("PP: "+pp.getSelectedItem());
-                p.print("Lowers: ");
-                if(lowersAttack.isSelected())
+                if(lowers.isSelected())
+                    p.print("LOWERS: ");
+                if(raises.isSelected())
+                    p.println("RAISES: ");
+                if(attack.isSelected())
                     p.println("ATTACK");
-                if(lowersDefense.isSelected())
+                if(defense.isSelected())
                     p.println("DEFENSE");
-                if(lowersSpeed.isSelected())
+                if(speed.isSelected())
                     p.println("SPEED");
-                if(lowersSpecial.isSelected())
+                if(special.isSelected())
                     p.println("SPECIAL");
-                if(lowersHP.isSelected())
+                if(accuracy.isSelected())
+                    p.println("ACCURACY");
+                if(hP.isSelected())
                     p.println("HP");
                 
                 p.print("Status: ");
@@ -468,6 +493,10 @@ public class Window extends javax.swing.JFrame {
     private void ppActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ppActionPerformed
         // TODO add your handling code here:
 }//GEN-LAST:event_ppActionPerformed
+
+    private void accuracyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_accuracyActionPerformed
+        // TODO add your handling code here:
+}//GEN-LAST:event_accuracyActionPerformed
     
     /**
      * @param args the command line arguments
@@ -481,15 +510,20 @@ public class Window extends javax.swing.JFrame {
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JCheckBox accuracy;
     private javax.swing.JLabel accuracyLabel;
     private javax.swing.JSlider accuracySlider;
+    private javax.swing.JCheckBox attack;
     private javax.swing.JRadioButton burn;
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.ButtonGroup buttonGroup2;
+    private javax.swing.ButtonGroup buttonGroup3;
     private javax.swing.JSlider chanceSlider;
     private javax.swing.JRadioButton confusion;
+    private javax.swing.JCheckBox defense;
     private javax.swing.JComboBox element;
     private javax.swing.JRadioButton frozen;
+    private javax.swing.JCheckBox hP;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -500,11 +534,7 @@ public class Window extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
-    private javax.swing.JCheckBox lowersAttack;
-    private javax.swing.JCheckBox lowersDefense;
-    private javax.swing.JCheckBox lowersHP;
-    private javax.swing.JCheckBox lowersSpecial;
-    private javax.swing.JCheckBox lowersSpeed;
+    private javax.swing.JCheckBox lowers;
     private javax.swing.JTextField name;
     private javax.swing.JRadioButton normal;
     private javax.swing.JRadioButton paralyzed;
@@ -512,8 +542,11 @@ public class Window extends javax.swing.JFrame {
     private javax.swing.JLabel powerLabel;
     private javax.swing.JSlider powerSlider;
     private javax.swing.JComboBox pp;
+    private javax.swing.JCheckBox raises;
     private javax.swing.JToggleButton save;
     private javax.swing.JRadioButton sleep;
+    private javax.swing.JCheckBox special;
+    private javax.swing.JCheckBox speed;
     private javax.swing.JLabel statusChanceLabel;
     // End of variables declaration//GEN-END:variables
     
