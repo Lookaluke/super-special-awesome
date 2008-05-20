@@ -6,7 +6,7 @@
 package pokeman;
 
 import javax.swing.JFrame;
-
+ 
 /**
  *
  * @author Mark
@@ -18,8 +18,12 @@ public class Main {
      */
     public static void main(String[] args) {
         JFrame frame = new JFrame();
-        frame.setTitle("Pokemon Horn");
+        frame.setTitle("Pokemon Razzmatazz");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        MusicSystem m = new MusicSystem();
+        m.loadMusic("Music\\bluedabadee.mid");
+        m.play(true);
+        
         frame.setVisible(true);
         new Window(frame);
     }
