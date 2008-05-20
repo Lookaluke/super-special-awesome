@@ -2,5 +2,6 @@ Element: NORMAL
 Power: 35
 Accuracy: 100
 PP: 40
-Lowers: HP
+LOWERS: HP
 Status: NORMAL
+Percent: 0
