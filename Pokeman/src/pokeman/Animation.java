@@ -30,40 +30,41 @@ public class Animation {
         
         File f = new File("Animations\\"+name);
         File[] files = f.listFiles();
-        
-        for(int i=0;i<files.length;i++)
-        {
-            
-            String nameOfFile = files[i].getName();
-            
-            if(nameOfFile.contains(name) && (nameOfFile.contains(".PNG") ||  nameOfFile.contains(".png")))
-            {             
-                String newName = nameOfFile.replace(name,"").replace(".PNG","").replace(".png","");
-                char firstLetter = newName.charAt(0);
-                newName = newName.substring(1,newName.length());
-                
-                try{
-                    int number=-1;
-                    switch(firstLetter)
-                    {
-                        case 'U':
-                            number = UP;                            
-                            break;
-                        case 'D':
-                            number = DOWN;
-                            break;
-                        case 'R':
-                            number = RIGHT;
-                            break;
-                        case 'L':
-                            number = LEFT;
-                            break;                                    
-                    }
-                    numberOfFrames[number]++;
-                    animations[number][Integer.parseInt(newName)-1] = ImageIO.read(files[i]);
-                }catch(Exception e){System.out.println("Cannot load animation image");}
-            }
-        }        
+        if(files!=null){
+            for(int i=0;i<files.length;i++)
+            {
+
+                String nameOfFile = files[i].getName();
+
+                if(nameOfFile.contains(name) && (nameOfFile.contains(".PNG") ||  nameOfFile.contains(".png")))
+                {             
+                    String newName = nameOfFile.replace(name,"").replace(".PNG","").replace(".png","");
+                    char firstLetter = newName.charAt(0);
+                    newName = newName.substring(1,newName.length());
+
+                    try{
+                        int number=-1;
+                        switch(firstLetter)
+                        {
+                            case 'U':
+                                number = UP;                            
+                                break;
+                            case 'D':
+                                number = DOWN;
+                                break;
+                            case 'R':
+                                number = RIGHT;
+                                break;
+                            case 'L':
+                                number = LEFT;
+                                break;                                    
+                        }
+                        numberOfFrames[number]++;
+                        animations[number][Integer.parseInt(newName)-1] = ImageIO.read(files[i]);
+                    }catch(Exception e){System.out.println("Cannot load animation image");}
+                }
+            }        
+        }
     }   
     
     public BufferedImage getFrame(){        

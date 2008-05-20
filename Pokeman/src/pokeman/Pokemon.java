@@ -38,9 +38,12 @@ public class Pokemon
      */
     public Pokemon(String f,int l){
         try {
+            name = f; 
+            
+            f = "Pokemon\\" + f + "\\";
             front = ImageIO.read(new File(f + "front.png"));
             back = ImageIO.read(new File(f + "back.png"));
-            name = f;            
+                       
             status = Status.NORMAL;
             experience = 0;
             level = l;
@@ -82,11 +85,11 @@ public class Pokemon
 
             while(input.hasNextLine()){
                 String move = input.nextLine();
-                availableMoves.add(new Move(move.substring(move.indexOf(":"))));
+                availableMoves.add(new Move(move.substring(0,move.indexOf(":"))));
                 moveLevels.add(Integer.parseInt(getInfo(move,":")));
             }
         } catch (IOException ex) {
-            System.out.println("File doesn't exist");
+            System.out.println("Pokemon file doesn't exist");
         }
     }
     
