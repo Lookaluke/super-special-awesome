@@ -16,7 +16,8 @@ public class Character {
     private Animation walking;
     private int direction;
     private int press,jumping,maxJump;
-
+    private Pokemon[] pkmn = new Pokemon[6];
+    
     public Character(){
         walking = new Animation("Walking");
         press = 0;
@@ -63,6 +64,18 @@ public class Character {
     public void jump(int max){
         maxJump = max;
         jumping=max;
+    }
+    
+    public void addPokemon(Pokemon p){
+        for(int i=0;i<pkmn.length;i++)
+            if(pkmn[i] == null){
+                pkmn[i] = p;
+                break;
+            }
+    }
+    
+    public Pokemon[] currentPokemon(){
+        return pkmn;
     }
     
 }
