@@ -52,7 +52,7 @@ public class Move {
         try {
             
             name = f;
-            f = "Move\\"+f+"\\";
+            f = "Moves\\"+f+"\\";
             anim = new Animation(f);
             f += "Info.txt";
             Scanner input = new Scanner(new File(f));
