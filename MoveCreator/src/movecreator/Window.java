@@ -177,6 +177,7 @@ public class Window extends javax.swing.JFrame {
         buttonGroup2.add(hP);
         hP.setText("HP");
 
+        buttonGroup2.add(accuracy);
         accuracy.setText("Accuracy");
         accuracy.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -480,7 +481,7 @@ public class Window extends javax.swing.JFrame {
                     p.println("POISON");
                 if(normal.isSelected())
                     p.println("NORMAL");
-                
+                p.println("Percent: "+chanceSlider.getValue());
                 p.close();
             }else{
                 JOptionPane.showMessageDialog(this, "Move "+name.getText()+" already exists", "Error", JOptionPane.ERROR_MESSAGE);
