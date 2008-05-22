@@ -59,12 +59,7 @@ public class Move {
 
             String ele = getInfo(input.nextLine(),"Element:");
             
-            Element[] elements = {Element.FIRE, Element.WATER, Element.GROUND, 
-                Element.FLYING, Element.POISON, Element.NORMAL, Element.PSYCHIC, Element.GHOST, 
-                Element.BUG, Element.ROCK, Element.GRASS, Element.FIGHTING, Element.ELECTRIC, 
-                Element.ICE, Element.DRAGON, Element.NOTHING};
-            
-            for(Element e:elements){                
+            for(Element e : Element.values()){                
                 if(e.name().equals(ele))
                     element = e;
             }
@@ -105,7 +100,7 @@ public class Move {
             Logger.getLogger(Move.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-	    
+    
     private String getInfo(String s,String after){
         int index = s.indexOf(after)+after.length()+1;
         int index2 = s.indexOf(",",index);
