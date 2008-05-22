@@ -88,9 +88,8 @@ public class Move {
             if(line.equals("EVASION"))
                 attacksWhat = EVASION;
             line = getInfo(input.nextLine(),":");
-            Status[] s = {Status.POISON, Status.NORMAL, Status.FROZEN, Status.PARALYZED, 
-                Status.BURN, Status.CONFUSION, Status.SLEEP};
-            for(Status stat:s){                
+            
+            for(Status stat: Status.values()){
                 if(stat.name().equals(line))
                     effect = stat;
             }
