@@ -360,6 +360,9 @@
             </Component>
             <Component class="javax.swing.JCheckBox" name="accuracy">
               <Properties>
+                <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
+                  <ComponentRef name="buttonGroup2"/>
+                </Property>
                 <Property name="text" type="java.lang.String" value="Accuracy"/>
               </Properties>
               <Events>
