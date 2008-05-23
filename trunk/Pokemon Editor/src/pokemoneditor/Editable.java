@@ -153,7 +153,8 @@ public class Editable extends JComponent implements MouseListener,MouseMotionLis
                             code = extraImageData[STATIC][x][y];
                         for(int i=0;i<=(images[STATIC][x][y].getWidth()-.001)/width;i++){
                             for(int j=0;j<=(images[STATIC][x][y].getHeight()-.001)/height;j++){
-                                arr[x+i][y+j] = code;
+                                if(x+i<arr.length && y+j<arr[0].length)
+                                    arr[x+i][y+j] = code;
                                 
                             }
                         }
