@@ -466,19 +466,22 @@ public class Window extends JComponent{
                 timerCounter=0;
                 if(jump == 0){
                     // I have absolutely no idea why this works... but it does...
-                    int r1=2;
-                    int r2=2;
-                    int c1=2;
-                    int c2=2;
+                    int r1=1;
+                    int r2=1;
+                    int c1=1;
+                    int c2=1;
                     
-                    if(col<0 || row<0)
-                    {
-                        r1 = 1;
-                        c1 =1;
+                    if(col<0){
+                        c2 = 2;
                     }else{
-                        r2 = 1;
-                        c2 = 1;
+                        c1 = 2;
                     }
+                    if(row<0){
+                        r2 = 2;
+                    }else{
+                        r1 = 2;
+                    }
+                    
                     c = Collections.binarySearch(collision,new Collideable(col,row-r2,0,0,0)); 
                     if((stopUp && upPressed) || !(c<0 || (collision.get(c).getNumber(0)<1 || collision.get(c).getNumber(0)>4))){
                         upPressed = false;
