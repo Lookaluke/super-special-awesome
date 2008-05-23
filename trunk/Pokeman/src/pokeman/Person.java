@@ -8,6 +8,7 @@ public class Person
     private String name,speech;
     private int x,y,direction;
     private Animation walk;
+    private int screenX,screenY;
 
     /**
      * Constructor for objects of class Person
@@ -16,6 +17,9 @@ public class Person
     {
         speech = s;
         name = n;
+        direction = Animation.DOWN;
+        screenX = x/Window.WIDTH;
+        screenY = y/Window.HEIGHT;
         this.x = x;
         this.y = y;
         walk = new Animation(name);
