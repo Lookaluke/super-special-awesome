@@ -126,10 +126,10 @@ public class Window extends JComponent{
         player.draw(g2);
         //g2.setColor(Color.RED);
         
-        for(Collideable c:collision){
+        //for(Collideable c:collision){
             //if(c.getNumber(0)!=0)
                 //g2.draw(new Rectangle(c.getX()*TILE_WIDTH+x, c.getY()*TILE_HEIGHT+y, TILE_WIDTH, TILE_HEIGHT));
-        }
+        //}
         
         //g2.fill(new RoundRectangle2D.Double(0,0,100,100,50,50));
     }
