@@ -19,6 +19,7 @@ public class Character {
     private Pokemon[] pkmn = new Pokemon[6];
     
     public Character(){
+        //super("Mark","",Window.TILE/2,Window.HEIGHT/2,w);
         walking = new Animation("Walking");
         press = 0;
         direction = Animation.DOWN;
