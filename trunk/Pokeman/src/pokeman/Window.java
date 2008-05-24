@@ -82,7 +82,7 @@ public class Window extends JComponent{
         frame.pack();  
         repaint();
         
-        Timer t = new Timer(40, new Action());
+        Timer t = new Timer(160/numberOfCounts, new Action());
         t.start();
         
         timerCounter = 0;
@@ -130,14 +130,11 @@ public class Window extends JComponent{
         }
         player.draw(g2);
         //g2.setColor(Color.RED);
-        
+        /*
         for(Collideable c:collision){
             if(c.getNumber(0)!=0)
                 g2.draw(new Rectangle(c.getX()*TILE_WIDTH+x, c.getY()*TILE_HEIGHT+y, TILE_WIDTH, TILE_HEIGHT));
-        }
-        
-        if(special!=null)
-            g2.fill(new Rectangle(special.getX()*TILE_WIDTH+x, special.getY()*TILE_HEIGHT+y, TILE_WIDTH, TILE_HEIGHT));
+        }*/
         
         //g2.fill(new RoundRectangle2D.Double(0,0,100,100,50,50));
     }
@@ -223,12 +220,12 @@ public class Window extends JComponent{
                     }
                     if(index<3 && !smallString.equals(""))
                         values[index] = Integer.parseInt(smallString.substring(0));
-                    collision.add(new Collideable(x1+xCoord*COLUMNS,y1+yCoord*-ROWS,values[0],values[1],values[2]));
+                    if(values[0]!=0 || values[1]!=0 || values[2]!=0)
+                        addToCollision(new Collideable(x1+xCoord*COLUMNS,y1+yCoord*-ROWS,values[0],values[1],values[2]));
                     str = str.substring(str.indexOf(",")+1);
                 }
             }
-            
-            Collections.sort(collision);
+
             input = new Scanner(new File(name + ".2.txt"));
             str = "";
             while (input.hasNextLine()) {
@@ -294,14 +291,12 @@ public class Window extends JComponent{
 
         if(pos<0)
             pos = -pos - 1;
-        if(pos==1135)
-            System.out.println("NOW");
         
         collision.add(pos,c);
     }
     
     public boolean removeFromCollision(Collideable c){
-        int pos = Collections.binarySearch(collision, c);
+        int pos = collision.indexOf(c);
         if(pos>=0)
         {
             collision.remove(pos);
@@ -311,11 +306,12 @@ public class Window extends JComponent{
             return false;
     }
     
-    public boolean isInCollision(Collideable c){
-        System.out.println(collision.size());
-        special = collision.get(Collections.binarySearch(collision, c));
-        System.out.println(Collections.binarySearch(collision, c));
-        return Collections.binarySearch(collision, c)>=0;
+    public int inCollision(Collideable c){
+        int pos = Collections.binarySearch(collision, c);
+        if(pos>0)
+            return collision.get(pos).getNumber(0);
+        else 
+            return -1;
     }
     
      /**
@@ -530,119 +526,128 @@ public class Window extends JComponent{
             else
                 timerCounter = 0;
 
-            /*
-             * When this move is done is the button still being pressed then go 
-             * ahead and continue moving if not stop
-             */ 
-            if(timerCounter==numberOfCounts){
-                timerCounter=0;
-                if(jump == 0){
-                    // I have absolutely no idea why this works... but it does...
-                    int r1=1;
-                    int r2=1;
-                    int c1=1;
-                    int c2=1;
-                    
-                    if(col<0){
-                        c2 = 2;
-                    }else{
-                        c1 = 2;
-                    }
-                    if(row<0){
-                        r2 = 2;
-                    }else{
-                        r1 = 2;
-                    }
-                    
-                    c = Collections.binarySearch(collision,new Collideable(col,row-r2,0,0,0)); 
-                    if((stopUp && upPressed) || !(c<0 || (collision.get(c).getNumber(0)<1 || collision.get(c).getNumber(0)>4))){
-                        upPressed = false;
-                        stopUp = false;
-                        if(pressBuffer == Animation.UP)
-                            pressBuffer = Animation.NONE;
-                    }                
-                    c = Collections.binarySearch(collision,new Collideable(col,row+r1,0,0,0));                
-                    if((stopDown && downPressed) || !(c<0 || (collision.get(c).getNumber(0)<1 || collision.get(c).getNumber(0)>4 || collision.get(c).getNumber(0)==2))){
-                        downPressed = false;
-                        stopDown = false;
-                        if(pressBuffer == Animation.DOWN)
-                            pressBuffer = Animation.NONE;
 
-                    }
-                    c = Collections.binarySearch(collision,new Collideable(col+c1,row,0,0,0));
-                    if((stopRight && rightPressed) || !(c<0 || (collision.get(c).getNumber(0)<1 || collision.get(c).getNumber(0)>4 || collision.get(c).getNumber(0)==3))){
-                        rightPressed = false;
-                        stopRight = false;
-                        if(pressBuffer == Animation.RIGHT)
-                            pressBuffer = Animation.NONE;
-                    }
-                    c = Collections.binarySearch(collision,new Collideable(col-c2,row,0,0,0));
-                    if((stopLeft && leftPressed) || !(c<0 || (collision.get(c).getNumber(0)<1 || collision.get(c).getNumber(0)>4 || collision.get(c).getNumber(0)==4))){
-                        leftPressed = false;
-                        stopLeft = false;
-                        if(pressBuffer == Animation.LEFT)
-                            pressBuffer = Animation.NONE;
-                    }     
+      
+            continueToHold(col,row);
+            loadNewLevels(-x/WIDTH,y/HEIGHT);            
+        }      
+    }
+    
+    /*
+     * When this move is done is the button still being pressed then go 
+     * ahead and continue moving if not stop
+     */ 
+    private void continueToHold(int col,int row){
+        if(timerCounter==numberOfCounts){
+            int c;
+            timerCounter=0;
+            if(jump == 0){
+                // I have absolutely no idea why this works... but it does...
+                int r1=1;
+                int r2=1;
+                int c1=1;
+                int c2=1;
+
+                if(col<0){
+                    c2 = 2;
+                }else{
+                    c1 = 2;
                 }
+                if(row<0){
+                    r2 = 2;
+                }else{
+                    r1 = 2;
+                }
+
+                c = Collections.binarySearch(collision,new Collideable(col,row-r2,0,0,0)); 
+                if((stopUp && upPressed)){// || !(c<0 || (collision.get(c).getNumber(0)<1 || collision.get(c).getNumber(0)>4))){
+                    upPressed = false;
+                    stopUp = false;
+                    if(pressBuffer == Animation.UP)
+                        pressBuffer = Animation.NONE;
+                }                
+                c = Collections.binarySearch(collision,new Collideable(col,row+r1,0,0,0));                
+                if((stopDown && downPressed)){// || !(c<0 || (collision.get(c).getNumber(0)<1 || collision.get(c).getNumber(0)>4 || collision.get(c).getNumber(0)==2))){
+                    downPressed = false;
+                    stopDown = false;
+                    if(pressBuffer == Animation.DOWN)
+                        pressBuffer = Animation.NONE;
+
+                }
+                c = Collections.binarySearch(collision,new Collideable(col+c1,row,0,0,0));
+                if((stopRight && rightPressed)){// || !(c<0 || (collision.get(c).getNumber(0)<1 || collision.get(c).getNumber(0)>4 || collision.get(c).getNumber(0)==3))){
+                    rightPressed = false;
+                    stopRight = false;
+                    if(pressBuffer == Animation.RIGHT)
+                        pressBuffer = Animation.NONE;
+                }
+                c = Collections.binarySearch(collision,new Collideable(col-c2,row,0,0,0));
+                if((stopLeft && leftPressed)){// || !(c<0 || (collision.get(c).getNumber(0)<1 || collision.get(c).getNumber(0)>4 || collision.get(c).getNumber(0)==4))){
+                    leftPressed = false;
+                    stopLeft = false;
+                    if(pressBuffer == Animation.LEFT)
+                        pressBuffer = Animation.NONE;
+                }     
             }
-            
-            /*
-             * Determines what needs to be loaded or unloaded, moves the backgrounds
-             * acordingly
-             */ 
-            int newX = -x/WIDTH;
-            int newY = y/HEIGHT;
+        }      
+    }
+    
+    /*
+     * Determines what needs to be loaded or unloaded, moves the backgrounds
+     * acordingly
+     */    
+    private void loadNewLevels(int newX,int newY){
             if(newX!=levelX){
-                unload(2*levelX-newX,levelY);
-                unload(2*levelX-newX,levelY+1);
-                unload(2*levelX-newX,levelY-1);
-                
-                if(newX<levelX){
-                    for(int i=0;i<2;i++){
-                        for(int j=0;j<3;j++){
-                            background[i][j] = background[i+1][j];
-                        }
+            unload(2*levelX-newX,levelY);
+            unload(2*levelX-newX,levelY+1);
+            unload(2*levelX-newX,levelY-1);
+
+            if(newX<levelX){
+                for(int i=0;i<2;i++){
+                    for(int j=0;j<3;j++){
+                        background[i][j] = background[i+1][j];
                     }
-                }else{
-                    for(int i=1;i>=0;i--){
-                        for(int j=0;j<3;j++){
-                            background[i+1][j] = background[i][j];
-                        }
-                    } 
                 }
-                int temp = levelX;
-                levelX = newX;
-                loadLevel(2*newX-temp,levelY);
-                loadLevel(2*newX-temp,levelY+1);
-                loadLevel(2*newX-temp,levelY-1);
-                
-            }
-            if(newY!=levelY){
-                unload(levelX,2*levelY-newY);
-                unload(levelX-1,2*levelY-newY);
-                unload(levelX+1,2*levelY-newY);
-                
-                if(newY>levelY){
-                    for(int i=0;i<2;i++){
-                        for(int j=0;j<3;j++){
-                            background[j][i] = background[j][i+1];
-                        }
+            }else{
+                for(int i=1;i>=0;i--){
+                    for(int j=0;j<3;j++){
+                        background[i+1][j] = background[i][j];
                     }
-                }else{
-                    for(int i=1;i>=0;i--){
-                        for(int j=0;j<3;j++){
-                            background[j][i+1] = background[j][i];
-                        }
-                    } 
-                }              
-                int temp = levelY;
-                levelY = newY;
-                loadLevel(levelX,2*newY-temp);
-                loadLevel(levelX+1,2*newY-temp);
-                loadLevel(levelX-1,2*newY-temp);
-                
+                } 
             }
-            
+            int temp = levelX;
+            levelX = newX;
+            loadLevel(2*newX-temp,levelY);
+            loadLevel(2*newX-temp,levelY+1);
+            loadLevel(2*newX-temp,levelY-1);
+
+        }
+        if(newY!=levelY){
+            unload(levelX,2*levelY-newY);
+            unload(levelX-1,2*levelY-newY);
+            unload(levelX+1,2*levelY-newY);
+
+            if(newY>levelY){
+                for(int i=0;i<2;i++){
+                    for(int j=0;j<3;j++){
+                        background[j][i] = background[j][i+1];
+                    }
+                }
+            }else{
+                for(int i=1;i>=0;i--){
+                    for(int j=0;j<3;j++){
+                        background[j][i+1] = background[j][i];
+                    }
+                } 
+            }              
+            int temp = levelY;
+            levelY = newY;
+            loadLevel(levelX,2*newY-temp);
+            loadLevel(levelX+1,2*newY-temp);
+            loadLevel(levelX-1,2*newY-temp);
         }
     }
+            
+    
+    
 }
