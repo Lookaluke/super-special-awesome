@@ -1,5 +1,7 @@
 package pokeman;
-/**
+import java.io.*;
+import javax.sound.midi.*;
+/**<
  * This class controls all music related tasks for: 
  *  ______     _                              
  *  | ___ \   | |                             
@@ -17,68 +19,64 @@ package pokeman;
  * 
  * @author Hurshal Patel
  */
-
-import java.io.*;
-import javax.sound.midi.*;
-
-public class MusicSystem
+public class MusicSystem implements Closeable
 {
     
     private File f = null;
-    Sequence mySeq = null;
-    Sequencer sequence = null;
+    Sequence sequence = null;
+    Sequencer sequencer = null;
             
-       
-    public void loadMusic(String filePath)
-    {
+    /**
+     * Currently, this method takes in the exact midi file location as a string.
+     * We may later modify this to take in a directory with a file in it that
+     * defines loop points.
+     * @param filePath the path of the midi file
+     */
+    public void loadMusic(String filePath){
         if(sequence != null)
             pause();
         f = new File(filePath);
         try
         {
-            mySeq = MidiSystem.getSequence(f);
-            sequence = MidiSystem.getSequencer();
-            sequence.setSequence(mySeq);
-            sequence.open();
+            sequence = MidiSystem.getSequence(f);
+            sequencer = MidiSystem.getSequencer();
+            sequencer.setSequence(sequence);
+            sequencer.open();
         }
-        catch(InvalidMidiDataException imde)
-        {
-            System.out.println("Error type: imde");
-        }
-        
-        catch(IOException io)
-        {
+        catch(InvalidMidiDataException imde) {
+            System.out.println("Error type: invalid data");
+        } catch(IOException io) {
             System.out.println("Error type: io");
-        }
-        
-        catch(MidiUnavailableException mue)
-        {
-            System.out.println("Error type: mue");
+        } catch(MidiUnavailableException mue) {
+            System.out.println("Error type: Midi Unavailable");
         }
     }
     
-    public void play(boolean loop)
-    {
+    /**
+     * 
+     * @param loop a boolean, true if it loops, false if it doesn't
+     */
+    public void play(boolean loop){
         if(loop)
-            sequence.setLoopCount(Sequencer.LOOP_CONTINUOUSLY);   
-        sequence.start();
+            sequencer.setLoopCount(Sequencer.LOOP_CONTINUOUSLY);   
+        sequencer.start();
     }
     
-    public void pause()
-    {
-        sequence.stop();   
+    public void pause(){
+        sequencer.stop();
     }
     
-    //time in milliseconds
-    public void goTo(long pos)
-    {
-        sequence.setTickPosition(pos);   
+    /**
+     * Sets the current time
+     * @param pos time in milliseconds
+     */
+    public void goTo(long pos){
+        sequencer.setTickPosition(pos);
     }
     
-    public void close()
-    {
+    public void close(){
         pause();
-        sequence.close();
+        sequencer.close();
     }
 }
 

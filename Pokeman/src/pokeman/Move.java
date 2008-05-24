@@ -17,7 +17,8 @@ import java.util.logging.Logger;
  */
 public class Move {
     
-    public static final int HP = 0,ATTACK=1,DEFENSE=2,SPECIAL=3,SPEED=4,ACCURACY=5,EVASION=6;
+    public static final int HP = 0,ATTACK=1,DEFENSE=2,SPECIAL=3,SPEED=4,
+            ACCURACY=5,EVASION=6;
     
     private Element element;
     private int power;
@@ -30,7 +31,7 @@ public class Move {
     private int attacksWhat;
     private boolean raises;
     
-    public Move(String n,Element e,int p,int what,boolean r,Animation a,int ac,int tot,int cur,Status ef,int percent){
+    public Move(String n,Element e,int p,int what,boolean r,Animation a,int ac,int tot,Status ef,int percent){
         element = e;
         power = p;
         attacksWhat = what;
@@ -39,7 +40,7 @@ public class Move {
         anim = a;
         accuracy = ac;
         totalPP = tot;
-        currentPP = cur;
+        currentPP = totalPP;
         effect = ef;
         statusPercentage = percent;
     }
@@ -109,7 +110,7 @@ public class Move {
     }
     
     
-    public Element getElement()
+    public Element element()
     {
         return element;
     }
@@ -127,4 +128,26 @@ public class Move {
         
     }
     
+    public Status statusEffect(){
+        return effect;
+    }
+    
+    public int accuracy(){
+        return accuracy;
+    }
+    
+    /**
+     * This method is used to decrement PP. if there's not enough pp, it returns
+     * false.
+     * @return true if there's enough pp, false if there isn't
+     */
+    public boolean useMove(){
+        if(currentPP > 0){
+            currentPP--;
+            return true;
+        } else {
+            return false;
+        }
+        
+    }
 }
