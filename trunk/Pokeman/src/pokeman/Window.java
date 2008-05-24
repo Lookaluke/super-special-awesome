@@ -36,10 +36,11 @@ public class Window extends JComponent{
     
     private ArrayList<BufferedImage> img = new ArrayList<BufferedImage>(20); 
     private ArrayList<String> imgNames = new ArrayList<String>(20); 
+    private ArrayList<Person> people = new ArrayList<Person>();
         
     public static final int COLUMNS = 25,ROWS=18,WIDTH = 800,HEIGHT = 576,TILE_WIDTH = WIDTH/COLUMNS,TILE_HEIGHT = HEIGHT/ROWS,
             BACKGROUND = 0,STATIC = 1,DYNAMIC = 2;
-    private static final int numberOfCounts = 4;
+    public static final int numberOfCounts = 4;
     private static final String levelName = "Levels\\level";
     
     private BufferedImage[][] background = new BufferedImage[3][3];
@@ -56,6 +57,7 @@ public class Window extends JComponent{
     private Character player = new Character();
     
     private int timerCounter;
+    private Collideable special;
         
     /**
      * Makes a new window that draws all the specified stuff on
@@ -123,13 +125,19 @@ public class Window extends JComponent{
                 }
             }
         }
+        for(Person p:people){
+            p.draw(g2, x, y);
+        }
         player.draw(g2);
         //g2.setColor(Color.RED);
         
-        //for(Collideable c:collision){
-            //if(c.getNumber(0)!=0)
-                //g2.draw(new Rectangle(c.getX()*TILE_WIDTH+x, c.getY()*TILE_HEIGHT+y, TILE_WIDTH, TILE_HEIGHT));
-        //}
+        for(Collideable c:collision){
+            if(c.getNumber(0)!=0)
+                g2.draw(new Rectangle(c.getX()*TILE_WIDTH+x, c.getY()*TILE_HEIGHT+y, TILE_WIDTH, TILE_HEIGHT));
+        }
+        
+        if(special!=null)
+            g2.fill(new Rectangle(special.getX()*TILE_WIDTH+x, special.getY()*TILE_HEIGHT+y, TILE_WIDTH, TILE_HEIGHT));
         
         //g2.fill(new RoundRectangle2D.Double(0,0,100,100,50,50));
     }
@@ -221,6 +229,38 @@ public class Window extends JComponent{
             }
             
             Collections.sort(collision);
+            input = new Scanner(new File(name + ".2.txt"));
+            str = "";
+            while (input.hasNextLine()) {
+                str += input.nextLine();
+            }
+            
+            for (int y1 = 0; y1 < ROWS; y1++) {
+                for (int x1 = 0; x1 < COLUMNS; x1++) {
+                    String smallString = str.substring(0,str.indexOf(","));
+
+                    String personName="";
+                    if(smallString.indexOf(":")!=-1){
+                        personName = smallString.substring(0,smallString.indexOf(":"));
+                        smallString = smallString.substring(smallString.indexOf(":")+1);
+                        int value = 0;
+                        value = Integer.parseInt(smallString.substring(0));
+                    }else
+                        personName = smallString;
+                    personName = personName.replaceAll(".png", "").replaceAll(".PNG","");
+                    if(personName.length()>1){
+                        System.out.println(x1*TILE_WIDTH+xCoord*WIDTH);
+                        people.add(new Person(personName,"Hello",x1*TILE_WIDTH+xCoord*WIDTH,y1*TILE_HEIGHT+yCoord*-HEIGHT,this));
+                    }
+                        
+                    
+                    str = str.substring(str.indexOf(",")+1);
+                    
+                }
+               
+            }
+            
+            Collections.sort(people);
             
         } catch (FileNotFoundException ex) {
             System.out.println("File" + name + "not found");
@@ -241,9 +281,41 @@ public class Window extends JComponent{
                 int c = Collections.binarySearch(collision,new Collideable(x1+xCoord*COLUMNS,y1+yCoord*-ROWS,0,0,0));
                 if(c>=0)
                     collision.remove(collision.get(c));
+                int p = Collections.binarySearch(people,new Person("","",x1+xCoord*COLUMNS,y1+yCoord*-ROWS,null));
+                if(p>=0)
+                    people.remove(people.get(p));
             }
         }
       
+    }
+    
+    public void addToCollision(Collideable c){
+        int pos = Collections.binarySearch(collision, c);
+
+        if(pos<0)
+            pos = -pos - 1;
+        if(pos==1135)
+            System.out.println("NOW");
+        
+        collision.add(pos,c);
+    }
+    
+    public boolean removeFromCollision(Collideable c){
+        int pos = Collections.binarySearch(collision, c);
+        if(pos>=0)
+        {
+            collision.remove(pos);
+            return true;
+        }
+        else
+            return false;
+    }
+    
+    public boolean isInCollision(Collideable c){
+        System.out.println(collision.size());
+        special = collision.get(Collections.binarySearch(collision, c));
+        System.out.println(Collections.binarySearch(collision, c));
+        return Collections.binarySearch(collision, c)>=0;
     }
     
      /**
@@ -293,7 +365,7 @@ public class Window extends JComponent{
             int col = (WIDTH/2-player.getWidth()/2-x)/TILE_WIDTH;
             int row = (HEIGHT/2-player.getHeight()/2-y)/TILE_HEIGHT+1;
 
-            System.out.println("Col: "+col+" Row: "+row);
+            //System.out.println("Col: "+col+" Row: "+row);
             
             int c;
             
@@ -319,7 +391,7 @@ public class Window extends JComponent{
                     for(int i=-1;i<=1;i++)
                         for(int j=-1;j<=1;j++)
                             loadLevel(levelX+i,levelY+j);
-                    System.out.println("OldX: "+oldX+" OldY: "+oldY);
+                    //System.out.println("OldX: "+oldX+" OldY: "+oldY);
                     for(Collideable door:collision){
                         if(door.getNumber(0)>=-4 && door.getNumber(0)<=-1 && Math.abs(door.getNumber(1)-oldX)<=1 && Math.abs(door.getNumber(2)-oldY)<=1){
                             x = (-door.getX()*TILE_WIDTH + WIDTH/2 - player.getWidth()/2);
@@ -339,7 +411,7 @@ public class Window extends JComponent{
                         }
                     }
                     
-                    System.out.println(x);
+                    //System.out.println(x);
                     
                 }
             }
