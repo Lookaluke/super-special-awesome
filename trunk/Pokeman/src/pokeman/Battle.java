@@ -27,10 +27,10 @@ public class Battle {
         theirCurrent = enemy;
     }
     
-    public Battle(Character you, Trainer enemy){
-        theirs = enemy.getPokemonArray();
-        theirCurrent = theirs[0];
-    }
+    //public Battle(Character you, Trainer enemy){
+    //    theirs = enemy.getPokemonArray();
+    //    theirCurrent = theirs[0];
+    //}
     
     public void turn(Move yourMove){
         //first, you check the speeds to see who goes first
@@ -90,7 +90,7 @@ public class Battle {
             defender = yours;
         }
         
-        int accuracything = (int) (attacker.getAccuracy() * m.accuracy() * 0.0256);
+        int accuracything = 0;//(int) (attacker.getAccuracy() * m.accuracy() * 0.0256);
             
         if ((int)(Math.random() * 256) < accuracything)
         {
