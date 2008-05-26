@@ -58,6 +58,8 @@ public class Window extends JComponent{
     
     private int timerCounter;
     private Collideable special;
+    
+    private int control;
         
     /**
      * Makes a new window that draws all the specified stuff on
@@ -88,6 +90,8 @@ public class Window extends JComponent{
         timerCounter = 0;
         pressBuffer = Animation.NONE;
         
+        control = 0;
+        
     }
     
     /**
@@ -96,47 +100,50 @@ public class Window extends JComponent{
      */
     public void paintComponent(Graphics g){
         Graphics2D g2 = (Graphics2D)g;
-        g2.setColor(Color.BLACK);
-        g2.fill(new Rectangle(0,0,WIDTH,HEIGHT));
-        
-        //System.out.println("X "+levelX+" Y: "+levelY);
-        
-        for(int i=0;i<3;i++){
-            for(int j=0;j<3;j++){
-                if(background[i][j]!=null){
-                    int xPos = (levelX-(i-1))*WIDTH+x;
-                    int yPos = (-levelY-(j-1))*HEIGHT+y;
-                    BufferedImage hold = background[i][j];
-                    if(!(Math.abs(xPos)>=hold.getWidth() || Math.abs(yPos)>=hold.getHeight())){
-                        if(xPos<0){
-                            hold = hold.getSubimage(-xPos,0,hold.getWidth()+xPos,hold.getHeight());
-                            xPos = 0;
+        if(control==0){
+            g2.setColor(Color.BLACK);
+            g2.fill(new Rectangle(0,0,WIDTH,HEIGHT));
+
+            //System.out.println("X "+levelX+" Y: "+levelY);
+
+            for(int i=0;i<3;i++){
+                for(int j=0;j<3;j++){
+                    if(background[i][j]!=null){
+                        int xPos = (levelX-(i-1))*WIDTH+x;
+                        int yPos = (-levelY-(j-1))*HEIGHT+y;
+                        BufferedImage hold = background[i][j];
+                        if(!(Math.abs(xPos)>=hold.getWidth() || Math.abs(yPos)>=hold.getHeight())){
+                            if(xPos<0){
+                                hold = hold.getSubimage(-xPos,0,hold.getWidth()+xPos,hold.getHeight());
+                                xPos = 0;
+                            }
+                            if(yPos<0){
+                                hold = hold.getSubimage(0,-yPos,hold.getWidth(),hold.getHeight()+yPos);
+                                yPos = 0;
+                            }
+                            if(xPos>0)
+                                hold = hold.getSubimage(0,0,hold.getWidth()-xPos,hold.getHeight());
+                            if(yPos>0)
+                                hold = hold.getSubimage(0,0,hold.getWidth(),hold.getHeight()-yPos);
+                            g2.drawImage(hold,null,xPos,yPos);
                         }
-                        if(yPos<0){
-                            hold = hold.getSubimage(0,-yPos,hold.getWidth(),hold.getHeight()+yPos);
-                            yPos = 0;
-                        }
-                        if(xPos>0)
-                            hold = hold.getSubimage(0,0,hold.getWidth()-xPos,hold.getHeight());
-                        if(yPos>0)
-                            hold = hold.getSubimage(0,0,hold.getWidth(),hold.getHeight()-yPos);
-                        g2.drawImage(hold,null,xPos,yPos);
                     }
                 }
             }
+            for(Person p:people){
+                p.draw(g2, x, y);
+            }
+            player.draw(g2,x,y);
+            g2.setColor(Color.RED);
+
+            /*for(Collideable c:collision){
+                if(c.getNumber(0)!=0)
+                    g2.draw(new Rectangle(c.getX()*TILE_WIDTH+x, c.getY()*TILE_HEIGHT+y, TILE_WIDTH, TILE_HEIGHT));
+            }*/
+
+            Menus.textBox(g2,"Hello welcome to pokemon razmatazz. How are you doing today? I am fine thanks for asking",0,475,800,101);
+            //g2.fill(new RoundRectangle2D.Double(0,0,100,100,50,50));
         }
-        for(Person p:people){
-            p.draw(g2, x, y);
-        }
-        player.draw(g2,x,y);
-        g2.setColor(Color.RED);
-        
-        /*for(Collideable c:collision){
-            if(c.getNumber(0)!=0)
-                g2.draw(new Rectangle(c.getX()*TILE_WIDTH+x, c.getY()*TILE_HEIGHT+y, TILE_WIDTH, TILE_HEIGHT));
-        }*/
-        
-        //g2.fill(new RoundRectangle2D.Double(0,0,100,100,50,50));
     }
     
      /**
@@ -160,10 +167,7 @@ public class Window extends JComponent{
         }
     }
     
-    public void setLevel(int x,int y){
-        levelX = x;
-        levelY = y;
-    }
+
     
     /**
      * This allows you to load all of the images in a folder into the program.
@@ -286,9 +290,11 @@ public class Window extends JComponent{
                 int c = Collections.binarySearch(collision,new Collideable(x1+xCoord*COLUMNS,y1+yCoord*-ROWS,0,0,0));
                 if(c>=0)
                     collision.remove(collision.get(c));
-                int p = Collections.binarySearch(people,new Person("","",x1+xCoord*COLUMNS,y1+yCoord*-ROWS,null));
+                int p = Collections.binarySearch(people,new Person("","",x1*TILE_WIDTH+xCoord*WIDTH,y1*TILE_HEIGHT+yCoord*HEIGHT,null));
                 if(p>=0)
                     people.remove(people.get(p));
+
+                    
             }
         }
       
@@ -324,6 +330,11 @@ public class Window extends JComponent{
             return collision.get(pos);
         else 
             return null;
+    }
+    
+    public void setLevel(int x,int y){
+        levelX = x;
+        levelY = y;
     }
     
      /**
@@ -518,8 +529,5 @@ public class Window extends JComponent{
             loadLevel(levelX-1,2*newY-levelY,-1,-levelY+newY);
             levelY = newY;
         }
-    }
-            
-    
-    
+    }   
 }

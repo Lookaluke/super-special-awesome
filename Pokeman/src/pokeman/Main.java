@@ -22,7 +22,7 @@ public class Main {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         MusicSystem m = new MusicSystem();
         m.loadMusic("Music\\bluedabadee.mid");
-        m.play(true);
+        //m.play(true);
 
         frame.setVisible(true);
         new Window(frame);

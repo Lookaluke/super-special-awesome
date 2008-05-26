@@ -17,6 +17,7 @@ public class Character extends Person{
     private int direction;
     private int press,jumping;
     private Pokemon[] pkmn = new Pokemon[6];
+    private int justUsed;
     
     public Character(Window w){
         super("Walking","",(int)(Window.COLUMNS/2)*Window.TILE_WIDTH,(int)(Window.ROWS/2)*Window.TILE_HEIGHT,w);
@@ -63,6 +64,8 @@ public class Character extends Person{
     @Override
     protected void update(){
 
+        
+        
         Collideable[] col = getCollision(direction);
         for(int i=0;i<=1;i++){
             if(col[i]!=null && ((col[i].getNumber(0)==2 && direction == Animation.DOWN) || (col[i].getNumber(0)==3 && direction == Animation.RIGHT) || (col[i].getNumber(0)==4 && direction == Animation.LEFT))){
@@ -71,9 +74,10 @@ public class Character extends Person{
             }
         }   
 
+        boolean isDoor = false;
         
         for(int k=0;k<=1;k++){
-            if(col[k]!=null && col[k].getNumber(0)>=-4 && col[k].getNumber(0)<=-1){
+            if(justUsed==0 && col[k]!=null && col[k].getNumber(0)>=-4 && col[k].getNumber(0)<=-1){
                 
                 direction = -(col[k].getNumber(0)+1);
                 
@@ -102,25 +106,30 @@ public class Character extends Person{
                 
                 for(Collideable door:getWindow().getCollision()){
                     if(door.getNumber(0)>=-4 && door.getNumber(0)<=-1 && Math.abs(door.getNumber(1)-oldX)<=0 && Math.abs(door.getNumber(2)-oldY)<=0){
-                        
-                        System.out.println("IN");
+
                         
                         if(direction == Animation.UP)                      
                             setY((door.getY()-1)*Window.TILE_HEIGHT);
                         else
-                            setY((door.getY()+1)*Window.TILE_HEIGHT);
+                            setY((door.getY())*Window.TILE_HEIGHT);
                         setX(door.getX()*Window.TILE_WIDTH);                
                     }
                 }
                 
                 getWindow().setLevel(levelX,levelY);
-                
+                isDoor = true;
 
             }
         }
 
+        if(isDoor)
+            justUsed = 4;
+        else
+            if(justUsed>0)
+                justUsed--;
 
         makeMove(direction);
+        
         direction = Animation.NONE;
         
         
