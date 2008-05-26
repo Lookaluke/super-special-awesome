@@ -54,7 +54,7 @@ public class Window extends JComponent{
     private int pressBuffer;
     private int jump;
     
-    private Character player = new Character();
+    private Character player = new Character(this);
     
     private int timerCounter;
     private Collideable special;
@@ -75,7 +75,7 @@ public class Window extends JComponent{
         levelY = 0;
         for(int i=-1;i<=1;i++)
             for(int j=-1;j<=1;j++)
-                loadLevel(levelX+i,levelY+j);
+                loadLevel(levelX+i,levelY+j,i,j);
 
         
         repaint();
@@ -99,7 +99,7 @@ public class Window extends JComponent{
         g2.setColor(Color.BLACK);
         g2.fill(new Rectangle(0,0,WIDTH,HEIGHT));
         
-
+        //System.out.println("X "+levelX+" Y: "+levelY);
         
         for(int i=0;i<3;i++){
             for(int j=0;j<3;j++){
@@ -128,10 +128,10 @@ public class Window extends JComponent{
         for(Person p:people){
             p.draw(g2, x, y);
         }
-        player.draw(g2);
-        //g2.setColor(Color.RED);
-        /*
-        for(Collideable c:collision){
+        player.draw(g2,x,y);
+        g2.setColor(Color.RED);
+        
+        /*for(Collideable c:collision){
             if(c.getNumber(0)!=0)
                 g2.draw(new Rectangle(c.getX()*TILE_WIDTH+x, c.getY()*TILE_HEIGHT+y, TILE_WIDTH, TILE_HEIGHT));
         }*/
@@ -145,18 +145,24 @@ public class Window extends JComponent{
      * @param xCoord The x coordinate of the level
      * @param yCoord The y coordinate of the level
      */
-    public void loadLevel(int xCoord,int yCoord)
+    public void loadLevel(int xCoord,int yCoord,int offsetX,int offsetY)
     {
         String temp = levelName+xCoord+","+yCoord;
-        
+        //System.out.println(temp);
         
         try {
             //System.out.println("XCoord: "+xCoord+" YCoord: "+yCoord);
-            background[1+levelX-xCoord][1+yCoord-levelY] = ImageIO.read(new File(temp+".png"));
+            
+            background[-offsetX+1][offsetY+1] = ImageIO.read(new File(temp+".png"));
             load(xCoord,yCoord);
         } catch (IOException ex) {
-            background[1+levelX-xCoord][1+yCoord-levelY] = null;
+            background[-offsetX+1][offsetY+1] = null;
         }
+    }
+    
+    public void setLevel(int x,int y){
+        levelX = x;
+        levelY = y;
     }
     
     /**
@@ -220,8 +226,11 @@ public class Window extends JComponent{
                     }
                     if(index<3 && !smallString.equals(""))
                         values[index] = Integer.parseInt(smallString.substring(0));
+                    
                     if(values[0]!=0 || values[1]!=0 || values[2]!=0)
+                    {
                         addToCollision(new Collideable(x1+xCoord*COLUMNS,y1+yCoord*-ROWS,values[0],values[1],values[2]));
+                    }
                     str = str.substring(str.indexOf(",")+1);
                 }
             }
@@ -246,7 +255,6 @@ public class Window extends JComponent{
                         personName = smallString;
                     personName = personName.replaceAll(".png", "").replaceAll(".PNG","");
                     if(personName.length()>1){
-                        System.out.println(x1*TILE_WIDTH+xCoord*WIDTH);
                         people.add(new Person(personName,"Hello",x1*TILE_WIDTH+xCoord*WIDTH,y1*TILE_HEIGHT+yCoord*-HEIGHT,this));
                     }
                         
@@ -270,7 +278,7 @@ public class Window extends JComponent{
      * @param xCoord x coordinate of the level
      * @param yCoord y coordinate of the level
      */
-    private void unload(int xCoord,int yCoord){
+    public void unload(int xCoord,int yCoord){
 
             
         for (int y1 = 0; y1 < ROWS; y1++) {
@@ -306,12 +314,16 @@ public class Window extends JComponent{
             return false;
     }
     
-    public int inCollision(Collideable c){
+    public ArrayList<Collideable> getCollision(){
+        return collision;
+    }
+    
+    public Collideable inCollision(Collideable c){
         int pos = Collections.binarySearch(collision, c);
         if(pos>0)
-            return collision.get(pos).getNumber(0);
+            return collision.get(pos);
         else 
-            return -1;
+            return null;
     }
     
      /**
@@ -358,103 +370,16 @@ public class Window extends JComponent{
     public class Action implements ActionListener{
         public void actionPerformed(ActionEvent event){  
                         
-            int col = (WIDTH/2-player.getWidth()/2-x)/TILE_WIDTH;
-            int row = (HEIGHT/2-player.getHeight()/2-y)/TILE_HEIGHT+1;
 
-            //System.out.println("Col: "+col+" Row: "+row);
+
             
-            int c;
-            
-            c = Collections.binarySearch(collision,new Collideable(col,row,0,0,0));
-            if(timerCounter == 0 && c>=0){
-                int number = collision.get(c).getNumber(0);
-                if(number>=-4 && number<=-1){
-                    player.direction(-(number+1));
-                    
-                    int oldX = levelX;
-                    int oldY = levelY;
-                    levelX = collision.get(c).getNumber(1);
-                    levelY = collision.get(c).getNumber(2);
-                    
-                    for(int i=-1;i<=1;i++)
-                        for(int j=-1;j<=1;j++)
-                            unload(oldX+i,oldY+j);
-                   
-
-                    x = -levelX*WIDTH;
-                    y = levelY*HEIGHT;
-                    
-                    for(int i=-1;i<=1;i++)
-                        for(int j=-1;j<=1;j++)
-                            loadLevel(levelX+i,levelY+j);
-                    //System.out.println("OldX: "+oldX+" OldY: "+oldY);
-                    for(Collideable door:collision){
-                        if(door.getNumber(0)>=-4 && door.getNumber(0)<=-1 && Math.abs(door.getNumber(1)-oldX)<=1 && Math.abs(door.getNumber(2)-oldY)<=1){
-                            x = (-door.getX()*TILE_WIDTH + WIDTH/2 - player.getWidth()/2);
-                            y = -(door.getY()-1)*TILE_HEIGHT + HEIGHT/2 - player.getHeight()/2;
-
-                            if(player.getDirection()==Animation.UP)
-                                y+=TILE_HEIGHT; 
-
-                            if(player.getDirection()==Animation.DOWN)
-                                y-=TILE_HEIGHT;
-
-                            if(player.getDirection()==Animation.RIGHT)
-                                x-=TILE_WIDTH;   
-
-                            if(player.getDirection()==Animation.LEFT)
-                                x+=TILE_WIDTH;   
-                        }
-                    }
-                    
-                    //System.out.println(x);
-                    
-                }
-            }
-            
-            /*
-             * This part determines in which directions the character can move 
-             */
-            boolean collisionRight = false,collisionLeft = false,collisionUp = false,collisionDown = false;
-            boolean rightJump = false,leftJump = false, downJump = false;
-            
-            c = Collections.binarySearch(collision,new Collideable(col,row-1,0,0,0));
-            if(c<0 || (collision.get(c).getNumber(0)<1 || collision.get(c).getNumber(0)>4))
-                collisionUp = true;
-            c = Collections.binarySearch(collision,new Collideable(col,row+1,0,0,0));
-            if(c<0 || (collision.get(c).getNumber(0)<1 || collision.get(c).getNumber(0)>4 || collision.get(c).getNumber(0)==2))
-            {
-                collisionDown = true;
-                if(c>0 && collision.get(c).getNumber(0)==2)
-                    downJump = true;
-            }
-            c = Collections.binarySearch(collision,new Collideable(col+1,row,0,0,0));
-            if(c<0 || (collision.get(c).getNumber(0)<1 || collision.get(c).getNumber(0)>4 || collision.get(c).getNumber(0)==3))
-            {
-                collisionRight = true;
-                if(c>0 && collision.get(c).getNumber(0)==3)
-                    rightJump = true;
-            }
-            c = Collections.binarySearch(collision,new Collideable(col-1,row,0,0,0));
-            if(c<0 || (collision.get(c).getNumber(0)<1 || collision.get(c).getNumber(0)>4 || collision.get(c).getNumber(0)==4))
-            {
-                collisionLeft = true;
-                if(c>0 && collision.get(c).getNumber(0)==4)
-                    leftJump = true;
-            }
-            
-            /*
-             * Determines which direction if any he is moving in
-             */ 
             if(timerCounter==0 && !(upPressed || downPressed || rightPressed || leftPressed))
             {
-                upPressed = pressBuffer == Animation.UP && collisionUp;
-                downPressed = pressBuffer == Animation.DOWN && collisionDown;
-                rightPressed = pressBuffer == Animation.RIGHT && collisionRight;
-                leftPressed = pressBuffer == Animation.LEFT && collisionLeft;
+                upPressed = pressBuffer == Animation.UP;// && collisionUp;
+                downPressed = pressBuffer == Animation.DOWN;// && collisionDown;
+                rightPressed = pressBuffer == Animation.RIGHT;// && collisionRight;
+                leftPressed = pressBuffer == Animation.LEFT;// && collisionLeft;
             }
-            
-
             
             /*
              * Changes the animation 
@@ -473,131 +398,78 @@ public class Window extends JComponent{
                 if(leftPressed)
                     player.direction(Animation.LEFT); 
                 
-                if(jump>0)
-                    jump--;
+
             }
-            
-            
-            if((rightPressed && rightJump) || (leftPressed && leftJump) || (downPressed && downJump)){
-                jump = 3;
-                player.jump(numberOfCounts);
-            }
-            
-            if(jump>0)
-            {
-                if(jump == 1){
-                    upPressed = false;
-                    downPressed = false;
-                    rightPressed = false;
-                    leftPressed = false;
-                    pressBuffer = Animation.NONE;
-                }
-                if(jump == 2){
-                    pressBuffer = player.getDirection();
-                }                
-            }
-            
-
-            /*
-             * Moves the screen in the right direction, remember the character
-             * doesn't actualy move
-             */ 
-            if(upPressed)
-                y+=HEIGHT/ROWS/numberOfCounts; 
-
-            if(downPressed)
-                y-=HEIGHT/ROWS/numberOfCounts;
-
-            if(rightPressed)
-                x-=WIDTH/COLUMNS/numberOfCounts;   
-
-            if(leftPressed)
-                x+=WIDTH/COLUMNS/numberOfCounts;   
-
-            
-            repaint();
-            
-            /*
-             * If he is moving it increases the timer if not it leaves it at 
-             * 0 to await a new move
-             */ 
             if(upPressed || downPressed || rightPressed || leftPressed)
                 timerCounter++;
             else
                 timerCounter = 0;
-
-
-      
-            continueToHold(col,row);
-            loadNewLevels(-x/WIDTH,y/HEIGHT);            
-        }      
-    }
-    
-    /*
-     * When this move is done is the button still being pressed then go 
-     * ahead and continue moving if not stop
-     */ 
-    private void continueToHold(int col,int row){
-        if(timerCounter==numberOfCounts){
-            int c;
-            timerCounter=0;
-            if(jump == 0){
-                // I have absolutely no idea why this works... but it does...
-                int r1=1;
-                int r2=1;
-                int c1=1;
-                int c2=1;
-
-                if(col<0){
-                    c2 = 2;
-                }else{
-                    c1 = 2;
-                }
-                if(row<0){
-                    r2 = 2;
-                }else{
-                    r1 = 2;
-                }
-
-                c = Collections.binarySearch(collision,new Collideable(col,row-r2,0,0,0)); 
-                if((stopUp && upPressed)){// || !(c<0 || (collision.get(c).getNumber(0)<1 || collision.get(c).getNumber(0)>4))){
+            
+            if(timerCounter==numberOfCounts)
+            {
+                timerCounter = 0;
+                            
+                if((stopUp && upPressed)){
                     upPressed = false;
                     stopUp = false;
                     if(pressBuffer == Animation.UP)
                         pressBuffer = Animation.NONE;
-                }                
-                c = Collections.binarySearch(collision,new Collideable(col,row+r1,0,0,0));                
-                if((stopDown && downPressed)){// || !(c<0 || (collision.get(c).getNumber(0)<1 || collision.get(c).getNumber(0)>4 || collision.get(c).getNumber(0)==2))){
+                }
+                if((stopDown && downPressed)){
                     downPressed = false;
                     stopDown = false;
                     if(pressBuffer == Animation.DOWN)
                         pressBuffer = Animation.NONE;
 
                 }
-                c = Collections.binarySearch(collision,new Collideable(col+c1,row,0,0,0));
-                if((stopRight && rightPressed)){// || !(c<0 || (collision.get(c).getNumber(0)<1 || collision.get(c).getNumber(0)>4 || collision.get(c).getNumber(0)==3))){
+                
+                if((stopRight && rightPressed)){
                     rightPressed = false;
                     stopRight = false;
                     if(pressBuffer == Animation.RIGHT)
                         pressBuffer = Animation.NONE;
                 }
-                c = Collections.binarySearch(collision,new Collideable(col-c2,row,0,0,0));
-                if((stopLeft && leftPressed)){// || !(c<0 || (collision.get(c).getNumber(0)<1 || collision.get(c).getNumber(0)>4 || collision.get(c).getNumber(0)==4))){
+                
+                if((stopLeft && leftPressed)){
                     leftPressed = false;
                     stopLeft = false;
                     if(pressBuffer == Animation.LEFT)
                         pressBuffer = Animation.NONE;
-                }     
+                }    
             }
+
+            
+            x = -(player.getX()-(int)(Window.COLUMNS/2)*Window.TILE_WIDTH);
+            y = -(player.getY()-(int)(Window.ROWS/2)*Window.TILE_HEIGHT);
+            
+            int tempX = player.getX()/WIDTH;
+            int tempY = -player.getY()/HEIGHT;
+            
+            if(player.getX()<0)
+                tempX--;
+            if(player.getY()<0)
+                tempY++;
+            
+            loadNewLevels(tempX,tempY);
+            
+            levelX = tempX;
+            levelY = tempY;
+
+                   
+            
+            repaint();
         }      
     }
     
+
     /*
      * Determines what needs to be loaded or unloaded, moves the backgrounds
      * acordingly
      */    
     private void loadNewLevels(int newX,int newY){
-            if(newX!=levelX){
+        
+        
+        if(Math.abs(newX-levelX)==1){
             unload(2*levelX-newX,levelY);
             unload(2*levelX-newX,levelY+1);
             unload(2*levelX-newX,levelY-1);
@@ -615,14 +487,14 @@ public class Window extends JComponent{
                     }
                 } 
             }
-            int temp = levelX;
+
+            loadLevel(2*newX-levelX,levelY,-levelX+newX,0);
+            loadLevel(2*newX-levelX,levelY+1,-levelX+newX,1);
+            loadLevel(2*newX-levelX,levelY-1,-levelX+newX,-1);
             levelX = newX;
-            loadLevel(2*newX-temp,levelY);
-            loadLevel(2*newX-temp,levelY+1);
-            loadLevel(2*newX-temp,levelY-1);
 
         }
-        if(newY!=levelY){
+        if(Math.abs(newY-levelY)==1){
             unload(levelX,2*levelY-newY);
             unload(levelX-1,2*levelY-newY);
             unload(levelX+1,2*levelY-newY);
@@ -640,11 +512,11 @@ public class Window extends JComponent{
                     }
                 } 
             }              
-            int temp = levelY;
+            
+            loadLevel(levelX,2*newY-levelY,0,-levelY+newY);
+            loadLevel(levelX+1,2*newY-levelY,1,-levelY+newY);
+            loadLevel(levelX-1,2*newY-levelY,-1,-levelY+newY);
             levelY = newY;
-            loadLevel(levelX,2*newY-temp);
-            loadLevel(levelX+1,2*newY-temp);
-            loadLevel(levelX-1,2*newY-temp);
         }
     }
             
