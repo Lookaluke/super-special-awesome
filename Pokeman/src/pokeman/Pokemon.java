@@ -308,5 +308,28 @@ public class Pokemon
         if(currentHP > totalHP)
             currentHP = totalHP;// fill only to max
     }
+    
+    //returns the indices of the available moves
+    public int[] getMovesLeft()
+    {
+        int numMoves = 0;
+        for(Move m : moves)
+        {
+            if(m.getPP() != 0)
+                numMoves++;
+        }
+        int[] movesLeft = new int[numMoves];
+        int index = 0;
+        for(int i = 0; i < moves.length ;i++)
+        {
+            Move m = moves[i];
+            if(m.getPP() != 0)
+            {
+                movesLeft[index] = i;
+                index++;
+            }
+        }
+        return movesLeft;
+    }
 
 }

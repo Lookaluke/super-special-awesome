@@ -150,4 +150,15 @@ public class Move {
         }
         
     }
+    public int getPP()
+    {
+        return currentPP;
+    }
+    
+    public int getTotalPP()
+    {
+        return totalPP;
+    }
+    // if PP for all moves is 0, add a move called Struggle
+    
 }
