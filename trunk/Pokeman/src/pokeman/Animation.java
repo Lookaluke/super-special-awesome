@@ -116,5 +116,10 @@ public class Animation {
     public int getFrameNumber(){
         return currentFrame;
     }
+    
+    public int getDirection(){
+        return currentDirection;
+    }
+    
 }
 
