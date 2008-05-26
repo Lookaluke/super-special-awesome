@@ -11,15 +11,15 @@ Our Pokemon game will be based on red/blue/yellow for pokemon types and battle c
 
 = Size =
 
-Both front and back sprites should be 80x80 pixels in size. An icon would also be helpful, size 32x32 2-frame animation. Save the two frames as two files, instead of one .gif animation.
+Both front and back sprites should be 200x200 pixels in size. An icon would also be helpful, size 32x32 (Size subject to change). 
 
 = Naming Conventions =
 
-Name it whatever you want, but just remember that it is not followed by the prefix -mon. That's DIGIMON not POKEMON.
+Name it whatever you want, but just remember that it is not followed by the suffix -mon. That's DIGIMON not POKEMON.
 
 = Giving us the sprites =
 
-All images are preferably in .png format, but .bmp is acceptable. NO OTHER FORMATS WILL BE ACCEPTED. Mark is currently working on a program that creates the necessary files. It may or may not zip them together...but if it doesn't then put all the files into a zip file and send that to us.
+All images are required to be in the .png format. NO OTHER FORMATS WILL BE ACCEPTED. Mark is currently working on a program that creates the necessary files. It may or may not zip them together...but if it doesn't then put all the files into a zip file and send that to us.
 
 = Questions/Concerns =
 
