@@ -19,29 +19,30 @@ public class Battle {
     private Pokemon theirCurrent;
     
     
-    public Battle(Character you, Pokemon enemy)
-    {
+    public Battle(Character you, Pokemon enemy) {
         yours = you.currentPokemon()[0];
         theirs = new Pokemon[1];
         theirs[0] = enemy;
         theirCurrent = enemy;
     }
     
-    //public Battle(Character you, Trainer enemy){
-    //    theirs = enemy.getPokemonArray();
-    //    theirCurrent = theirs[0];
-    //}
-    
+
+    /*
+    public Battle(Character you, Trainer enemy){
+        theirs = enemy.getPokemonArray();
+        theirCurrent = theirs[0];
+    }
+    */
     public void turn(Move yourMove){
         //first, you check the speeds to see who goes first
         //then you do the calculation on the first one
         //you check if dead. if not, then do the second move
         //check if dead again.
         
-
-
+        
+        
         int[] movesLeft = theirCurrent.getMovesLeft();
-               
+        
         int movenumber = (int)(Math.random() * movesLeft.length);
         int moveChoice = movesLeft[movenumber];
         Move theirMove = theirCurrent.getMoves()[moveChoice]; 
@@ -90,7 +91,11 @@ public class Battle {
             defender = yours;
         }
         
+
+        
+
         int accuracything = 0;//(int) (attacker.getAccuracy() * m.accuracy() * 0.0256);
+
             
         if ((int)(Math.random() * 256) < accuracything)
         {
@@ -112,7 +117,7 @@ public class Battle {
             int randomNumber = (int)(Math.random() * 39) + 217;
             return (int)(((((Math.min(((((2*level/5 + 2)*attack*power)/Math.max(1, defense))/50), 997) + 2)*stab)*typeModifer)/10)*randomNumber)/255;
         } else {
-            return 0;// return -1?
+            return -1;
         }
     }
 }
