@@ -60,17 +60,23 @@ public class Window extends JComponent{
     private Collideable special;
     
     private int control;
+    private TextBox txt;
         
     /**
      * Makes a new window that draws all the specified stuff on
      * @param frame The frame that this window is in
      */
     public Window(JFrame frame){
+        
+        
+        txt = new TextBox(frame,"Hello welcome to pokemon razmatazz. How are you doing today? I am fine thanks for asking. My name is Mark, I'm the only person working on this project",0,475,800,101);
+        
         Pokemon p = new Pokemon("Meh",5);
         frame.add(this);
         this.setPreferredSize(new Dimension(WIDTH,HEIGHT));
         frame.pack();
         frame.addKeyListener(new KeyListen());
+        
         
         loadImgs("Images\\Dynamic");
         levelX = 0; 
@@ -80,9 +86,14 @@ public class Window extends JComponent{
                 loadLevel(levelX+i,levelY+j,i,j);
 
         
+        
+        
         repaint();
+        
         frame.pack();  
         repaint();
+        
+        frame.pack();  
         
         Timer t = new Timer(160/numberOfCounts, new Action());
         t.start();
@@ -92,6 +103,8 @@ public class Window extends JComponent{
         
         control = 0;
         people.add(player);
+        
+        
         
     }
     
@@ -137,12 +150,13 @@ public class Window extends JComponent{
             }
             g2.setColor(Color.RED);
 
-            for(Collideable c:collision){
+            /*for(Collideable c:collision){
                 if(c.getNumber(0)!=0)
                     g2.draw(new Rectangle(c.getX()*TILE_WIDTH+x, c.getY()*TILE_HEIGHT+y, TILE_WIDTH, TILE_HEIGHT));
-            }
+            }*/
 
-            Menus.textBox(g2,"Hello welcome to pokemon razmatazz. How are you doing today? I am fine thanks for asking",0,475,800,101);
+            if(txt!=null)
+                txt.draw(g2);
             //g2.fill(new RoundRectangle2D.Double(0,0,100,100,50,50));
         }
     }
@@ -345,7 +359,7 @@ public class Window extends JComponent{
     public class KeyListen implements KeyListener
     {
         
-        public void keyTyped(KeyEvent keyEvent) {        
+        public void keyTyped(KeyEvent keyEvent) {      
         }
 
         public void keyPressed(KeyEvent keyEvent) {   
