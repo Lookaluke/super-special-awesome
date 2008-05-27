@@ -136,10 +136,10 @@ public class Window extends JComponent{
             player.draw(g2,x,y);
             g2.setColor(Color.RED);
 
-            /*for(Collideable c:collision){
+            for(Collideable c:collision){
                 if(c.getNumber(0)!=0)
                     g2.draw(new Rectangle(c.getX()*TILE_WIDTH+x, c.getY()*TILE_HEIGHT+y, TILE_WIDTH, TILE_HEIGHT));
-            }*/
+            }
 
             Menus.textBox(g2,"Hello welcome to pokemon razmatazz. How are you doing today? I am fine thanks for asking",0,475,800,101);
             //g2.fill(new RoundRectangle2D.Double(0,0,100,100,50,50));
