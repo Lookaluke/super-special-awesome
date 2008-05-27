@@ -44,21 +44,7 @@ public class Character extends Person{
         }
         super.draw(g,currentX,currentY+moreHeight);
     }
-    
-    /*public void draw(Graphics2D g){
-        if(press>4)
-            walking.standingFrame();
-        press++;
-        int moreHeight = 0;
-        if(jumping>=maxJump/2)
-            moreHeight = (jumping-maxJump)*4;
-        if(jumping<maxJump/2)
-            moreHeight = (jumping)*-4;
-        if(jumping>0)
-            jumping--;
-        g.drawImage(walking.getFrame(),null,Window.WIDTH/2-walking.getFrame().getWidth()/2,Window.HEIGHT/2-walking.getFrame().getHeight()/2+moreHeight);
-        //g.draw(new Rectangle(Window.WIDTH/2-walking.getFrame().getWidth()/2,Window.HEIGHT/2-walking.getFrame().getHeight()/2,walking.getFrame().getWidth(),walking.getFrame().getHeight()));
-    }*/
+
     
     
     @Override
