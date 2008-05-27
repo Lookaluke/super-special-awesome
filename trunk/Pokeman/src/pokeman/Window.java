@@ -91,6 +91,7 @@ public class Window extends JComponent{
         pressBuffer = Animation.NONE;
         
         control = 0;
+        people.add(player);
         
     }
     
@@ -130,10 +131,10 @@ public class Window extends JComponent{
                     }
                 }
             }
-            for(Person p:people){
-                p.draw(g2, x, y);
+            Collections.sort(people);
+            for(int i = 0;i<people.size();i++){
+                people.get(i).draw(g2, x, y);
             }
-            player.draw(g2,x,y);
             g2.setColor(Color.RED);
 
             for(Collideable c:collision){
@@ -291,7 +292,7 @@ public class Window extends JComponent{
                 if(c>=0)
                     collision.remove(collision.get(c));
                 int p = Collections.binarySearch(people,new Person("","",x1*TILE_WIDTH+xCoord*WIDTH,y1*TILE_HEIGHT+yCoord*HEIGHT,null));
-                if(p>=0)
+                if(p>=0 && player!=people.get(p))
                     people.remove(people.get(p));
 
                     

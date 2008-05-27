@@ -68,7 +68,7 @@ public class Animation {
     }   
     
     public BufferedImage getFrame(){        
-        if(currentDirection>=0)
+        if(currentDirection>=0 && numberOfFrames[currentDirection]!=0)
         {
             currentFrame %= numberOfFrames[currentDirection];
             return animations[currentDirection][currentFrame];
