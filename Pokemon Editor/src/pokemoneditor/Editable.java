@@ -146,6 +146,13 @@ public class Editable extends JComponent implements MouseListener,MouseMotionLis
             for(int y=0;y<ROWS;y++)
             {
                 for(int x = 0;x<COLUMNS;x++)
+                {    
+                    arr[x][y]="1";
+                }   
+            }
+            for(int y=0;y<ROWS;y++)
+            {
+                for(int x = 0;x<COLUMNS;x++)
                 {                
                     if(images[STATIC][x][y]!=null){
                         String code = "1";
@@ -158,10 +165,17 @@ public class Editable extends JComponent implements MouseListener,MouseMotionLis
                                 
                             }
                         }
-                    }else{
-                        if(arr[x][y]==null || arr[x][y].equals(""))
-                            arr[x][y] = "0";
                     }
+                    if(images[BACKGROUND][x][y]!=null){
+                        for(int i=0;i<=(images[BACKGROUND][x][y].getWidth()-.001)/width;i++){
+                            for(int j=0;j<=(images[BACKGROUND][x][y].getHeight()-.001)/height;j++){
+                                if(x+i<arr.length && y+j<arr[0].length)
+                                    arr[x+i][y+j] = "0";
+                                
+                            }
+                        }
+                    }
+
                 }
             }
             
