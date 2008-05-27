@@ -39,28 +39,22 @@ public class Battle {
         //you check if dead. if not, then do the second move
         //check if dead again.
         
+        //subtracts pp, and if the move has no PP, it breaks out
+        //we may modify the return to give more info to the frontend
+        if(!yourMove.useMove())
+            return;
         
         
-        int[] movesLeft = theirCurrent.getMovesLeft();
-        
-        int movenumber = (int)(Math.random() * movesLeft.length);
-        int moveChoice = movesLeft[movenumber];
-        Move theirMove = theirCurrent.getMoves()[moveChoice]; 
+        int movenumber = (int)(Math.random() * 4);
+        Move theirMove = theirCurrent.getMoves()[movenumber]; 
         
         if (yours.getSpeed() > theirCurrent.getSpeed())
         {
             //perform your move first
-            //reduce pp only if its a human...
             
             //we need to modify takeDamage() to properly handle pokemon fainting
-            if(yourMove.useMove())
-            {
-                theirCurrent.takeDamage(calculateDamage(yourMove, true));
-            }
-            else
-            {
-                //tell player that there is no pp left, use different move                
-            }
+            theirCurrent.takeDamage(calculateDamage(yourMove, true));
+            
            
             //now do their move
             yours.takeDamage(calculateDamage(theirMove, false));
@@ -76,7 +70,7 @@ public class Battle {
      * returns the damage done, -1 if it misses
      * @param m the move to calculate damage with
      * @param isPerson true if its the human controlled one attacking the comp
-     * @return
+     * @return the damage, -1 if it misses.
      */
     private int calculateDamage(Move m, boolean isPerson){
         
@@ -90,8 +84,6 @@ public class Battle {
             attacker = theirCurrent;
             defender = yours;
         }
-        
-
         
 
         int accuracything = 0;//(int) (attacker.getAccuracy() * m.accuracy() * 0.0256);

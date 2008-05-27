@@ -2,10 +2,11 @@ package pokeman;
 
 
 /**
-* This class represents a pokemon , with all the information needed to
-* display, battle, and grow....
-*
-*/
+ * This class represents a pokemon , with all the information needed to
+ * display, battle, and grow....
+ *
+ * Base Stats still need to be implemented......
+ */
 
 import java.awt.image.*;
 import java.io.File;
@@ -16,17 +17,24 @@ import javax.imageio.ImageIO;
 
 public class Pokemon
 {
-   public static  final int FAST = 0, MEDIUM = 1, SLOW = 2, FADING = 3;  
+   public static  final int FAST = 153, MEDIUM = 123, SLOW = 297, FADING = 3000;  
    private String name;
-   private int totalHP, currentHP, level, experience, levelGrowth, attack, defense,
-           special, speed;
+   private int totalHP, currentHP, level, experience, levelGrowth, attack,
+           defense, special, speed;
+   
+   //determine how these will be parsed.
+   private int baseHP, baseAttack, baseDefense, baseSpecial, baseSpeed;
+   
    BufferedImage front,back;
    Move[] moves = new Move[4];
+   
+   //the next two are parallel...this may result in problems and Mr. Horn
+   //told us not to do this.
    ArrayList<Move> availableMoves = new ArrayList<Move>();
    ArrayList<Integer> moveLevels = new ArrayList<Integer>();
+   
    Element element1, element2;
    Status status;
-   //Status status;
    
    /**
     * Takes a file and the pokemon's level. The pokemon
@@ -150,8 +158,7 @@ public class Pokemon
     * Returns the Name
     */
    
-   public String getName()
-   {
+   public String getName(){
        return name;
    }
    
@@ -159,8 +166,7 @@ public class Pokemon
     * Returns the level
     */
    
-   public int getLevel()
-   {
+   public int getLevel(){
        return level;
    }
    
@@ -168,89 +174,70 @@ public class Pokemon
     * Returns the experience
     */
    
-   public int getExperience()
-   {
+   public int getExperience(){
        return experience;
    }
    
    /**
     * Returns the attack
     */
-   
-   public int getAttack()
-   {
+   public int getAttack(){
        return attack;
    }
    
    /**
     * Returns the defense
     */
-   
-   public int getDefense()
-   {
+   public int getDefense(){
        return defense;
    }
    
    /**
     * Returns the special
     */
-   
-   public int getSpecial()
-   {
+   public int getSpecial(){
        return special;
    }
    
    /**
     * Returns the speed
     */
-   
-   public int getSpeed()
-   {
+   public int getSpeed(){
        return speed;
    }
    
    /**
     * Returns the front image
     */
-   
-   public BufferedImage getFront()
-   {
+   public BufferedImage getFront(){
        return front;
    }
    
     /**
-    * Returns the back image
-    */
-   
-   public BufferedImage getBack()
-   {
+     * Returns the back image
+     */
+   public BufferedImage getBack(){
        return back;
    }
    
    /**
     * Returns the moves
     */
-   
-   public Move[] getMoves()
-   {
+   public Move[] getMoves(){
        return moves;
    }
    
    /**
     * Returns the element1
     */
-   
-   public Element getElement1()
-   {
+   public Element getElement1(){
        return element1;
    }
    
    /**
     * Returns the element2
     */
-   
-   public Element getElement2()
-   {
+   public Element getElement2(){
        return element2;
    }
    
@@ -258,25 +245,24 @@ public class Pokemon
    /**
     * this method accumulates experience until you level up
     */
-   public void addExperience(int exp)
-   {
+   public void addExperience(int exp){
        experience+=exp;
-       if(levelUp(experience, level))
-       {
+       if(levelUp(experience, level)){
            level++;
            //figure out how much stat increases
            attack++;
            defense++;
            speed++;
            special++;
+           //(2 * Base * Level/100) + 10 + Level (for HP)
+           //(2 * Base * Level/100) + 5 (for everything else)
        }
    }
    
    /**
     * allows you to level up
     */
-   private boolean levelUp(int exp, int lvl)
-   {
+   private boolean levelUp(int exp, int lvl){
        //code to tell if level up
        return false;
    }
@@ -284,8 +270,7 @@ public class Pokemon
    /**
     * allows damage to be done
     */
-   public void takeDamage(int amt)
-   {
+   public void takeDamage(int amt){
        currentHP -= amt;
        if(currentHP < 1) die();// you ARE DEAD
    }
@@ -293,43 +278,30 @@ public class Pokemon
    /**
     * implementation for dead pkmn
     */
-   private void die()
-   {
+   private void die(){
        //KILL PKMN  
    }
    
    /**
-    * allows healin
+    * Heals the pokemon by the specified amount. If the amount will result
+    * in 
+    * @param amt the amount to heal
     */
-   public void heal(int amt)
-   {
+   public void heal(int amt){
        currentHP += amt;
        if(currentHP > totalHP)
            currentHP = totalHP;// fill only to max
    }
    
-   //returns the indices of the available moves
-   public int[] getMovesLeft()
-   {
-       int numMoves = 0;
-       for(Move m : moves)
-       {
+   /**
+    * When the user selects fight from the menu, if this method returns
+    * false, then it automatically uses struggle.
+    * @return true if there are moves left.
+    */
+   public boolean hasMovesLeft(){
+       for(Move m : moves) 
            if(m.getPP() != 0)
-               numMoves++;
-       }
-       int[] movesLeft = new int[numMoves];
-       int index = 0;
-       for(int i = 0; i < moves.length ;i++)
-       {
-           Move m = moves[i];
-           if(m.getPP() != 0)
-           {
-               movesLeft[index] = i;
-               index++;
-           }
-       }
-       return movesLeft;
+               return true;
+       return false;
    }
-
-
 }
