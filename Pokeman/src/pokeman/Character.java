@@ -66,60 +66,57 @@ public class Character extends Person{
 
         
         
-        Collideable[] col = getCollision(direction);
-        for(int i=0;i<=1;i++){
-            if(col[i]!=null && ((col[i].getNumber(0)==2 && direction == Animation.DOWN) || (col[i].getNumber(0)==3 && direction == Animation.RIGHT) || (col[i].getNumber(0)==4 && direction == Animation.LEFT))){
-                jump();
-                break;
-            }
-        }   
+        Collideable col = getCollision(direction);
+
+        if(col!=null && ((col.getNumber(0)==2 && direction == Animation.DOWN) || (col.getNumber(0)==3 && direction == Animation.RIGHT) || (col.getNumber(0)==4 && direction == Animation.LEFT))){
+            jump();
+        }
+
 
         boolean isDoor = false;
         
-        for(int k=0;k<=1;k++){
-            if(justUsed==0 && col[k]!=null && col[k].getNumber(0)>=-4 && col[k].getNumber(0)<=-1){
-                
-                direction = -(col[k].getNumber(0)+1);
-                
-                int oldX = getX()/Window.WIDTH;
-                int oldY = -getY()/Window.HEIGHT;
-                
-                if(getX()<0)
-                    oldX--;
-                if(getY()<0)
-                    oldY++;
-                
-                for(int i=-1;i<=1;i++)
-                    for(int j=-1;j<=1;j++)
-                        getWindow().unload(oldX+i,oldY+j);
-                int levelX = col[k].getNumber(1);
-                int levelY = col[k].getNumber(2);
 
-                setX(levelX*Window.WIDTH+(int)(Window.COLUMNS/2)*Window.TILE_WIDTH);
-                setY((-levelY)*Window.HEIGHT+(int)(Window.ROWS/2)*Window.TILE_HEIGHT);
+        if(justUsed==0 && col!=null && col.getNumber(0)>=-4 && col.getNumber(0)<=-1){
 
-                
-                
-                for(int i=-1;i<=1;i++)
-                    for(int j=-1;j<=1;j++)
-                        getWindow().loadLevel(levelX+i,levelY+j,i,j);
-                
-                for(Collideable door:getWindow().getCollision()){
-                    if(door.getNumber(0)>=-4 && door.getNumber(0)<=-1 && Math.abs(door.getNumber(1)-oldX)<=0 && Math.abs(door.getNumber(2)-oldY)<=0){
+            direction = -(col.getNumber(0)+1);
 
-                        
-                        if(direction == Animation.UP)                      
-                            setY((door.getY()-1)*Window.TILE_HEIGHT);
-                        else
-                            setY((door.getY())*Window.TILE_HEIGHT);
-                        setX(door.getX()*Window.TILE_WIDTH);                
-                    }
+            int oldX = getX()/Window.WIDTH;
+            int oldY = -getY()/Window.HEIGHT;
+
+            if(getX()<0)
+                oldX--;
+            if(getY()<0)
+                oldY++;
+
+            for(int i=-1;i<=1;i++)
+                for(int j=-1;j<=1;j++)
+                    getWindow().unload(oldX+i,oldY+j);
+            int levelX = col.getNumber(1);
+            int levelY = col.getNumber(2);
+
+            setX(levelX*Window.WIDTH+(int)(Window.COLUMNS/2)*Window.TILE_WIDTH);
+            setY((-levelY)*Window.HEIGHT+(int)(Window.ROWS/2)*Window.TILE_HEIGHT);
+
+
+
+            for(int i=-1;i<=1;i++)
+                for(int j=-1;j<=1;j++)
+                    getWindow().loadLevel(levelX+i,levelY+j,i,j);
+
+            for(Collideable door:getWindow().getCollision()){
+                if(door.getNumber(0)>=-4 && door.getNumber(0)<=-1 && Math.abs(door.getNumber(1)-oldX)<=0 && Math.abs(door.getNumber(2)-oldY)<=0){
+
+
+                                     
+                    setY((door.getY()-1)*Window.TILE_HEIGHT);
+
+                    setX(door.getX()*Window.TILE_WIDTH);                
                 }
-                
-                getWindow().setLevel(levelX,levelY);
-                isDoor = true;
-
             }
+
+            getWindow().setLevel(levelX,levelY);
+            isDoor = true;
+
         }
 
         if(isDoor)
@@ -149,10 +146,10 @@ public class Character extends Person{
     
     @Override
     protected boolean canMove(int dir){
-        Collideable[] col = getCollision(dir);
-        boolean upper = (col[0]==null || ((col[0].getNumber(0)<1 || col[0].getNumber(0)>4) || (col[0].getNumber(0)==2 && dir == Animation.DOWN) || (col[0].getNumber(0)==3 && dir == Animation.RIGHT) || (col[0].getNumber(0)==4 && dir == Animation.LEFT) || dir == Animation.DOWN));
-        boolean lower = (col[1]==null || ((col[1].getNumber(0)<1 || col[1].getNumber(0)>4) || (col[1].getNumber(0)==2 && dir == Animation.DOWN) || (col[1].getNumber(0)==3 && dir == Animation.RIGHT) || (col[1].getNumber(0)==4 && dir == Animation.LEFT) || dir == Animation.UP));
-        return (upper && lower);      
+        Collideable col = getCollision(dir);
+        
+        boolean lower = (col==null || ((col.getNumber(0)<1 || col.getNumber(0)>4) || (col.getNumber(0)==2 && dir == Animation.DOWN) || (col.getNumber(0)==3 && dir == Animation.RIGHT) || (col.getNumber(0)==4 && dir == Animation.LEFT)));
+        return (lower);      
     }
     
     public void jump(){

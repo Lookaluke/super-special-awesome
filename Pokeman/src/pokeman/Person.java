@@ -34,9 +34,9 @@ public class Person implements Comparable<Person>
         this.y = y;
         
         if(w!=null){
-            lastEdition1 = new Collideable(x/Window.TILE_WIDTH,y/Window.TILE_HEIGHT,1,0,0);
+            //lastEdition1 = new Collideable(x/Window.TILE_WIDTH,y/Window.TILE_HEIGHT,1,0,0);
             lastEdition2 = new Collideable(x/Window.TILE_WIDTH,y/Window.TILE_HEIGHT+1,1,0,0);
-            w.addToCollision(lastEdition1);
+            //w.addToCollision(lastEdition1);
             w.addToCollision(lastEdition2);
             walk = new Animation(name);
         }
@@ -133,11 +133,11 @@ public class Person implements Comparable<Person>
 
                 moving = true;
                 
-                Collideable[] col = getCollision(dir);
+                Collideable col = getCollision(dir);
                 
-                newEdition1 = new Collideable(x/Window.TILE_WIDTH+xChange,y/Window.TILE_HEIGHT+yChange,1,0,0);
+                //newEdition1 = new Collideable(x/Window.TILE_WIDTH+xChange,y/Window.TILE_HEIGHT+yChange,1,0,0);
                 newEdition2 = new Collideable(x/Window.TILE_WIDTH+xChange,y/Window.TILE_HEIGHT+1+yChange,1,0,0);
-                w.addToCollision(newEdition1);
+                //w.addToCollision(newEdition1);
                 w.addToCollision(newEdition2);
             }
             counter = 0;
@@ -150,8 +150,8 @@ public class Person implements Comparable<Person>
      * @return true if they can move
      */
     protected boolean canMove(int dir){
-        Collideable[] col = getCollision(dir);
-        return ((col[0]==null || col[0].getNumber(0)!=1 || dir == Animation.DOWN ) && (col[1]==null || col[1].getNumber(0)!=1 || dir == Animation.UP)); 
+        Collideable col = getCollision(dir);
+        return (col==null || col.getNumber(0)!=1); 
     }
     
     public int getX(){
@@ -178,30 +178,30 @@ public class Person implements Comparable<Person>
         return direction;
     }
     
-    protected Collideable[] getCollision(int dir){
+    protected Collideable getCollision(int dir){
         Collideable[] col = new Collideable[2];
         if(dir==Animation.UP){
-            col[0] = w.inCollision(new Collideable(x/Window.TILE_WIDTH,y/Window.TILE_HEIGHT-1,0,0,0));
+            //col[0] = w.inCollision(new Collideable(x/Window.TILE_WIDTH,y/Window.TILE_HEIGHT-1,0,0,0));
             col[1] = w.inCollision(new Collideable(x/Window.TILE_WIDTH,y/Window.TILE_HEIGHT-1+1,0,0,0));
         }
         if(dir==Animation.DOWN){
-            col[0] = w.inCollision(new Collideable(x/Window.TILE_WIDTH,y/Window.TILE_HEIGHT+1,0,0,0));
+            //col[0] = w.inCollision(new Collideable(x/Window.TILE_WIDTH,y/Window.TILE_HEIGHT+1,0,0,0));
             col[1] = w.inCollision(new Collideable(x/Window.TILE_WIDTH,y/Window.TILE_HEIGHT+1+1,0,0,0));
         }
         if(dir==Animation.RIGHT){
-            col[0] = w.inCollision(new Collideable(x/Window.TILE_WIDTH+1,y/Window.TILE_HEIGHT,0,0,0));
+            //col[0] = w.inCollision(new Collideable(x/Window.TILE_WIDTH+1,y/Window.TILE_HEIGHT,0,0,0));
             col[1] = w.inCollision(new Collideable(x/Window.TILE_WIDTH+1,y/Window.TILE_HEIGHT+1,0,0,0));
         }
         if(dir==Animation.LEFT){
-            col[0] = w.inCollision(new Collideable(x/Window.TILE_WIDTH-1,y/Window.TILE_HEIGHT,0,0,0));
+            //col[0] = w.inCollision(new Collideable(x/Window.TILE_WIDTH-1,y/Window.TILE_HEIGHT,0,0,0));
             col[1] = w.inCollision(new Collideable(x/Window.TILE_WIDTH-1,y/Window.TILE_HEIGHT+1,0,0,0));
         }
         if(dir==Animation.NONE){
-            col[0] = w.inCollision(new Collideable(x/Window.TILE_WIDTH,y/Window.TILE_HEIGHT,0,0,0));
+            //col[0] = w.inCollision(new Collideable(x/Window.TILE_WIDTH,y/Window.TILE_HEIGHT,0,0,0));
             col[1] = w.inCollision(new Collideable(x/Window.TILE_WIDTH,y/Window.TILE_HEIGHT+1,0,0,0));
         }
         
-        return col;
+        return col[1];
     }
 
     public int compareTo(Person p) {

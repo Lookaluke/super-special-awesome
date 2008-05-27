@@ -35,7 +35,6 @@ public class Menus {
         g2.setFont(f);
         int textHeight =  (int)f.getStringBounds(s, new FontRenderContext(null,true,true)).getHeight();
         int lines = (int)((height-heightFactor)/(textHeight+spaceFactor));
-        System.out.println(lines);
         
         int i=0;
         Scanner string = new Scanner(s);
