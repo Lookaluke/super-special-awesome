@@ -117,6 +117,7 @@ public class Move {
     
     public int power()
     {
+        //FUCK
         return power;
     }
     
@@ -138,7 +139,8 @@ public class Move {
     
     /**
      * This method is used to decrement PP. if there's not enough pp, it returns
-     * false.
+     * false. This method should not be called if its not a human because comps
+     * aren't affected by pp.
      * @return true if there's enough pp, false if there isn't
      */
     public boolean useMove(){
@@ -159,6 +161,7 @@ public class Move {
     {
         return totalPP;
     }
-    // if PP for all moves is 0, add a move called Struggle
+    // if PP for all moves is 0, add a move called Struggle (handled by pokemon
+    //and the front end, not by move.
     
 }
