@@ -1,5 +1,5 @@
 #summary How to make pokemon sprites
-#labels Phase-Design
+#labels Phase-Design,Featured
 
 = Introduction =
 
