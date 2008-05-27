@@ -31,6 +31,9 @@ public class Move {
     private int attacksWhat;
     private boolean raises;
     
+    //not yet fully implemented, needs more work and stuff
+    private int moveSpeed;
+    
     public Move(String n,Element e,int p,int what,boolean r,Animation a,int ac,int tot,Status ef,int percent){
         element = e;
         power = p;
@@ -152,13 +155,13 @@ public class Move {
         }
         
     }
-    public int getPP()
-    {
+    
+    
+    public int getPP() {
         return currentPP;
     }
     
-    public int getTotalPP()
-    {
+    public int getTotalPP() {
         return totalPP;
     }
     // if PP for all moves is 0, add a move called Struggle (handled by pokemon
