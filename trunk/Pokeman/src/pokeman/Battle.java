@@ -1,13 +1,11 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 
 package pokeman;
 
+import java.awt.Graphics2D;
+
 /**
  * The back-end to the battle system. Each battle is instantiated, with 
- * either 
+ * either a pokemon and 
  * @author Kunal
  */
 
@@ -53,6 +51,7 @@ public class Battle {
     public Battle(Character you, Trainer enemy){
         theirs = enemy.getPokemonArray();
         theirCurrent = theirs[0];
+        here, we set the music to trainer music
     }
     */
     public void turn(Move yourMove){
@@ -134,5 +133,9 @@ public class Battle {
         } else {
             return -1;
         }
+    }
+    
+    public void drawHpBar(Graphics2D g2, int x, int y, int totalHP, int currentHP){
+        
     }
 }
