@@ -2,11 +2,11 @@ package pokeman;
 
 
 /**
- * This class represents a pokemon , with all the information needed to
- * display, battle, and grow....
- *
- * Base Stats still need to be implemented......
- */
+* This class represents a pokemon , with all the information needed to
+* display, battle, and grow....
+*
+* Base Stats still need to be implemented......
+*/
 
 import java.awt.image.*;
 import java.io.File;
@@ -95,6 +95,17 @@ public class Pokemon
                availableMoves.add(new Move(move.substring(0,move.indexOf(":"))));
                moveLevels.add(Integer.parseInt(getInfo(move,":")));
            }
+           int index = 0;
+           for(int i=availableMoves.size()-1;i>=0;i--){
+               if(moveLevels.get(i)<=level){
+                   moves[index] = availableMoves.get(i);
+                   index++;
+                   if(index>moves.length)
+                       break;
+               }
+           }
+           
+
        } catch (IOException ex) {
            System.out.println("Pokemon file doesn't exist");
        }
@@ -211,14 +222,15 @@ public class Pokemon
     */
    public BufferedImage getFront(){
        return front;
-   }
-   
+   } 
+
     /**
-     * Returns the back image
+    * Returns the back image
      */
    public BufferedImage getBack(){
        return back;
    }
+
    
    /**
     * Returns the moves
@@ -300,8 +312,8 @@ public class Pokemon
     */
    public boolean hasMovesLeft(){
        for(Move m : moves) 
-           if(m.getPP() != 0)
+           if(m!=null && m.getPP() != 0)
                return true;
        return false;
-   }
+   }  
 }
