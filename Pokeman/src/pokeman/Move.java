@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 
 package pokeman;
 
@@ -12,7 +8,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
+ * Stores information about the moves. 
  * @author Kunal
  */
 public class Move {
@@ -120,7 +116,7 @@ public class Move {
     
     public int power()
     {
-        //FUCK
+        //FUCK?
         return power;
     }
     
