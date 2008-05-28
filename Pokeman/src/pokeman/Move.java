@@ -1,4 +1,3 @@
-
 package pokeman;
 
 import java.io.File;
@@ -123,7 +122,7 @@ public class Move {
     public String name(){
         return name;
     }
-	
+        
     public void draw(){
         
     }

@@ -18,7 +18,7 @@ public class BattleFrontEnd {
     private TextBox txt;
     private Menu menu,moveMenu;
     private JFrame frame;
-    
+    private int a = 100;
     private int xBorder = 75,yBorder = 30,yStart=475;
     
     public BattleFrontEnd(Battle b,JFrame frame){
@@ -40,6 +40,7 @@ public class BattleFrontEnd {
                 if(menu==null){
                     String[] str = {"Attack","Pokemon","Item","Run"};
                     menu = new Menu(frame,str,0,yStart,600,576-yStart);
+                    
                 }
             }
         }
@@ -68,5 +69,8 @@ public class BattleFrontEnd {
         
         g2.drawImage(battle.getYourPokemon().getBack(),null,xBorder,yStart-yBorder-battle.getYourPokemon().getBack().getHeight());
         g2.drawImage(battle.getTheirPokemon().getFront(),null,Window.WIDTH-xBorder-battle.getYourPokemon().getBack().getWidth(),yBorder);
+        battle.drawHpBar(g2, 300, 400, 100, a);
+        if(a > 1)a--;
+        
     }
 }
