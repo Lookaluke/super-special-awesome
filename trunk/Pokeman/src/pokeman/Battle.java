@@ -17,6 +17,9 @@ public class Battle {
     
     //should this be an int?
     private Pokemon theirCurrent;
+    private String text;
+
+
     
     
     public Battle(Character you, Pokemon enemy) {
@@ -24,8 +27,27 @@ public class Battle {
         theirs = new Pokemon[1];
         theirs[0] = enemy;
         theirCurrent = enemy;
+        text = "A "+enemy.getName()+" has appeared!";
+
     }
     
+    
+    public String getText(){
+        String temp = text;
+        text = null;
+        return temp;
+    }
+    
+    public Pokemon getYourPokemon(){
+        return yours;
+    }
+    
+    public Pokemon getTheirPokemon(){
+        return theirCurrent;
+    }
+    
+
+
 
     /*
     public Battle(Character you, Trainer enemy){
@@ -64,6 +86,7 @@ public class Battle {
             yours.takeDamage(calculateDamage(theirMove, false));
             theirCurrent.takeDamage(calculateDamage(yourMove, true));
         }
+        text = "It's super effective";
     }
     
     /**
