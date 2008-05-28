@@ -18,12 +18,14 @@ public class Character extends Person{
     private int press,jumping;
     private Pokemon[] pkmn = new Pokemon[6];
     private int justUsed;
+    private Person currentlyReading;
     
     public Character(Window w){
         super("Walking","",(int)(Window.COLUMNS/2)*Window.TILE_WIDTH,(int)(Window.ROWS/2)*Window.TILE_HEIGHT,w);
         walking = new Animation("Walking");
         press = 0;
         jumping=0;
+        addPokemon(new Pokemon("Meh",5));
         
     }
     
@@ -120,6 +122,35 @@ public class Character extends Person{
     
     public int getWidth(){
         return walking.getFrame().getWidth();
+    }
+    
+    public String read(){
+        Collideable c = getCollision(getDirection());
+        if(c==null)
+            return null;
+        Object maker = c.getMaker();
+        if(maker instanceof Person){
+            Person p = (Person)maker;
+            if(getDirection() == Animation.UP)
+                p.setDirection(Animation.DOWN);
+            if(getDirection() == Animation.DOWN)
+                p.setDirection(Animation.UP);
+            if(getDirection() == Animation.RIGHT)
+                p.setDirection(Animation.LEFT);
+            if(getDirection() == Animation.LEFT)
+                p.setDirection(Animation.RIGHT);
+            p.allowUpdate(false);
+            this.allowUpdate(false);
+            currentlyReading = p;
+            return p.getSpeech();
+        }
+        return null;
+    } 
+    
+    public void unRead(){
+        if(currentlyReading!=null)
+            currentlyReading.allowUpdate(true);
+        this.allowUpdate(true);
     }
     
     public int getHeight(){
