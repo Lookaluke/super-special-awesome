@@ -14,13 +14,15 @@ public class Collideable implements Comparable<Collideable>{
 
     private int xTile,yTile;
     private int[] collisionNumber = new int[3];
+    private Object maker;
     
-    public Collideable(int x,int y,int collisionNumber1,int collisionNumber2,int collisionNumber3){
+    public Collideable(Object maker,int x,int y,int collisionNumber1,int collisionNumber2,int collisionNumber3){
         collisionNumber[0] = collisionNumber1;
         collisionNumber[1] = collisionNumber2;
         collisionNumber[2] = collisionNumber3;
         xTile = x;
         yTile = y;
+        this.maker = maker;
     }
         
     /**
@@ -61,6 +63,10 @@ public class Collideable implements Comparable<Collideable>{
         return 1;
         
         
+    }
+    
+    public Object getMaker(){
+        return maker;
     }
         
 }

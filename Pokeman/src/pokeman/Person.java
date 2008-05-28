@@ -11,7 +11,7 @@ public class Person implements Comparable<Person>
     private int x,y,direction;
     int xChange,yChange;
     private Animation walk;
-    private boolean moving;
+    private boolean moving,allowedToUpdate;
     private int screenX,screenY;
     private int counter;
     private Window w;
@@ -33,8 +33,10 @@ public class Person implements Comparable<Person>
         this.x = x;
         this.y = y;
         
+        allowedToUpdate = true;
+        
         if(w!=null){
-            lastEdition = new Collideable(x/Window.TILE_WIDTH,y/Window.TILE_HEIGHT+1,1,0,0);
+            lastEdition = new Collideable(this,x/Window.TILE_WIDTH,y/Window.TILE_HEIGHT+1,1,0,0);
             w.addToCollision(lastEdition);
             walk = new Animation(name);
         }
@@ -50,7 +52,8 @@ public class Person implements Comparable<Person>
     public void draw(Graphics2D g,int currentX,int currentY){
         counter++;
 
-        update();
+        if(allowedToUpdate)
+            update();
         if(!moving)
             walk.standingFrame();
         g.drawImage(walk.getFrame(),null,x+currentX,y+currentY);
@@ -129,7 +132,7 @@ public class Person implements Comparable<Person>
                 
                 Collideable col = getCollision(dir);
                 
-                newEdition = new Collideable(x/Window.TILE_WIDTH+xChange,y/Window.TILE_HEIGHT+1+yChange,1,0,0);
+                newEdition = new Collideable(this,x/Window.TILE_WIDTH+xChange,y/Window.TILE_HEIGHT+1+yChange,1,0,0);
                 w.addToCollision(newEdition);
             }
             counter = 0;
@@ -162,6 +165,18 @@ public class Person implements Comparable<Person>
         return y;
     }
     
+    public String getSpeech(){
+        return speech;
+    }
+    
+    public void allowUpdate(boolean allow){
+        allowedToUpdate = allow;
+    }
+    
+    public void setDirection(int direction){
+        this.direction = direction;
+    }
+    
     public Window getWindow(){
         return w;
     }
@@ -173,19 +188,19 @@ public class Person implements Comparable<Person>
     protected Collideable getCollision(int dir){
         Collideable col = null;
         if(dir==Animation.UP){
-            col = w.inCollision(new Collideable(x/Window.TILE_WIDTH,y/Window.TILE_HEIGHT-1+1,0,0,0));
+            col = w.inCollision(new Collideable(this,x/Window.TILE_WIDTH,y/Window.TILE_HEIGHT-1+1,0,0,0));
         }
         if(dir==Animation.DOWN){
-            col = w.inCollision(new Collideable(x/Window.TILE_WIDTH,y/Window.TILE_HEIGHT+1+1,0,0,0));
+            col = w.inCollision(new Collideable(this,x/Window.TILE_WIDTH,y/Window.TILE_HEIGHT+1+1,0,0,0));
         }
         if(dir==Animation.RIGHT){
-            col = w.inCollision(new Collideable(x/Window.TILE_WIDTH+1,y/Window.TILE_HEIGHT+1,0,0,0));
+            col = w.inCollision(new Collideable(this,x/Window.TILE_WIDTH+1,y/Window.TILE_HEIGHT+1,0,0,0));
         }
         if(dir==Animation.LEFT){
-            col = w.inCollision(new Collideable(x/Window.TILE_WIDTH-1,y/Window.TILE_HEIGHT+1,0,0,0));
+            col = w.inCollision(new Collideable(this,x/Window.TILE_WIDTH-1,y/Window.TILE_HEIGHT+1,0,0,0));
         }
         if(dir==Animation.NONE){
-            col = w.inCollision(new Collideable(x/Window.TILE_WIDTH,y/Window.TILE_HEIGHT+1,0,0,0));
+            col = w.inCollision(new Collideable(this,x/Window.TILE_WIDTH,y/Window.TILE_HEIGHT+1,0,0,0));
         }
         
         return col;

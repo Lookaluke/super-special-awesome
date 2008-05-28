@@ -14,7 +14,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.geom.RoundRectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -23,6 +22,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Scanner;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
@@ -53,6 +54,7 @@ public class Window extends JComponent{
     private boolean stopUp,stopDown,stopRight,stopLeft;
     private int pressBuffer;
     private int jump;
+    private JFrame frame;
     
     private Character player = new Character(this);
     
@@ -61,6 +63,10 @@ public class Window extends JComponent{
     
     private int control;
     private TextBox txt;
+    private Menu menu;
+    private BattleFrontEnd battle;
+    
+    private ArrayList<String> trainerSayings = new ArrayList<String>();
         
     /**
      * Makes a new window that draws all the specified stuff on
@@ -69,16 +75,23 @@ public class Window extends JComponent{
     public Window(JFrame frame){
         
         
-        txt = new TextBox(frame,"Hello welcome to pokemon razmatazz. How are you doing today? I am fine thanks for asking. My name is Mark, I'm the only person working on this project",0,475,800,101);
+        //txt = new TextBox(frame,"Hello welcome to pokemon razmatazz. How are you doing today? I am fine thanks for asking. My name is Mark, I'm the only person working on this project",0,475,800,101);
+        //String[] str = {"Attack","Pokemon","Item","Run"};
+        //menu = new Menu(frame,str,0,475,600,101);
+        //player.allowUpdate(false);
         
-        Pokemon p = new Pokemon("Meh",5);
+        battle = new BattleFrontEnd(new Battle(player,new Pokemon("Meh",3)),frame);
+        
+        this.frame = frame;
+        
+        //Pokemon p = new Pokemon("Meh",5);
         frame.add(this);
         this.setPreferredSize(new Dimension(WIDTH,HEIGHT));
         frame.pack();
         frame.addKeyListener(new KeyListen());
-        
-        
-        loadImgs("Images\\Dynamic");
+                
+        loadTrainerSayings(trainerSayings,"Trainers\\Trainers.txt");
+                
         levelX = 0; 
         levelY = 0;
         for(int i=-1;i<=1;i++)
@@ -86,7 +99,7 @@ public class Window extends JComponent{
                 loadLevel(levelX+i,levelY+j,i,j);
 
         
-        
+
         
         repaint();
         
@@ -101,7 +114,7 @@ public class Window extends JComponent{
         timerCounter = 0;
         pressBuffer = Animation.NONE;
         
-        control = 0;
+        control = 1;
         people.add(player);
         
         
@@ -146,6 +159,7 @@ public class Window extends JComponent{
             }
             Collections.sort(people);
             for(int i = 0;i<people.size();i++){
+                //people.get(i).update();
                 people.get(i).draw(g2, x, y);
             }
             g2.setColor(Color.RED);
@@ -155,10 +169,37 @@ public class Window extends JComponent{
                     g2.draw(new Rectangle(c.getX()*TILE_WIDTH+x, c.getY()*TILE_HEIGHT+y, TILE_WIDTH, TILE_HEIGHT));
             }*/
 
-            if(txt!=null)
+
+
+            if(txt!=null){
                 txt.draw(g2);
-            //g2.fill(new RoundRectangle2D.Double(0,0,100,100,50,50));
+                if(txt.isOver())
+                {
+                    txt = null;
+                    player.unRead();
+                }
+            }
+            
+            if(menu!=null){
+                menu.draw(g2);
+                if(menu.result()!=null)
+                {
+                    menu = null;
+                    player.allowUpdate(true);
+                }
+            }
+            
+            
         }
+        
+        if(control==1 && battle!=null){
+            battle.draw(g2);
+        }
+        
+
+        
+
+        
     }
     
      /**
@@ -248,7 +289,7 @@ public class Window extends JComponent{
                     
                     if(values[0]!=0 || values[1]!=0 || values[2]!=0)
                     {
-                        addToCollision(new Collideable(x1+xCoord*COLUMNS,y1+yCoord*-ROWS,values[0],values[1],values[2]));
+                        addToCollision(new Collideable(this,x1+xCoord*COLUMNS,y1+yCoord*-ROWS,values[0],values[1],values[2]));
                     }
                     str = str.substring(str.indexOf(",")+1);
                 }
@@ -263,18 +304,18 @@ public class Window extends JComponent{
             for (int y1 = 0; y1 < ROWS; y1++) {
                 for (int x1 = 0; x1 < COLUMNS; x1++) {
                     String smallString = str.substring(0,str.indexOf(","));
-
+                    int value = 0;
                     String personName="";
                     if(smallString.indexOf(":")!=-1){
                         personName = smallString.substring(0,smallString.indexOf(":"));
                         smallString = smallString.substring(smallString.indexOf(":")+1);
-                        int value = 0;
+                        
                         value = Integer.parseInt(smallString.substring(0));
                     }else
                         personName = smallString;
                     personName = personName.replaceAll(".png", "").replaceAll(".PNG","");
                     if(personName.length()>1){
-                        people.add(new Person(personName,"Hello",x1*TILE_WIDTH+xCoord*WIDTH,y1*TILE_HEIGHT+yCoord*-HEIGHT,this));
+                        people.add(new Person(personName,trainerSayings.get(value),x1*TILE_WIDTH+xCoord*WIDTH,y1*TILE_HEIGHT+yCoord*-HEIGHT,this));
                     }
                         
                     
@@ -302,7 +343,7 @@ public class Window extends JComponent{
             
         for (int y1 = 0; y1 < ROWS; y1++) {
             for (int x1 = 0; x1 < COLUMNS; x1++) {
-                int c = Collections.binarySearch(collision,new Collideable(x1+xCoord*COLUMNS,y1+yCoord*-ROWS,0,0,0));
+                int c = Collections.binarySearch(collision,new Collideable(this,x1+xCoord*COLUMNS,y1+yCoord*-ROWS,0,0,0));
                 if(c>=0)
                     collision.remove(collision.get(c));
                 int p = Collections.binarySearch(people,new Person("","",x1*TILE_WIDTH+xCoord*WIDTH,y1*TILE_HEIGHT+yCoord*HEIGHT,null));
@@ -313,6 +354,20 @@ public class Window extends JComponent{
             }
         }
       
+    }
+    
+    public void loadTrainerSayings(ArrayList<String> strs,String file){
+        try {
+            File f = new File(file);
+            Scanner s = new Scanner(f);
+            while(s.hasNextLine()){
+                s.next();
+                strs.add(s.nextLine());
+            }
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(Window.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
     }
     
     public void addToCollision(Collideable c){
@@ -359,7 +414,13 @@ public class Window extends JComponent{
     public class KeyListen implements KeyListener
     {
         
-        public void keyTyped(KeyEvent keyEvent) {      
+        public void keyTyped(KeyEvent keyEvent) {    
+            if(keyEvent.getKeyChar()=='z' && (txt==null || txt.isOver()))
+            {
+                String str = player.read();
+                if(str!=null)
+                    txt = new TextBox(frame,str,0,475,800,101,true);
+            }
         }
 
         public void keyPressed(KeyEvent keyEvent) {   
@@ -396,7 +457,6 @@ public class Window extends JComponent{
     public class Action implements ActionListener{
         public void actionPerformed(ActionEvent event){  
                         
-
 
             
             if(timerCounter==0 && !(upPressed || downPressed || rightPressed || leftPressed))
