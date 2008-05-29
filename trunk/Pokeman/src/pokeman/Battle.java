@@ -1,8 +1,6 @@
 
 package pokeman;
 
-import java.awt.Graphics2D;
-
 /**
  * The back-end to the battle system. Each battle is instantiated, with 
  * either a pokemon and 
@@ -128,6 +126,7 @@ public class Battle {
                 stab = 1;
             }
             double typeModifer = m.element().multiplerAgainst(defender.getElement1()) * m.element().multiplerAgainst(defender.getElement2()) * 10;
+            //tell front end its super/not very effective?
             int randomNumber = (int)(Math.random() * 39) + 217;
             return (int)(((((Math.min(((((2*level/5 + 2)*attack*power)/Math.max(1, defense))/50), 997) + 2)*stab)*typeModifer)/10)*randomNumber)/255;
         } else {
@@ -135,5 +134,4 @@ public class Battle {
         }
     }
     
-
 }
