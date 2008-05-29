@@ -1,7 +1,7 @@
+
 package pokeman;
 
 import java.awt.Graphics2D;
-import java.awt.Color;
 
 /**
  * The back-end to the battle system. Each battle is instantiated, with 
@@ -16,7 +16,6 @@ public class Battle {
     //should this be an int?
     private Pokemon theirCurrent;
     private String text;
-    private static final int MAX_HEALTH_BAR_SIZE = 450;
 
 
     
@@ -136,20 +135,7 @@ public class Battle {
         }
     }
     
-    public void drawHpBar(Graphics2D g2, int x, int y, int totalHP, int currentHP)
-    {
-        double percent = ((double)currentHP)/totalHP;
-        if(percent <= 0.2)
-            g2.setColor(new Color(220, 50, 0));//RED
-        else if(percent <= 0.55)
-            g2.setColor(new Color(220, 200, 75));//YELLOW
-        else
-            g2.setColor(new Color(60, 120, 45));//GREEN
-        
-        int totalPixels = (int)(percent* MAX_HEALTH_BAR_SIZE + 0.5);
-        g2.fillRect(x, y, totalPixels, 35);
-        g2.setColor(Color.BLACK);
-        g2.drawString("" + currentHP + "/" + totalHP, x + 350, y + 70);
+    public void drawHpBar(Graphics2D g2, int x, int y, int totalHP, int currentHP){
         
     }
 }

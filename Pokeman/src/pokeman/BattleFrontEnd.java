@@ -6,6 +6,12 @@
 package pokeman;
 
 import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 
 /**
@@ -18,16 +24,28 @@ public class BattleFrontEnd {
     private TextBox txt;
     private Menu menu,moveMenu;
     private JFrame frame;
-    private int a = 100;
-    private int xBorder = 75,yBorder = 30,yStart=475;
+    private BufferedImage background,circle;
+    
+    private int xBorder = 150,yBorder = 30,yStart=475;
     
     public BattleFrontEnd(Battle b,JFrame frame){
-        this.frame = frame;
-        battle = b;
-        txt = new TextBox(frame,battle.getText(),0,yStart,800,576-yStart,true);
+        try {
+            this.frame = frame;
+            battle = b;
+            txt = new TextBox(frame, battle.getText(), 0, yStart, 800, 576 - yStart, true);
+            background = ImageIO.read(new File("Images\\BattleBackground.png"));
+            circle = ImageIO.read(new File("Images\\circle.png"));
+        } catch (IOException ex) {
+            Logger.getLogger(BattleFrontEnd.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
     public void draw(Graphics2D g2){
+        
+        g2.drawImage(background,null,0,0);
+        g2.drawImage(circle,null,0,yStart-yBorder-circle.getHeight()+75);
+        g2.drawImage(circle,null,Window.WIDTH-circle.getWidth(),yBorder+75);
+        
         String battleText = battle.getText();
         if(battleText!=null && txt==null){
             txt = new TextBox(frame,battleText,0,yStart,800,576-yStart,true);
@@ -40,7 +58,6 @@ public class BattleFrontEnd {
                 if(menu==null){
                     String[] str = {"Attack","Pokemon","Item","Run"};
                     menu = new Menu(frame,str,0,yStart,600,576-yStart);
-                    
                 }
             }
         }
@@ -69,8 +86,5 @@ public class BattleFrontEnd {
         
         g2.drawImage(battle.getYourPokemon().getBack(),null,xBorder,yStart-yBorder-battle.getYourPokemon().getBack().getHeight());
         g2.drawImage(battle.getTheirPokemon().getFront(),null,Window.WIDTH-xBorder-battle.getYourPokemon().getBack().getWidth(),yBorder);
-        battle.drawHpBar(g2, 300, 400, 100, a);
-        if(a > 1)a--;
-        
     }
 }
