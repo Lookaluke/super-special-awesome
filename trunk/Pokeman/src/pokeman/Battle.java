@@ -135,7 +135,5 @@ public class Battle {
         }
     }
     
-    public void drawHpBar(Graphics2D g2, int x, int y, int totalHP, int currentHP){
-        
-    }
+
 }
