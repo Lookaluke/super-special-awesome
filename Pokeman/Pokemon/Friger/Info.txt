@@ -1,0 +1,5 @@
+Speed: Fast
+Element1: FIRE, Element2: NOTHING
+Base Stats: Special:50, Attack:50, Defense:50, Speed:50, HP:50
+Moves:
+Pound: 0
