@@ -8,6 +8,7 @@ package pokeman;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.awt.geom.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
@@ -26,10 +27,9 @@ public class BattleFrontEnd {
     private Menu menu,moveMenu;
     private JFrame frame;
     private BufferedImage background,circle;
-    private static final int MAX_HEALTH_BAR_SIZE = 165;
     
     
-    //remove this
+    //for testing purposes only, remove in final
     private int a = 100;
 
 
@@ -95,48 +95,75 @@ public class BattleFrontEnd {
         g2.drawImage(battle.getYourPokemon().getBack(),null,xBorder,yStart-yBorder-battle.getYourPokemon().getBack().getHeight());
         g2.drawImage(battle.getTheirPokemon().getFront(),null,Window.WIDTH-xBorder-battle.getYourPokemon().getBack().getWidth(),yBorder);
         
+        //for testing only, remove in final
         drawHpBar(g2, 435, 320, 100, a);
         
-        //remove this
+        //for testing only, remove in final
         if(a > 1) a--;
         
         
     }
     
     public void drawHpBar(Graphics2D g2, int x, int y, int totalHP, int currentHP){
+
+        //sizes for the large dark green round rectangle
+        int MAINWIDTH = 132, MAINHEIGHT = 14, MAINARCS = 10;
+
         
-        //How do you tell which pokemon's health bar you are drawing?
-        g2.setColor(new Color(20, 65, 35));//Dark green
-        g2.fillRoundRect(x,y, 325, 125, 18,18);
-        g2.setColor(new Color(220, 220, 190));
-        g2.fillRoundRect(x + 7, y + 7, 311, 111, 6, 6);
-        g2.setColor(Color.BLACK);
-        g2.drawString(battle.getYourPokemon().getName(), x + 25, y + 40);
-        g2.drawString("Lv." + battle.getYourPokemon().getLevel(), x + 225, y +40);
-        g2.setColor(new Color(20, 65, 35));//Dark green
-        g2.fillRoundRect(x + 75, y + 50, 240, 30, 28, 28);
-        g2.setColor(new Color(230, 130, 100));//light orange
-        g2.drawString("HP", x + 88, y + 75);
+        //size, offset for the white round rectangle
+        int FirstXOffset = 30, FirstYOffset = 2, WhiteWidth = 100, WhiteHeight = 10,
+                WhiteArcs = 10;
+        
+        //size, offset for the colored strip
+        int XRectOffset = 35, YRectOffset = 4, RectMaxWidth = 93, SmallHeight = 2;
+        
+        //DRAW OUTSIDE BORDER
+        g2.setColor(new Color(80, 104, 88));//dark green, for border
+        RoundRectangle2D r = new RoundRectangle2D.Double(x, y, MAINWIDTH, MAINHEIGHT,
+                MAINARCS, MAINARCS);
+        
+        g2.fill(r);
+        
+        //DRAW INSIDE WHITE RRECT
+        RoundRectangle2D insiderect = new RoundRectangle2D.Double(x+FirstXOffset,
+                y+FirstYOffset, WhiteWidth, WhiteHeight, WhiteArcs, WhiteArcs);
         g2.setColor(Color.WHITE);
-        g2.fillRoundRect(x + 135, y + 55, 175, 20, 24, 24);
-        double percent = ((double)currentHP)/totalHP;
-        if(percent <= 0.2)
-            g2.setColor(new Color(220, 50, 0));//RED
-        else if(percent <= 0.55)
-            g2.setColor(new Color(220, 200, 75));//YELLOW
-        else
-            g2.setColor(new Color(60, 120, 45));//GREEN
-        int size = (int)(percent * MAX_HEALTH_BAR_SIZE);
-        g2.fillRoundRect(x + 140, y + 58, size, 14, 24, 24);
-        g2.setColor(Color.BLACK);
-        g2.drawString("" + currentHP + "/" + totalHP, x + 200, y + 110); 
-        /*
-         * 
-        its supposed to be 14x132 in size, with a rounded rectangle on the outside,
-        with arcs of length 4, and within it, another rounded rectangle at (31, 3) 
-        with arc length 2 and within that two rectangles one of a slightly darker 
-        color, one of a lighter color
-*/
+        g2.fill(insiderect);
+        
+        //DRAW COLORED HEALTH BAR
+        Color cone;
+        Color ctwo;
+        if(currentHP > ((int)(2.25 * totalHP/4 + 0.75))){
+            cone = new Color(88, 208, 128);
+            ctwo = new Color(112, 248, 168);
+        } else if (currentHP > (265*(int)(0.2*totalHP + 0.2)/256 + 2)) {
+            cone = new Color(200, 168, 8);
+            ctwo = new Color(248, 224, 56);
+        } else {
+            cone = new Color(168, 64, 72);
+            ctwo = new Color(248, 88, 56);
+        }
+        
+        int RectActualWidth =(int)(RectMaxWidth * (currentHP/(double)totalHP));
+        
+        Rectangle2D.Double rect = new Rectangle2D.Double(x+XRectOffset, y+YRectOffset,
+                RectActualWidth, SmallHeight);
+        g2.setColor(cone);
+        g2.fill(rect);
+        rect = new Rectangle2D.Double(x+XRectOffset, y+YRectOffset+SmallHeight,
+                RectActualWidth, SmallHeight*2);
+        g2.setColor(ctwo);
+        g2.fill(rect);
+        
+        rect = new Rectangle2D.Double(x + XRectOffset + RectActualWidth, y + YRectOffset,
+                RectMaxWidth - RectActualWidth, SmallHeight);
+        g2.setColor(new Color(72, 64, 88));//dark purpleish
+        g2.fill(rect);
+        
+        rect = new Rectangle2D.Double(x+XRectOffset + RectActualWidth,
+                y+YRectOffset+SmallHeight, RectMaxWidth -RectActualWidth,
+                SmallHeight*2);
+        g2.setColor(new Color(80, 104, 88));//dark green, same as border
+        g2.fill(rect);
     }
-    
 }
