@@ -5,6 +5,7 @@
 
 package pokeman;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -25,6 +26,10 @@ public class BattleFrontEnd {
     private Menu menu,moveMenu;
     private JFrame frame;
     private BufferedImage background,circle;
+    private static final int MAX_HEALTH_BAR_SIZE = 450;
+    private int a = 100;
+
+
     
     private int xBorder = 150,yBorder = 30,yStart=475;
     
@@ -86,5 +91,26 @@ public class BattleFrontEnd {
         
         g2.drawImage(battle.getYourPokemon().getBack(),null,xBorder,yStart-yBorder-battle.getYourPokemon().getBack().getHeight());
         g2.drawImage(battle.getTheirPokemon().getFront(),null,Window.WIDTH-xBorder-battle.getYourPokemon().getBack().getWidth(),yBorder);
+        
+        drawHpBar(g2, 300, 400, 100, a);
+        if(a > 1)a--;
+
     }
+    
+    public void drawHpBar(Graphics2D g2, int x, int y, int totalHP, int currentHP){
+        double percent = ((double)currentHP)/totalHP;
+        if(percent <= 0.2)
+            g2.setColor(new Color(220, 50, 0));//RED
+        else if(percent <= 0.55)
+            g2.setColor(new Color(220, 200, 75));//YELLOW
+        else
+            g2.setColor(new Color(60, 120, 45));//GREEN
+        
+        int totalPixels = (int)(percent* MAX_HEALTH_BAR_SIZE + 0.5);
+        g2.fillRect(x, y, totalPixels, 35);
+        g2.setColor(Color.BLACK);
+        g2.drawString("" + currentHP + "/" + totalHP, x + 350, y + 70);
+
+    }
+    
 }

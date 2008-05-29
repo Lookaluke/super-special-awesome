@@ -110,7 +110,7 @@ public class Window extends JComponent{
         timerCounter = 0;
         pressBuffer = Animation.NONE;
         
-        control = 0;
+        control = 1;
         people.add(player);
         
         
