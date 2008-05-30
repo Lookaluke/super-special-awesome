@@ -124,7 +124,7 @@ public class BattleFrontEnd {
         
         g2.fill(r);
         
-        //DRAW INSIDE WHITE RRECT
+        //DRAW INSIDE WHITE ROUNDRECT
         RoundRectangle2D insiderect = new RoundRectangle2D.Double(x+FirstXOffset,
                 y+FirstYOffset, WhiteWidth, WhiteHeight, WhiteArcs, WhiteArcs);
         g2.setColor(Color.WHITE);
@@ -165,5 +165,44 @@ public class BattleFrontEnd {
                 SmallHeight*2);
         g2.setColor(new Color(80, 104, 88));//dark green, same as border
         g2.fill(rect);
+        
+        //draw "HP"
+        Rectangle2D.Double square = new Rectangle2D.Double(x+6, y+2, 4, 4);
+        cone = new Color(248, 208, 80);
+        ctwo = new Color(248, 176, 64);
+        
+        g2.setColor(cone);
+        g2.fill(square);
+        square.x = x+12;
+        g2.fill(square);
+        square.x = x+18;
+        g2.fill(square);
+        square.x = x+22;
+        square.height = 2;
+        square.width = 6;
+        g2.fill(square);
+        square.width = 2;
+        square.height = 2;
+        square.x = x+26;
+        square.y = y+4;
+        g2.fill(square);
+        g2.setColor(ctwo);
+        square.width = 4;
+        square.height = 4;
+        square.x = x+6;
+        square.y = y+8;
+        g2.fill(square);
+        square.x = x+12;
+        g2.fill(square);
+        square.x = x+18;
+        g2.fill(square);
+        square.x = x+6;
+        square.y = y+6;
+        square.width = 10;
+        square.height = 2;
+        g2.fill(square);
+        square.x = x+18;
+        g2.fill(square);
+        
     }
 }
