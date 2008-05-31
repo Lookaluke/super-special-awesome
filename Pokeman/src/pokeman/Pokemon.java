@@ -12,19 +12,18 @@ package pokeman;
 import java.awt.image.*;
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Scanner;
 import javax.imageio.ImageIO;
 
-public class Pokemon
+public class Pokemon implements Serializable
 {
    public static  final int FAST = 153, MEDIUM = 123, SLOW = 297, FADING = 3000;  
    private String name;
-   private int totalHP, currentHP, level, experience, levelGrowth, attack,
+   //these are base stats (except currentHP)
+   private int baseHP, currentHP, level, experience, levelGrowth, attack,
            defense, special, speed;
-   
-   //determine how these will be parsed.
-   private int baseHP, baseAttack, baseDefense, baseSpecial, baseSpeed;
    
    BufferedImage front,back;
    Move[] moves = new Move[4];
@@ -53,6 +52,7 @@ public class Pokemon
            back = ImageIO.read(new File(f + "back.png"));
                      
            status = Status.NORMAL;
+           //calc exp
            experience = 0;
            level = l;
            
@@ -87,7 +87,7 @@ public class Pokemon
            attack = Integer.parseInt(getInfo(stat,"Attack:"));
            defense = Integer.parseInt(getInfo(stat,"Defense:"));
            speed = Integer.parseInt(getInfo(stat,"Speed:"));
-           totalHP = Integer.parseInt(getInfo(stat,"HP:"));
+           baseHP = Integer.parseInt(getInfo(stat,"HP:"));
            currentHP = getMaxHP();
            input.nextLine();
 
@@ -121,35 +121,30 @@ public class Pokemon
    }
    
    /**
-    *
+    * 
     * @param n name
-    * @param t total HP
+    * @param t base HP
     * @param h current HP
     * @param l level
-    * @param l levelGrowth
-    * @param e exp
-    * @param a attack power
-    * @param d defense
-    * @param s special
-    * @param sp peed
-    * @param ag attack power growth
-    * @param dg defense growth
-    * @param sg special growth
-    * @param spg peed growth
-    * @param hg health growth
-    * @param f front image
-    * @param b back image
-    * @param m moves
-    * @param e1 element one
-    * @param e2 element two
-    * @param stat status
+    * @param lg level growth
+    * @param e experience
+    * @param a 
+    * @param d
+    * @param s
+    * @param sp
+    * @param f
+    * @param b
+    * @param m
+    * @param e1
+    * @param e2
+    * @param stat
     */
    public Pokemon(String n,int t, int h, int l, int lg, int e, int a, int d, int s,
            int sp, BufferedImage f, BufferedImage b, Move[] m, Element e1,
            Element e2, Status stat)
    {
        name = n;
-       totalHP = t;
+       baseHP = t;
        currentHP = h;
        level = l;
        levelGrowth = lg;
@@ -222,7 +217,7 @@ public class Pokemon
     * Returns max HP
     */
    public int getMaxHP(){
-       return (2 * totalHP * level/100) + 10 + level;
+       return (2 * baseHP * level/100) + 10 + level;
    }
    
    /**
@@ -274,26 +269,28 @@ public class Pokemon
     */
    public void addExperience(int exp){
        experience+=exp;
-       if(levelUp(experience, level)){
+       if(willLevelUp(experience)){
            level++;
-           //figure out how much stat increases
-           attack++;
-           defense++;
-           speed++;
-           special++;
-           //(2 * Base * Level/100) + 10 + Level (for HP)
-           //(2 * Base * Level/100) + 5 (for everything else)
        }
    }
    
-   /**
-    * allows you to level up
-    */
-   private boolean levelUp(int exp, int lvl){
-       //code to tell if level up
-       return false;
+   private boolean willLevelUp(int moreExp){
+       int tempexp = experience + moreExp;
+       int nextlevel = level+1;
+       if(levelGrowth == FAST){
+           return tempexp >= (int) (.8 * Math.pow(nextlevel, 3));
+       } else if (levelGrowth == MEDIUM){
+           return tempexp >= (int) (Math.pow(nextlevel, 3));
+       } else if (levelGrowth == SLOW) {
+           return tempexp >= (int) (1.25 * Math.pow(nextlevel, 3));
+       } else if (levelGrowth == FADING){
+           return tempexp >= (int) (1.2*Math.pow(nextlevel, 3) - 15 *
+                   Math.pow(nextlevel, 2) + 100 * nextlevel - 140);
+       } else {
+           throw new IllegalStateException("Pokemon doesn't have valid growth rate");
+       }
    }
- 
+   
    /**
     * allows damage to be done
     */
@@ -318,8 +315,8 @@ public class Pokemon
     */
    public void heal(int amt){
        currentHP += amt;
-       if(currentHP > totalHP)
-           currentHP = totalHP;// fill only to max
+       if(currentHP > getMaxHP())
+           currentHP = getMaxHP();// fill only to max
    }
    
    /**
