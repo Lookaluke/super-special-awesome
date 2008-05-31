@@ -7,6 +7,7 @@ package pokeman;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.FontFormatException;
 import java.awt.Graphics2D;
 import java.awt.font.FontRenderContext;
 import java.awt.image.BufferedImage;
@@ -20,7 +21,7 @@ import javax.swing.JFrame;
 
 /**
  *
- * @author Mark
+ * @author Mark, Kunal
  */
 public class BattleFrontEnd {
     
@@ -243,26 +244,31 @@ public class BattleFrontEnd {
         int HP_XSHIFT = 55,HP_YSHIFT = 35;
         int NAME_XSHIFT = 35,NAME_YSHIFT = 0;
         int HP2_XSHIFT = 100,HP2_YSHIFT = 38;
-        
-        Font f = new Font("Pokemon RS part B",Font.BOLD,20);
-        
-           
-        g2.setFont(f);
-        
-        g2.setColor(new Color(77,104,99));
-        g2.fill(new RoundRectangle2D.Double(x,y,WIDTH,HEIGHT,ARC,ARC));
-        g2.setColor(new Color(32,56,0));
-        g2.fill(new RoundRectangle2D.Double(x+3,y+3,WIDTH-6,HEIGHT-6,ARC,ARC));
-        g2.setColor(new Color(252,249,216));        
-        g2.fill(new RoundRectangle2D.Double(x+5,y+5,WIDTH-10,HEIGHT-10,ARC,ARC));
-        drawHpBar(g2, x+HP_XSHIFT, y+HP_YSHIFT, p.getMaxHP(), p.getCurrentHP());
-        
-        g2.setColor(new Color(62,59,68));     
-        //System.out.println((f.getStringBounds("", new FontRenderContext(null,true,true)).getHeight()));
-        //g2.draw(new Rectangle2D.Double(x+NAME_XSHIFT,y+NAME_YSHIFT,f.getStringBounds("Hello", new FontRenderContext(null,true,true)).getWidth(),f.getStringBounds("Hello", new FontRenderContext(null,true,true)).getHeight()));
-        String name = p.getName() + "  Lv: "+p.getLevel();
-        g2.drawString(name, x+NAME_XSHIFT,y+NAME_YSHIFT+ (int)(f.getStringBounds(name, new FontRenderContext(null,true,true)).getHeight()));
-        String hp = p.getCurrentHP() + "/" + p.getMaxHP();
-        g2.drawString(hp, x+HP2_XSHIFT,y+HP2_YSHIFT+ (int)(f.getStringBounds(hp, new FontRenderContext(null,true,true)).getHeight()));
+        try{
+            Font f = Font.createFont(Font.TRUETYPE_FONT, new File("Pokemon RS part B.ttf"));
+            f = f.deriveFont(Font.BOLD, 20);
+            
+            g2.setFont(f);
+
+            g2.setColor(new Color(77,104,99));
+            g2.fill(new RoundRectangle2D.Double(x,y,WIDTH,HEIGHT,ARC,ARC));
+            g2.setColor(new Color(32,56,0));
+            g2.fill(new RoundRectangle2D.Double(x+3,y+3,WIDTH-6,HEIGHT-6,ARC,ARC));
+            g2.setColor(new Color(252,249,216));        
+            g2.fill(new RoundRectangle2D.Double(x+5,y+5,WIDTH-10,HEIGHT-10,ARC,ARC));
+            drawHpBar(g2, x+HP_XSHIFT, y+HP_YSHIFT, p.getMaxHP(), p.getCurrentHP());
+
+            g2.setColor(new Color(62,59,68));     
+            //System.out.println((f.getStringBounds("", new FontRenderContext(null,true,true)).getHeight()));
+            //g2.draw(new Rectangle2D.Double(x+NAME_XSHIFT,y+NAME_YSHIFT,f.getStringBounds("Hello", new FontRenderContext(null,true,true)).getWidth(),f.getStringBounds("Hello", new FontRenderContext(null,true,true)).getHeight()));
+            String name = p.getName() + "  Lv: "+p.getLevel();
+            g2.drawString(name, x+NAME_XSHIFT,y+NAME_YSHIFT+ (int)(f.getStringBounds(name, new FontRenderContext(null,true,true)).getHeight()));
+            String hp = p.getCurrentHP() + "/" + p.getMaxHP();
+            g2.drawString(hp, x+HP2_XSHIFT,y+HP2_YSHIFT+ (int)(f.getStringBounds(hp, new FontRenderContext(null,true,true)).getHeight()));
+        } catch (FontFormatException e) {
+            System.out.println("Bad font file");
+        } catch (IOException e){
+            System.out.println("Bad File Name");
+        }
     }
 }
