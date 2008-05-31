@@ -7,12 +7,15 @@ package pokeman;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.FontFormatException;
 import java.awt.Graphics2D;
 import java.awt.Polygon;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.font.FontRenderContext;
 import java.awt.geom.RoundRectangle2D;
+import java.io.File;
+import java.io.IOException;
 import java.util.Scanner;
 import javax.swing.JFrame;
 
@@ -22,7 +25,7 @@ import javax.swing.JFrame;
  */
 public class TextBox{
     private static final int widthFactor = 20, heightFactor = 5, curveFactor = 40, spaceFactor = 5;
-    private static final Font f = new Font("Pokemon RS",Font.PLAIN,30);
+    private Font f;
     
     private String[] str;
     private int x,y,width,height,textHeight;
@@ -33,6 +36,16 @@ public class TextBox{
     private int arrowOff;
             
     public TextBox(JFrame fr,String s,int x,int y,int width,int height,boolean scrolls){
+        
+        try{
+            f = Font.createFont(Font.TRUETYPE_FONT, new File("Pokemon RS part B.ttf"));
+            f = f.deriveFont(Font.PLAIN, 30);
+        } catch (FontFormatException e) {
+            System.out.println("Bad font file");
+        } catch (IOException e){
+            System.out.println("Bad File Name");
+        }
+        
         this.x = x;
         this.y = y;
         this.width = width;
@@ -45,7 +58,7 @@ public class TextBox{
         
         
         textHeight = (int)f.getStringBounds(s, new FontRenderContext(null,true,true)).getHeight();
-        lines = (int)((height-heightFactor)/(textHeight+spaceFactor));
+        lines = (int)((height-heightFactor+15)/(textHeight+spaceFactor));
         
         str = new String[(int)f.getStringBounds(s, new FontRenderContext(null,true,true)).getWidth()/(width-widthFactor)+1];
         
@@ -101,11 +114,11 @@ public class TextBox{
                     for(int j=0;j<=i;j++)
                             tempIndex += str[j+line].length();
                     if(index>tempIndex)
-                        g2.drawString(str[i+line], x+widthFactor, y+heightFactor+textHeight*(i+1)+spaceFactor*(i-1)); 
+                        g2.drawString(str[i+line], x+widthFactor, y+heightFactor+textHeight*(i+1)+spaceFactor*(i-1)-15); 
                     else
                     {
                         if(index-tempIndex+str[i+line].length()>0)
-                            g2.drawString(str[i+line].substring(0,index-tempIndex+str[i+line].length()), x+widthFactor, y+heightFactor+textHeight*(i+1)+spaceFactor*(i-1));
+                            g2.drawString(str[i+line].substring(0,index-tempIndex+str[i+line].length()), x+widthFactor, y+heightFactor+textHeight*(i+1)+spaceFactor*(i-1)-15);
                     }
                     
                         
