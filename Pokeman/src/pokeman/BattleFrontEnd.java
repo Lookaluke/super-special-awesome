@@ -79,10 +79,10 @@ public class BattleFrontEnd {
 
 
         
-        g2.drawImage(yours.getBack(),null,xBorder,yStart-yBorder-yours.getBack().getHeight());
+        g2.drawImage(yours.getBack(),null,xBorder,Window.HEIGHT-101-yours.getBack().getHeight());
         g2.drawImage(theirs.getFront(),null,Window.WIDTH-xBorder-theirs.getBack().getWidth(),yBorder);
         
-        drawInterface(g2, true, yours, 435, 320);
+        drawInterface(g2, true, yours, 435, Window.HEIGHT-101-85);
         drawInterface(g2, false, theirs, 10, 30);        
         
     }

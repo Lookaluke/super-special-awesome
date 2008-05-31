@@ -76,7 +76,7 @@ public class Window extends JComponent{
         //menu = new Menu(frame,str,0,475,600,101);
         //player.allowUpdate(false);
         
-        battle = new Battle(player,new Pokemon("Friger",3),frame);
+        battle = new Battle(player,new Pokemon("Rattata",10),frame);
         
         this.frame = frame;
         
