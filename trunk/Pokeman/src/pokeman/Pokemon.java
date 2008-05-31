@@ -19,7 +19,7 @@ import javax.imageio.ImageIO;
 
 public class Pokemon implements Serializable
 {
-   public static  final int FAST = 153, MEDIUM = 123, SLOW = 297, FADING = 3000;  
+   public static final int FAST = 153, MEDIUM = 123, SLOW = 297, FADING = 3000;  
    private String name;
    //these are base stats (except currentHP)
    private int baseHP, currentHP, level, experience, levelGrowth, attack,
@@ -52,36 +52,42 @@ public class Pokemon implements Serializable
            back = ImageIO.read(new File(f + "back.png"));
                      
            status = Status.NORMAL;
-           //calc exp
-           experience = 0;
+           
            level = l;
            
            Scanner input = new Scanner(new File(f + "info.txt"));
            
            String lg = getInfo(input.nextLine(),"Speed:");
-           if(lg.equals("Fast"))
+           if(lg.equals("Fast")){
                levelGrowth = FAST;
-           if(lg.equals("Medium"))
+               experience = (int) (0.8 * Math.pow(level, 3));
+           } else if(lg.equals("Medium")){
                levelGrowth = MEDIUM;
-           if(lg.equals("Slow"))
+               experience = (int) (Math.pow(level, 3));
+           } else if(lg.equals("Slow")){
                levelGrowth = SLOW;
-           if(lg.equals("Fading"))
+               experience = (int) (1.25 * Math.pow(level, 3));
+           } else if(lg.equals("Fading")){
                levelGrowth = FADING;
+               experience = (int) (1.2 * Math.pow(level,
+                       3) - 15 * Math.pow(level, 2) + 100 * level - 140);
+           } else {
+               throw new IllegalArgumentException("Invalid level up speed");
+           }
+           
            String elementLine = input.nextLine();
            String ele1 = getInfo(elementLine,"Element1:").toUpperCase();
            String ele2 = getInfo(elementLine,"Element2:").toUpperCase();
-           Element[] elements = {Element.FIRE, Element.WATER, Element.GROUND,
-               Element.FLYING, Element.POISON, Element.NORMAL, Element.PSYCHIC, Element.GHOST,
-               Element.BUG, Element.ROCK, Element.GRASS, Element.FIGHTING, Element.ELECTRIC,
-               Element.ICE, Element.DRAGON, Element.NOTHING};
            
-           for(Element e:elements){                
+           
+           for(Element e: Element.values()){                
                if(e.name().equals(ele1))
                    element1 = e;
                if(e.name().equals(ele2))
                    element2 = e;
            }
            
+           //get base stats
            String stat = input.nextLine();
            special = Integer.parseInt(getInfo(stat,"Special:"));
            attack = Integer.parseInt(getInfo(stat,"Attack:"));
@@ -90,12 +96,15 @@ public class Pokemon implements Serializable
            baseHP = Integer.parseInt(getInfo(stat,"HP:"));
            currentHP = getMaxHP();
            input.nextLine();
-
+           
+           //set up possible moves
            while(input.hasNextLine()){
                String move = input.nextLine();
                availableMoves.add(new Move(move.substring(0,move.indexOf(":"))));
                moveLevels.add(Integer.parseInt(getInfo(move,":")));
            }
+           
+           //set up current moves by picking the latest 4 possible moves
            int index = 0;
            for(int i=availableMoves.size()-1;i>=0;i--){
                if(moveLevels.get(i)<=level){
@@ -106,7 +115,7 @@ public class Pokemon implements Serializable
                }
            }
            
-
+           
        } catch (IOException ex) {
            System.out.println("Pokemon file doesn't exist");
        }
@@ -128,16 +137,17 @@ public class Pokemon implements Serializable
     * @param l level
     * @param lg level growth
     * @param e experience
-    * @param a 
-    * @param d
-    * @param s
-    * @param sp
-    * @param f
-    * @param b
-    * @param m
-    * @param e1
-    * @param e2
-    * @param stat
+    * @param a base attack
+    * @param d base defense
+    * @param s base speed
+    * @param sp base special
+    * @param f front sprite
+    * @param b back sprite
+    * @param m move array
+    * @param e1 element 1
+    * @param e2 element 2
+    * @param stat status
+    * @deprecated
     */
    public Pokemon(String n,int t, int h, int l, int lg, int e, int a, int d, int s,
            int sp, BufferedImage f, BufferedImage b, Move[] m, Element e1,
@@ -164,7 +174,6 @@ public class Pokemon implements Serializable
    /**
     * Returns the Name
     */
-   
    public String getName(){
        return name;
    }
@@ -172,7 +181,6 @@ public class Pokemon implements Serializable
    /**
     * Returns the level
     */
-   
    public int getLevel(){
        return level;
    }
@@ -180,7 +188,6 @@ public class Pokemon implements Serializable
    /**
     * Returns the experience
     */
-   
    public int getExperience(){
        return experience;
    }
@@ -265,7 +272,8 @@ public class Pokemon implements Serializable
    
    
    /**
-    * this method accumulates experience until you level up
+    * this method accumulates experience and handles single level-ups
+    * currently, its probably broken for multiple levels
     */
    public void addExperience(int exp){
        experience+=exp;
@@ -302,15 +310,16 @@ public class Pokemon implements Serializable
    }
    
    /**
-    * implementation for dead pkmn
+    * implementation for dead pkmn...we may add stuff later
     */
    private void die(){
        status = Status.FAINTED;
+       reset();
    }
    
    /**
-    * Heals the pokemon by the specified amount. If the amount will result
-    * in 
+    * Heals the pokemon by the specified amount. If the amount goes over the max,
+    * it automatically reduces to the max.
     * @param amt the amount to heal
     */
    public void heal(int amt){
@@ -329,5 +338,9 @@ public class Pokemon implements Serializable
            if(m!=null && m.getPP() != 0)
                return true;
        return false;
-   }  
+   }
+   
+   public void reset(){
+       //get rid of temporary stat changes
+   }
 }
