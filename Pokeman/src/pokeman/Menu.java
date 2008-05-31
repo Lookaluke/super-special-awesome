@@ -7,12 +7,15 @@ package pokeman;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.FontFormatException;
 import java.awt.Graphics2D;
 import java.awt.Polygon;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.font.FontRenderContext;
 import java.awt.geom.RoundRectangle2D;
+import java.io.File;
+import java.io.IOException;
 import javax.swing.JFrame;
 
 /**
@@ -21,7 +24,7 @@ import javax.swing.JFrame;
  */
 public class Menu {
     private static final int widthFactor = 20, heightFactor = 5, curveFactor = 40, ySpaceFactor = 5, xSpaceFactor = 20;
-    private static final Font f = new Font("Pokemon RS",Font.PLAIN,30);
+    private Font f;
     
     private String[] items;
     private int x,y,width,height,textHeight;
@@ -32,6 +35,16 @@ public class Menu {
     private String result;
     
     public Menu(JFrame fr,String[] menuItems,int x,int y,int width,int height){
+        
+        try{
+            f = Font.createFont(Font.TRUETYPE_FONT, new File("Pokemon RS part B.ttf"));
+            f = f.deriveFont(Font.PLAIN, 30);
+        } catch (FontFormatException e) {
+            System.out.println("Bad font file");
+        } catch (IOException e){
+            System.out.println("Bad File Name");
+        }
+        
         this.x = x;
         this.y = y;
         this.width = width;
@@ -42,7 +55,7 @@ public class Menu {
         frame = fr;
         
         textHeight = (int)f.getStringBounds(items[0], new FontRenderContext(null,true,true)).getHeight();
-        lines = (height-heightFactor*2-ySpaceFactor)/(textHeight);
+        lines = (height-heightFactor*2-ySpaceFactor+15)/(textHeight);
         result = null;
         selected = 0;
     }
@@ -65,12 +78,12 @@ public class Menu {
                     String str = items[j*perLine+i];
                     if(items[j*perLine+i]==null)
                         str = "---";
-                    g2.drawString(str,x+widthFactor+xSpaceFactor*(i+1)+xSpace*i,y+heightFactor+ySpaceFactor*(j)+textHeight*(j+1));
+                    g2.drawString(str,x+widthFactor+xSpaceFactor*(i+1)+xSpace*i,y+heightFactor+ySpaceFactor*(j)+textHeight*(j+1)-15);
                     if(selected == j*perLine+i){
                         int x1 = x+widthFactor+xSpaceFactor*(i+1)+xSpace*i;
                         int y1 = y+heightFactor+ySpaceFactor*(j)+textHeight*(j+1);
                         int[] xCoords = {x1-15,x1-15,x1-5};
-                        int[] yCoords = {y1-5,y1-19,y1-12}; 
+                        int[] yCoords = {y1-5-15,y1-19-15,y1-12-15}; 
                         g2.fill(new Polygon(xCoords,yCoords,3));
                     }
                 }
