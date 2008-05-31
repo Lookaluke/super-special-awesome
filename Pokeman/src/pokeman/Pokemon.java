@@ -88,7 +88,7 @@ public class Pokemon
            defense = Integer.parseInt(getInfo(stat,"Defense:"));
            speed = Integer.parseInt(getInfo(stat,"Speed:"));
            totalHP = Integer.parseInt(getInfo(stat,"HP:"));
-           currentHP = totalHP;
+           currentHP = getMaxHP();
            input.nextLine();
 
            while(input.hasNextLine()){
@@ -194,28 +194,42 @@ public class Pokemon
     * Returns the attack
     */
    public int getAttack(){
-       return attack;
+       return (2 * attack * level/100) + 5;
    }
    
    /**
     * Returns the defense
     */
    public int getDefense(){
-       return defense;
+       return (2 * defense * level/100) + 5;
    }
    
    /**
     * Returns the special
     */
    public int getSpecial(){
-       return special;
+       return (2 * special * level/100) + 5;
    }
    
    /**
     * Returns the speed
     */
    public int getSpeed(){
-       return speed;
+       return (2 * speed * level/100) + 5;
+   }
+   
+   /**
+    * Returns max HP
+    */
+   public int getMaxHP(){
+       return (2 * totalHP * level/100) + 10 + level;
+   }
+   
+   /**
+    * Returns current HP
+    */
+   public int getCurrentHP(){
+       return currentHP;
    }
    
    /**
@@ -285,6 +299,8 @@ public class Pokemon
     */
    public void takeDamage(int amt){
        currentHP -= amt;
+       if(currentHP<0)
+           currentHP = 0;
        if(currentHP < 1) die();// you ARE DEAD
    }
    
@@ -292,7 +308,7 @@ public class Pokemon
     * implementation for dead pkmn
     */
    private void die(){
-       //KILL PKMN  
+       status = Status.FAINTED;
    }
    
    /**

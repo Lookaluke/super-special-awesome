@@ -21,8 +21,8 @@ import javax.swing.JFrame;
  * @author Mark
  */
 public class TextBox{
-    private static final int widthFactor = 20, heightFactor = 10, curveFactor = 40, spaceFactor = 5;
-    private static final Font f = new Font("Arial",Font.PLAIN,30);
+    private static final int widthFactor = 20, heightFactor = 5, curveFactor = 40, spaceFactor = 5;
+    private static final Font f = new Font("Pokemon RS",Font.PLAIN,30);
     
     private String[] str;
     private int x,y,width,height,textHeight;
@@ -121,7 +121,7 @@ public class TextBox{
                 {
                     int[] xCoords = {x+width-widthFactor-25,x+width-widthFactor-5,x+width-widthFactor-15};
                     int[] yCoords = {y+height-heightFactor-20,y+height-heightFactor-20,y+height-heightFactor-5};
-                    g2.setColor(new Color(86,218,228));  
+                    g2.setColor(Color.BLACK);  
                     g2.fill(new Polygon(xCoords,yCoords,3));
                     if(arrowOff>10)
                         arrowOff=0;

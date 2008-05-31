@@ -6,7 +6,9 @@
 package pokeman;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics2D;
+import java.awt.font.FontRenderContext;
 import java.awt.image.BufferedImage;
 import java.awt.geom.*;
 import java.io.File;
@@ -22,12 +24,15 @@ import javax.swing.JFrame;
  */
 public class BattleFrontEnd {
     
-    private Battle battle;
+    public static final int NONE = -1,MAIN = 0,MOVE = 1;
+    
     private TextBox txt;
     private Menu menu,moveMenu;
+    private int menuType;
     private JFrame frame;
     private BufferedImage background,circle;
-    
+    private Move lastMove;
+    private Pokemon theirs,yours;
     
     //for testing purposes only, remove in final
     private int a = 100;
@@ -36,11 +41,12 @@ public class BattleFrontEnd {
     
     private int xBorder = 150,yBorder = 30,yStart=475;
     
-    public BattleFrontEnd(Battle b,JFrame frame){
+    public BattleFrontEnd(JFrame frame){
         try {
             this.frame = frame;
-            battle = b;
-            txt = new TextBox(frame, battle.getText(), 0, yStart, 800, 576 - yStart, true);
+            
+            menuType = NONE;
+
             background = ImageIO.read(new File("Images\\BattleBackground.png"));
             circle = ImageIO.read(new File("Images\\circle.png"));
         } catch (IOException ex) {
@@ -53,55 +59,81 @@ public class BattleFrontEnd {
         g2.drawImage(background,null,0,0);
         g2.drawImage(circle,null,0,yStart-yBorder-circle.getHeight()+75);
         g2.drawImage(circle,null,Window.WIDTH-circle.getWidth(),yBorder+75);
-        
-        String battleText = battle.getText();
-        if(battleText!=null && txt==null){
-            txt = new TextBox(frame,battleText,0,yStart,800,576-yStart,true);
-        }
+
+
         if(txt!=null){
             txt.draw(g2);
             if(txt.isOver())
             {
-                txt = null;
-                if(menu==null){
-                    String[] str = {"Attack","Pokemon","Item","Run"};
-                    menu = new Menu(frame,str,0,yStart,600,576-yStart);
-                }
+                txt = null;                
             }
         }
-        
+
         if(menu!=null){
             menu.draw(g2);
-            if(menu.result()!=null){
-                if(menu.result().equals("Attack")){
-                    Move[] moves = battle.getYourPokemon().getMoves();
-                    String[] str = {moves[0]==null?"---":moves[0].name(),moves[1]==null?"---":moves[1].name(),moves[2]==null?"---":moves[2].name(),moves[3]==null?"---":moves[3].name()};
-                    moveMenu = new Menu(frame,str,0,yStart,600,576-yStart);
-                }
-                    
-                menu=null;                
-                
-            }
+            if(menu.result()!=null && menu.result().equals("Attack"))
+                makeMenu(MOVE);
+        }
+
+
+        
+        g2.drawImage(yours.getBack(),null,xBorder,yStart-yBorder-yours.getBack().getHeight());
+        g2.drawImage(theirs.getFront(),null,Window.WIDTH-xBorder-theirs.getBack().getWidth(),yBorder);
+        
+        drawInterface(g2, yours, 435, 320);
+        drawInterface(g2, theirs, 10, 30);        
+        
+    }
+    
+    public void setPokemon(Pokemon p,boolean isYours){
+        if(isYours){
+            yours = p;
+        }else{
+            theirs = p;
+        }
+    }
+    
+    public void setText(String text){
+        txt = new TextBox(frame,text,0,475,800,101,true);
+    }
+    
+    public void makeMenu(int type){
+        menuType = type;
+        
+        if(type == MAIN){
+            String[] str = {"Attack","Pokemon","Item","Run"};
+            menu = new Menu(frame,str,0,yStart,600,576-yStart);
         }
         
-        if(moveMenu!=null){
-            moveMenu.draw(g2);
-            if(moveMenu.result()!=null){
-                battle.turn(battle.getYourPokemon().getMoves()[moveMenu.getSelected()]);
-                moveMenu = null;
-            }
+        if(type == MOVE){
+            Move[] moves = yours.getMoves();
+            String[] str = {moves[0]==null?null:moves[0].name(),moves[1]==null?null:moves[1].name(),moves[2]==null?null:moves[2].name(),moves[3]==null?null:moves[3].name()};
+            menu = new Menu(frame,str,0,yStart,600,576-yStart);
+        }
+    }
+    
+    public Object getResult(){
+        if(menu == null)
+            return null;
+        String result = menu.result();
+        if(result == null)
+            return null;
+        
+        Object ret = null;
+        
+        if(menuType == MOVE){
+            ret = yours.getMoves()[menu.getSelected()];
         }
         
-        g2.drawImage(battle.getYourPokemon().getBack(),null,xBorder,yStart-yBorder-battle.getYourPokemon().getBack().getHeight());
-        g2.drawImage(battle.getTheirPokemon().getFront(),null,Window.WIDTH-xBorder-battle.getYourPokemon().getBack().getWidth(),yBorder);
-        
-        //for testing only, remove in final
-        drawHpBar(g2, 435, 320, 100, a);
-        
-        //for testing only, remove in final
-        if(a > 1) a--;
-        
-        
+        if(result!=null){
+            menu = null;
+            menuType = NONE;
+        }
+        return ret;
+    }
+    
+    public boolean waiting(){
+        return txt!=null || menu!=null || moveMenu!=null;
     }
     
     public void drawHpBar(Graphics2D g2, int x, int y, int totalHP, int currentHP){
@@ -204,5 +236,33 @@ public class BattleFrontEnd {
         square.x = x+18;
         g2.fill(square);
         
+    }
+    
+    public void drawInterface(Graphics2D g2, Pokemon p,int x, int y){
+        int WIDTH = 250,HEIGHT = 75,ARC = 20;
+        int HP_XSHIFT = 55,HP_YSHIFT = 35;
+        int NAME_XSHIFT = 35,NAME_YSHIFT = 0;
+        int HP2_XSHIFT = 100,HP2_YSHIFT = 38;
+        
+        Font f = new Font("Pokemon RS part B",Font.BOLD,20);
+        
+           
+        g2.setFont(f);
+        
+        g2.setColor(new Color(77,104,99));
+        g2.fill(new RoundRectangle2D.Double(x,y,WIDTH,HEIGHT,ARC,ARC));
+        g2.setColor(new Color(32,56,0));
+        g2.fill(new RoundRectangle2D.Double(x+3,y+3,WIDTH-6,HEIGHT-6,ARC,ARC));
+        g2.setColor(new Color(252,249,216));        
+        g2.fill(new RoundRectangle2D.Double(x+5,y+5,WIDTH-10,HEIGHT-10,ARC,ARC));
+        drawHpBar(g2, x+HP_XSHIFT, y+HP_YSHIFT, p.getMaxHP(), p.getCurrentHP());
+        
+        g2.setColor(new Color(62,59,68));     
+        //System.out.println((f.getStringBounds("", new FontRenderContext(null,true,true)).getHeight()));
+        //g2.draw(new Rectangle2D.Double(x+NAME_XSHIFT,y+NAME_YSHIFT,f.getStringBounds("Hello", new FontRenderContext(null,true,true)).getWidth(),f.getStringBounds("Hello", new FontRenderContext(null,true,true)).getHeight()));
+        String name = p.getName() + "  Lv: "+p.getLevel();
+        g2.drawString(name, x+NAME_XSHIFT,y+NAME_YSHIFT+ (int)(f.getStringBounds(name, new FontRenderContext(null,true,true)).getHeight()));
+        String hp = p.getCurrentHP() + "/" + p.getMaxHP();
+        g2.drawString(hp, x+HP2_XSHIFT,y+HP2_YSHIFT+ (int)(f.getStringBounds(hp, new FontRenderContext(null,true,true)).getHeight()));
     }
 }
