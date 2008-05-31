@@ -21,7 +21,7 @@ public class Character extends Person{
         walking = new Animation("Walking");
         press = 0;
         jumping=0;
-        addPokemon(new Pokemon("Meh",15));
+        addPokemon(new Pokemon("Rattata",15));
         
     }
     
