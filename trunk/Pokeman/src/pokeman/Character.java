@@ -21,7 +21,7 @@ public class Character extends Person{
         walking = new Animation("Walking");
         press = 0;
         jumping=0;
-        addPokemon(new Pokemon("Meh",5));
+        addPokemon(new Pokemon("Meh",15));
         
     }
     
@@ -126,7 +126,9 @@ public class Character extends Person{
             return null;
         Object maker = c.getMaker();
         if(maker instanceof Person){
+            
             Person p = (Person)maker;
+            
             if(getDirection() == Animation.UP)
                 p.setDirection(Animation.DOWN);
             if(getDirection() == Animation.DOWN)

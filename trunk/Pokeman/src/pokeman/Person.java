@@ -146,7 +146,7 @@ public class Person implements Comparable<Person>
      */
     protected boolean canMove(int dir){
         Collideable col = getCollision(dir);
-        return (col==null || col.getNumber(0)!=1); 
+        return (col==null || col.getNumber(0)==0); 
     }
     
     public int getX(){
@@ -202,8 +202,10 @@ public class Person implements Comparable<Person>
         if(dir==Animation.NONE){
             col = w.inCollision(new Collideable(this,x/Window.TILE_WIDTH,y/Window.TILE_HEIGHT+1,0,0,0));
         }
-        
-        return col;
+        if(col!=null && col.getMaker()!=this)
+            return col;
+        else
+            return null;
     }
 
     public int compareTo(Person p) {

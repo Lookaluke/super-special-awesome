@@ -1,6 +1,9 @@
 
 package pokeman;
 
+import java.awt.Graphics2D;
+import javax.swing.JFrame;
+
 /**
  * The back-end to the battle system. Each battle is instantiated, with 
  * either a pokemon and 
@@ -13,34 +16,24 @@ public class Battle {
     
     //should this be an int?
     private Pokemon theirCurrent;
-    private String text;
+    
+    private BattleFrontEnd frontEnd;
 
 
     
     
-    public Battle(Character you, Pokemon enemy) {
+    public Battle(Character you, Pokemon enemy,JFrame frame) {
+        frontEnd = new BattleFrontEnd(frame);
         yours = you.currentPokemon()[0];
         theirs = new Pokemon[1];
         theirs[0] = enemy;
         theirCurrent = enemy;
-        text = "A "+enemy.getName()+" has appeared!";
-
+        frontEnd.setPokemon(theirCurrent, false);
+        frontEnd.setPokemon(yours,true);
+        frontEnd.setText("A "+enemy.getName()+" has appeared!");
     }
     
-    
-    public String getText(){
-        String temp = text;
-        text = null;
-        return temp;
-    }
-    
-    public Pokemon getYourPokemon(){
-        return yours;
-    }
-    
-    public Pokemon getTheirPokemon(){
-        return theirCurrent;
-    }
+  
     
 
 
@@ -64,9 +57,13 @@ public class Battle {
             return;
         
         
-        int movenumber = (int)(Math.random() * 4);
-        Move theirMove = theirCurrent.getMoves()[movenumber]; 
         
+        Move theirMove=null;
+        while(theirMove==null){
+            int movenumber = (int)(Math.random() * 4);        
+             theirMove = theirCurrent.getMoves()[movenumber]; 
+        }
+               
         if (yours.getSpeed() > theirCurrent.getSpeed())
         {
             //perform your move first
@@ -83,7 +80,21 @@ public class Battle {
             yours.takeDamage(calculateDamage(theirMove, false));
             theirCurrent.takeDamage(calculateDamage(yourMove, true));
         }
-        text = "It's super effective";
+        frontEnd.setText("It's super effective");
+    }
+    
+    public void draw(Graphics2D g2){
+        frontEnd.draw(g2);
+        
+        Object result = frontEnd.getResult();
+        if(result!=null && result instanceof Move){
+            turn((Move)result);
+        }
+        
+        if(!frontEnd.waiting())
+            frontEnd.makeMenu(BattleFrontEnd.MAIN);
+        
+        
     }
     
     /**
@@ -106,8 +117,8 @@ public class Battle {
         }
         
 
-        int accuracything = 0;//(int) (attacker.getAccuracy() * m.accuracy() * 0.0256);
-
+        //int accuracything = 0;//(int) (attacker.getAccuracy() * m.accuracy() * 0.0256);
+        int accuracything = (int) ( m.accuracy() * 2.56);
             
         if ((int)(Math.random() * 256) < accuracything)
         {
@@ -128,6 +139,7 @@ public class Battle {
             double typeModifer = m.element().multiplerAgainst(defender.getElement1()) * m.element().multiplerAgainst(defender.getElement2()) * 10;
             //tell front end its super/not very effective?
             int randomNumber = (int)(Math.random() * 39) + 217;
+            System.out.println((int)(((((Math.min(((((2*level/5 + 2)*attack*power)/Math.max(1, defense))/50), 997) + 2)*stab)*typeModifer)/10)*randomNumber)/255);
             return (int)(((((Math.min(((((2*level/5 + 2)*attack*power)/Math.max(1, defense))/50), 997) + 2)*stab)*typeModifer)/10)*randomNumber)/255;
         } else {
             return -1;

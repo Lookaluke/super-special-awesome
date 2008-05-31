@@ -20,8 +20,8 @@ import javax.swing.JFrame;
  * @author Mark
  */
 public class Menu {
-    private static final int widthFactor = 20, heightFactor = 10, curveFactor = 40, ySpaceFactor = 10, xSpaceFactor = 20;
-    private static final Font f = new Font("Arial",Font.PLAIN,30);
+    private static final int widthFactor = 20, heightFactor = 5, curveFactor = 40, ySpaceFactor = 5, xSpaceFactor = 20;
+    private static final Font f = new Font("Pokemon RS",Font.PLAIN,30);
     
     private String[] items;
     private int x,y,width,height,textHeight;
@@ -62,7 +62,10 @@ public class Menu {
             int xSpace = (width-2*widthFactor-xSpaceFactor)/perLine;
             for(int j=0;j<lines;j++){
                 for(int i=0;i<perLine;i++){
-                    g2.drawString(items[j*perLine+i],x+widthFactor+xSpaceFactor*(i+1)+xSpace*i,y+heightFactor+ySpaceFactor*(j)+textHeight*(j+1));
+                    String str = items[j*perLine+i];
+                    if(items[j*perLine+i]==null)
+                        str = "---";
+                    g2.drawString(str,x+widthFactor+xSpaceFactor*(i+1)+xSpace*i,y+heightFactor+ySpaceFactor*(j)+textHeight*(j+1));
                     if(selected == j*perLine+i){
                         int x1 = x+widthFactor+xSpaceFactor*(i+1)+xSpace*i;
                         int y1 = y+heightFactor+ySpaceFactor*(j)+textHeight*(j+1);
@@ -92,13 +95,13 @@ public class Menu {
         }
 
         public void keyPressed(KeyEvent e) {
-            if(e.getKeyCode()==KeyEvent.VK_UP && selected-items.length/lines>=0)
+            if(e.getKeyCode()==KeyEvent.VK_UP && selected-items.length/lines>=0 && (items[selected-items.length/lines]!=null))
                 selected-=items.length/lines;
-            if(e.getKeyCode()==KeyEvent.VK_DOWN && selected+items.length/lines<=items.length-1)
+            if(e.getKeyCode()==KeyEvent.VK_DOWN && selected+items.length/lines<=items.length-1 && (items[selected+items.length/lines]!=null))
                 selected+=items.length/lines;
-            if(e.getKeyCode()==KeyEvent.VK_RIGHT && selected<items.length-1)
+            if(e.getKeyCode()==KeyEvent.VK_RIGHT && selected<items.length-1 && (items[selected+1]!=null))
                 selected++;
-            if(e.getKeyCode()==KeyEvent.VK_LEFT && selected>0)
+            if(e.getKeyCode()==KeyEvent.VK_LEFT && selected>0 && (items[selected-1]!=null))
                 selected--;
             if(e.getKeyCode()==KeyEvent.VK_Z)
                 result = items[selected];

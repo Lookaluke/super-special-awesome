@@ -60,7 +60,7 @@ public class Window extends JComponent{
     private int control;
     private TextBox txt;
     private Menu menu;
-    private BattleFrontEnd battle;
+    private Battle battle;
     
     private ArrayList<String> trainerSayings = new ArrayList<String>();
         
@@ -76,7 +76,7 @@ public class Window extends JComponent{
         //menu = new Menu(frame,str,0,475,600,101);
         //player.allowUpdate(false);
         
-        battle = new BattleFrontEnd(new Battle(player,new Pokemon("Friger",3)),frame);
+        battle = new Battle(player,new Pokemon("Friger",3),frame);
         
         this.frame = frame;
         
@@ -161,10 +161,10 @@ public class Window extends JComponent{
             }
             g2.setColor(Color.RED);
 
-            /*for(Collideable c:collision){
+            for(Collideable c:collision){
                 if(c.getNumber(0)!=0)
                     g2.draw(new Rectangle(c.getX()*TILE_WIDTH+x, c.getY()*TILE_HEIGHT+y, TILE_WIDTH, TILE_HEIGHT));
-            }*/
+            }
 
 
 
@@ -412,7 +412,7 @@ public class Window extends JComponent{
     {
         
         public void keyTyped(KeyEvent keyEvent) {    
-            if(keyEvent.getKeyChar()=='z' && (txt==null || txt.isOver()))
+            if(timerCounter==0 && keyEvent.getKeyChar()=='z' && (txt==null || txt.isOver()))
             {
                 String str = player.read();
                 if(str!=null)
