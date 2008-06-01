@@ -41,62 +41,54 @@ public class Turn implements Runnable{
             int movenumber = (int)(Math.random() * 4);        
              theirMove = theirCurrent.getMoves()[movenumber]; 
         }
-               
-        if (yours.getSpeed() > theirCurrent.getSpeed())
+            
+        System.out.println(yours.getSpeed());
+        System.out.println(theirCurrent.getSpeed());
+        
+        if (yours.getSpeed() > theirCurrent.getSpeed() || (yours.getSpeed() == theirCurrent.getSpeed() && Math.random()<0.5))
         {
             //perform your move first
-            
-            frontEnd.setText(yours.getName()+" used "+yourMove.name());        
+            while(frontEnd.waiting());
+            frontEnd.setText(yours.getName()+" used "+yourMove.name());   
+            frontEnd.removeKeyListener();
                     
             //we need to modify takeDamage() to properly handle pokemon fainting
-            int max=calculateDamage(yourMove, true);
-            for(int i=0;i<max;i++){
-                try {
-                    theirCurrent.takeDamage(i);
-                    Thread.sleep(200);
-                } catch (InterruptedException ex) {
-                    System.out.println("interupted");
-                }
-            }
+
+            theirCurrent.takeDamage(calculateDamage(yourMove, true));
+
+            while(frontEnd.waitingForHP());
+            frontEnd.addKeyListener();
+            while(frontEnd.waiting());
             
-            
+            frontEnd.setText(theirCurrent.getName()+" used "+theirMove.name());   
+            frontEnd.removeKeyListener();
            
             //now do their move
-            max=calculateDamage(theirMove, false);
-            for(int i=0;i<max;i++){
-                try {
-                    yours.takeDamage(i);
-                    Thread.sleep(200);
-                } catch (InterruptedException ex) {
-                    System.out.println("interupted");
-                }
-            }
+            yours.takeDamage(calculateDamage(theirMove, false));
+            while(frontEnd.waitingForHP());
+            frontEnd.addKeyListener();
+            while(frontEnd.waiting());
+            
         } 
         else 
         {
-            frontEnd.setText(yours.getName()+" used "+yourMove.name());   
+            frontEnd.setText(theirCurrent.getName()+" used "+theirMove.name());   
+            frontEnd.removeKeyListener();
+            
+            yours.takeDamage(calculateDamage(theirMove, false));
+            
+            while(frontEnd.waitingForHP());
+            frontEnd.addKeyListener();
             while(frontEnd.waiting());
             
-            int max=calculateDamage(theirMove, false);
-            for(int i=0;i<max;i++){
-                try {
-                    yours.takeDamage(i);
-                    Thread.sleep(200);
-                } catch (InterruptedException ex) {
-                    System.out.println("interupted");
-                }
-            }
+            frontEnd.setText(yours.getName()+" used "+yourMove.name());   
+            frontEnd.removeKeyListener();
             
+            theirCurrent.takeDamage(calculateDamage(yourMove, true));
             
-            max=calculateDamage(yourMove, true);
-            for(int i=0;i<max;i++){
-                try {
-                    theirCurrent.takeDamage(i);
-                    Thread.sleep(200);
-                } catch (InterruptedException ex) {
-                    System.out.println("interupted");
-                }
-            }
+            while(frontEnd.waitingForHP());
+            frontEnd.addKeyListener();
+            while(frontEnd.waiting());
         }
         //frontEnd.setText("It's super effective");
     }

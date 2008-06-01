@@ -34,7 +34,9 @@ public class TextBox{
     private boolean over;
     private int index,finalIndex;
     private int arrowOff;
-            
+    private boolean hasKeyListener;    
+    private KeyListener key;
+    
     public TextBox(JFrame fr,String s,int x,int y,int width,int height,boolean scrolls){
         
         try{
@@ -51,8 +53,9 @@ public class TextBox{
         this.width = width;
         this.height = height;
         
+        key = new Key();
         
-        fr.addKeyListener(new Key());
+        fr.addKeyListener(key);
         frame = fr;
         
         
@@ -85,7 +88,17 @@ public class TextBox{
                 finalIndex += str[j].length();
         if(!scrolls)
             index = finalIndex;
-        
+        hasKeyListener = true;
+    }
+    
+    public void removeKeyListener(){
+        hasKeyListener = false;
+        frame.removeKeyListener(key);
+    }
+    
+    public void addKeyListener(){
+        hasKeyListener = true;
+        frame.addKeyListener(key);        
     }
     
     public void draw(Graphics2D g2){
@@ -101,9 +114,11 @@ public class TextBox{
 
             g2.setFont(f);
 
-            if(index<finalIndex)
-            {
-                index++;
+            for(int k=0;k<3;k++){
+                if(index<finalIndex)
+                {                
+                    index++;
+                }
             }
             
             int i=-line;
@@ -129,7 +144,7 @@ public class TextBox{
             
             
             
-            if(index == finalIndex){
+            if(index == finalIndex && hasKeyListener){
                 if(arrowOff>5)
                 {
                     int[] xCoords = {x+width-widthFactor-25,x+width-widthFactor-5,x+width-widthFactor-15};
@@ -145,6 +160,10 @@ public class TextBox{
 
     }
 
+    public void destroy(){
+        over = true;
+    }
+    
     public boolean isOver(){
         return over;
     }

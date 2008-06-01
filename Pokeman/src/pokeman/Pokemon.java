@@ -111,7 +111,7 @@ public class Pokemon implements Serializable
                if(moveLevels.get(i)<=level){
                    moves[index] = availableMoves.get(i);
                    index++;
-                   if(index>moves.length)
+                   if(index>=moves.length)
                        break;
                }
            }
