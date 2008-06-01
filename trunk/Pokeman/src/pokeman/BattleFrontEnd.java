@@ -33,11 +33,10 @@ public class BattleFrontEnd {
     private int menuType;
     private JFrame frame;
     private BufferedImage background,circle;
-    private Move lastMove;
+
     private Pokemon theirs,yours;
+    private double yourCurrentPercent,theirCurrentPercent;
     
-    //for testing purposes only, remove in final
-    private int a = 100;
 
 
     
@@ -90,13 +89,30 @@ public class BattleFrontEnd {
     public void setPokemon(Pokemon p,boolean isYours){
         if(isYours){
             yours = p;
+            yourCurrentPercent = yours.getCurrentHP()/yours.getMaxHP();
         }else{
             theirs = p;
+            theirCurrentPercent = theirs.getCurrentHP()/theirs.getMaxHP();
         }
     }
     
     public void setText(String text){
         txt = new TextBox(frame,text,0,475,800,101,true);
+    }
+    
+    public boolean removeKeyListener(){
+        if(txt==null)
+            return false;
+        txt.removeKeyListener();
+        return true;
+    }
+    
+    
+    public boolean addKeyListener(){
+        if(txt==null)
+            return false;
+        txt.addKeyListener();
+        return true;
     }
     
     public void makeMenu(int type){
@@ -138,7 +154,11 @@ public class BattleFrontEnd {
         return txt!=null || menu!=null || moveMenu!=null;
     }
     
-    public void drawHpBar(Graphics2D g2, int x, int y, int totalHP, int currentHP){
+    public boolean waitingForHP(){
+        return Math.abs(yourCurrentPercent-yours.getCurrentHP()/(double)yours.getMaxHP())>.1 || Math.abs(theirCurrentPercent-theirs.getCurrentHP()/(double)theirs.getMaxHP())>.1;
+    }
+    
+    public double drawHpBar(Graphics2D g2, int x, int y, int totalHP, int currentHP,double currentPercent){
 
         //sizes for the large dark green round rectangle
         int MAINWIDTH = 132, MAINHEIGHT = 14, MAINARCS = 10;
@@ -167,10 +187,10 @@ public class BattleFrontEnd {
         //DRAW COLORED HEALTH BAR
         Color cone;
         Color ctwo;
-        if(currentHP > ((int)(2.25 * totalHP/4 + 0.75))){
+        if(currentPercent * totalHP > ((int)(2.25 * totalHP/4 + 0.75))){
             cone = new Color(88, 208, 128);
             ctwo = new Color(112, 248, 168);
-        } else if (currentHP > (265*(int)(0.2*totalHP + 0.2)/256 + 2)) {
+        } else if (currentPercent * totalHP > (265*(int)(0.2*totalHP + 0.2)/256 + 2)) {
             cone = new Color(200, 168, 8);
             ctwo = new Color(248, 224, 56);
         } else {
@@ -178,7 +198,19 @@ public class BattleFrontEnd {
             ctwo = new Color(248, 88, 56);
         }
         
+        
+        
         int RectActualWidth =(int)(RectMaxWidth * (currentHP/(double)totalHP));
+        
+        
+        double d = 1/(double)RectMaxWidth;
+        for(int i=0;i<2;i++){            
+            if(RectActualWidth/(double)RectMaxWidth<currentPercent-d){
+                    currentPercent-=d;
+            }
+        }
+        
+        RectActualWidth = (int)(RectMaxWidth * currentPercent);
         
         Rectangle2D.Double rect = new Rectangle2D.Double(x+XRectOffset, y+YRectOffset,
                 RectActualWidth, SmallHeight);
@@ -238,6 +270,8 @@ public class BattleFrontEnd {
         square.x = x+18;
         g2.fill(square);
         
+        return currentPercent;
+        
     }
     
     public void drawInterface(Graphics2D g2, boolean yours, Pokemon p,int x, int y){
@@ -284,24 +318,30 @@ public class BattleFrontEnd {
             g2.setColor(new Color(252,249,216));        
             g2.fill(new RoundRectangle2D.Double(x+5,y+5,WIDTH-10,HEIGHT-10,ARC,ARC));        
 
-            drawHpBar(g2, x+HP_XSHIFT, y+HP_YSHIFT, p.getMaxHP(), p.getCurrentHP());
-
+            boolean done = false;
+            if(yours){
+                double temp = yourCurrentPercent;
+                yourCurrentPercent = drawHpBar(g2, x+HP_XSHIFT, y+HP_YSHIFT, p.getMaxHP(), p.getCurrentHP(),yourCurrentPercent);
+                done = Math.abs(yourCurrentPercent-temp)<.001;
+            }else
+                theirCurrentPercent = drawHpBar(g2, x+HP_XSHIFT, y+HP_YSHIFT, p.getMaxHP(), p.getCurrentHP(),theirCurrentPercent);
+            
             g2.setColor(new Color(62,59,68));     
             String name = p.getName() + "  Lv: "+p.getLevel();
 
             g2.drawString(name, x+NAME_XSHIFT,y+NAME_YSHIFT+ (int)(f.getStringBounds(name, new FontRenderContext(null,true,true)).getHeight()));
             if(!yours)
                 return;
-            String hp = p.getCurrentHP() + "/" + p.getMaxHP();
+            int health = (int)(yourCurrentPercent*p.getMaxHP());
+            if(done)
+                health = p.getCurrentHP();
+            String hp = health + "/" + p.getMaxHP();
+            System.out.println(p.getCurrentHP());
             g2.drawString(hp, x+HP2_XSHIFT,y+HP2_YSHIFT+ (int)(f.getStringBounds(hp, new FontRenderContext(null,true,true)).getHeight()));
         } catch (FontFormatException e) {
             System.out.println("Bad font file");
         } catch (IOException e){
             System.out.println("Bad File Name");
         }
-
-
-
-
     }
 }
