@@ -35,9 +35,6 @@ public class Battle {
     
   
     
-
-
-
     /*
     public Battle(Character you, Trainer enemy){
         theirs = enemy.getPokemonArray();
@@ -47,6 +44,10 @@ public class Battle {
     */
 
     
+    /**
+     * tells the front end to draw the stuff.
+     * @param g2
+     */
     public void draw(Graphics2D g2){
         frontEnd.draw(g2);
         
@@ -59,11 +60,6 @@ public class Battle {
             turnThread.start();
         }
         
-
-        
-        
     }
-    
-
     
 }

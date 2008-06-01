@@ -25,8 +25,9 @@ public class Pokemon implements Serializable
    private int baseHP, currentHP, level, experience, levelGrowth, attack,
            defense, special, speed;
    
-   BufferedImage front,back;
-   Move[] moves = new Move[4];
+   private int attackmod, defensemod, specialmod, speedmod;
+   private BufferedImage front,back;
+   private Move[] moves = new Move[4];
    
    //the next two are parallel...this may result in problems and Mr. Horn
    //told us not to do this.
@@ -121,13 +122,13 @@ public class Pokemon implements Serializable
        }
    }
    
-   private String getInfo(String s,String after){
-       int index = s.indexOf(after)+after.length()+1;
-       int index2 = s.indexOf(",",index);
-       if(index2==-1)
-           return s.substring(index).trim();
-       return s.substring(index,index2).trim();
-   }
+    private String getInfo(String s,String after){
+        int index = s.indexOf(after)+after.length()+1;
+        int index2 = s.indexOf(",",index);
+        if(index2==-1)
+            return s.substring(index).trim();
+        return s.substring(index,index2).trim();
+    }
    
    /**
     * 
@@ -149,100 +150,118 @@ public class Pokemon implements Serializable
     * @param stat status
     * @deprecated
     */
-   public Pokemon(String n,int t, int h, int l, int lg, int e, int a, int d, int s,
-           int sp, BufferedImage f, BufferedImage b, Move[] m, Element e1,
-           Element e2, Status stat)
-   {
-       name = n;
-       baseHP = t;
-       currentHP = h;
-       level = l;
-       levelGrowth = lg;
-       experience = e;
-       attack = a;
-       defense = d;
-       special = s;
-       speed = sp;
-       front = f;
-       back = b;
-       moves = m;
-       element1 = e1;
-       element2 = e2;
-       status = stat;
-   }
+    public Pokemon(String n,int t, int h, int l, int lg, int e, int a, int d, int s,
+            int sp, BufferedImage f, BufferedImage b, Move[] m, Element e1,
+            Element e2, Status stat)
+    {
+        name = n;
+        baseHP = t;
+        currentHP = h;
+        level = l;
+        levelGrowth = lg;
+        experience = e;
+        attack = a;
+        defense = d;
+        special = s;
+        speed = sp;
+        front = f;
+        back = b;
+        moves = m;
+        element1 = e1;
+        element2 = e2;
+        status = stat;
+    }
    
    /**
-    * Returns the Name
+    * @return the Name
     */
-   public String getName(){
-       return name;
-   }
+    public String getName(){
+          return name;
+    }
    
    /**
-    * Returns the level
+    * @return the level
     */
-   public int getLevel(){
-       return level;
-   }
+    public int getLevel(){
+        return level;
+    }
    
+    
    /**
-    * Returns the experience
+    * 
+    * @return current experience
     */
-   public int getExperience(){
-       return experience;
-   }
+      public int getExperience(){
+        return experience;
+     }
    
    /**
-    * Returns the attack
+    * @return the attack
     */
-   public int getAttack(){
-       return (2 * attack * level/100) + 5;
-   }
+    public int getAttack(){
+        if (attackmod > 0){
+           return (int) (((2 * attack * level/100) + 5) * (3+attackmod)/3.0);
+        } else {
+            return (int)(((2 * attack * level/100) + 5) * 3.0/(3-attackmod));
+        }
+    }
    
    /**
-    * Returns the defense
+    * @return the defense
     */
    public int getDefense(){
-       return (2 * defense * level/100) + 5;
+       if (defensemod > 0){
+           return (int) (((2 * defense * level/100) + 5) * (3+defensemod)/3.0);
+        } else {
+            return (int)(((2 * defense * level/100) + 5) * 3.0/(3-defensemod));
+        }
    }
    
    /**
-    * Returns the special
+    * @return the special
     */
    public int getSpecial(){
-       return (2 * special * level/100) + 5;
+       if (specialmod > 0){
+           return (int) (((2 * special * level/100) + 5) * (3+specialmod)/3.0);
+        } else {
+            return (int)(((2 * special * level/100) + 5) * 3.0/(3-specialmod));
+        }
    }
    
    /**
-    * Returns the speed
+    * @return the speed
     */
    public int getSpeed(){
-       return (2 * speed * level/100) + 5;
+       if (speedmod > 0){
+           return (int) (((2 * speed * level/100) + 5) * (3+speedmod)/3.0);
+        } else {
+            return (int)(((2 * speed * level/100) + 5) * 3.0/(3-speedmod));
+        }
    }
    
    /**
-    * Returns max HP
+    * @return max HP
     */
    public int getMaxHP(){
        return (2 * baseHP * level/100) + 10 + level;
    }
    
    /**
-    * Returns current HP
+    * @return current HP
     */
    public int getCurrentHP(){
        return currentHP;
    }
    
    /**
-    * Returns the front image
+    * @return the front image
     */
    public BufferedImage getFront(){
        return front;
    } 
 
     /**
-    * Returns the back image
+    * @return the back image
      */
    public BufferedImage getBack(){
        return back;
@@ -250,21 +269,21 @@ public class Pokemon implements Serializable
 
    
    /**
-    * Returns the moves
+    * @return the moves
     */
    public Move[] getMoves(){
        return moves;
    }
    
    /**
-    * Returns the element1
+    * @return the element1
     */
    public Element getElement1(){
        return element1;
    }
    
    /**
-    * Returns the element2
+    * @return the element2
     */
    public Element getElement2(){
        return element2;
@@ -295,7 +314,7 @@ public class Pokemon implements Serializable
            return tempexp >= (int) (1.2*Math.pow(nextlevel, 3) - 15 *
                    Math.pow(nextlevel, 2) + 100 * nextlevel - 140);
        } else {
-           throw new IllegalStateException("Pokemon doesn't have valid growth rate");
+           throw new IllegalStateException("invalid pokemon growth rate");
        }
    }
    
@@ -342,5 +361,73 @@ public class Pokemon implements Serializable
    
    public void reset(){
        //get rid of temporary stat changes
+       attackmod = 0;
+       defensemod = 0;
+       speedmod = 0;
+       specialmod = 0;
+   }
+   
+   public boolean increaseAttack(){
+       if(attackmod < 6){
+           attackmod++;
+           return true;
+       }else
+           return false;
+   }
+   
+   public boolean increaseDefense(){
+       if(defensemod < 6){
+           defensemod++;
+           return true;
+       }else
+           return false;
+   }
+   
+   public boolean increaseSpeed(){
+       if(speedmod < 6){
+           speedmod++;
+           return true;
+       }else 
+           return false;
+   }
+   
+   public boolean increaseSpecial(){
+       if(specialmod < 6){
+           specialmod++;
+           return true;
+       } else 
+           return false;
+   }
+   
+   public boolean reduceAttack(){
+       if(attackmod > -6){
+           attackmod--;
+           return true;
+       } else 
+           return false;
+   }
+   
+   public boolean reduceDefense(){
+       if (defensemod > -6){
+           defensemod--;
+           return true;
+       } else 
+           return false;
+   }
+   
+   public boolean reduceSpeed(){
+       if (speedmod > -6){
+           speedmod--;
+           return true;
+       } else 
+           return false;
+   }
+   
+   public boolean reduceSpecial(){
+       if(specialmod > -6){
+           speedmod--;
+           return true;
+       } else 
+           return false;
    }
 }
