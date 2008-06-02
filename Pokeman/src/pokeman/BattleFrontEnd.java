@@ -27,8 +27,9 @@ import javax.swing.JFrame;
 public class BattleFrontEnd {
     
     public static final int NONE = -1,MAIN = 0,MOVE = 1;
+    private static final int TXT_HEIGHT = 101;
     
-    private TextBox txt;
+    private TextBox txt,back;
     private Menu menu,moveMenu;
     private int menuType;
     private JFrame frame;
@@ -36,20 +37,22 @@ public class BattleFrontEnd {
 
     private Pokemon theirs,yours;
     private double yourCurrentPercent,theirCurrentPercent;
+
     
 
 
     
-    private int xBorder = 150,yBorder = 30,yStart=475;
+    private int yBorder = 30,yStart=475;
     
     public BattleFrontEnd(JFrame frame){
         try {
             this.frame = frame;
             
             menuType = NONE;
-
-            background = ImageIO.read(new File("Images\\BattleBackground.png"));
-            circle = ImageIO.read(new File("Images\\circle.png"));
+            back = new TextBox(frame,"",0,475,800,TXT_HEIGHT,false,Style.BATTLE_TEXT2);
+            back.removeKeyListener();
+            background = ImageIO.read(new File("Images\\BattleBackground4.png"));
+            circle = ImageIO.read(new File("Images\\circle2.png"));
         } catch (IOException ex) {
             Logger.getLogger(BattleFrontEnd.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -61,7 +64,8 @@ public class BattleFrontEnd {
         g2.drawImage(circle,null,0,yStart-yBorder-circle.getHeight()+75);
         g2.drawImage(circle,null,Window.WIDTH-circle.getWidth(),yBorder+75);
 
-
+        back.draw(g2);
+        
         if(txt!=null){
             txt.draw(g2);
             if(txt.isOver())
@@ -72,16 +76,23 @@ public class BattleFrontEnd {
 
         if(menu!=null){
             menu.draw(g2);
+            if(menuType==MOVE){
+                int i = menu.getSelected();
+                txt = new TextBox(frame,"PP: "+yours.getMoves()[i].getPP()+"/"+yours.getMoves()[i].getTotalPP()+" "+yours.getMoves()[i].element(),600,yStart,200,TXT_HEIGHT,false,Style.BATTLE_TEXT3);
+                txt.removeKeyListener();
+            }
             if(menu.result()!=null && menu.result().equals("Attack"))
                 makeMenu(MOVE);
+            if(menu.result()!=null && menuType==MOVE)
+                txt = null;
         }
 
 
         
-        g2.drawImage(yours.getBack(),null,xBorder,Window.HEIGHT-101-yours.getBack().getHeight());
-        g2.drawImage(theirs.getFront(),null,Window.WIDTH-xBorder-theirs.getBack().getWidth(),yBorder);
+        g2.drawImage(yours.getBack(),null,0+circle.getWidth()/2-yours.getBack().getWidth()/2,Window.HEIGHT-TXT_HEIGHT-yours.getBack().getHeight());
+        g2.drawImage(theirs.getFront(),null,Window.WIDTH-circle.getWidth()/2-theirs.getBack().getWidth()/2,yBorder);
         
-        drawInterface(g2, true, yours, 435, Window.HEIGHT-101-85);
+        drawInterface(g2, true, yours, 485, Window.HEIGHT-101-85-20);
         drawInterface(g2, false, theirs, 10, 30);        
         
     }
@@ -97,7 +108,7 @@ public class BattleFrontEnd {
     }
     
     public void setText(String text){
-        txt = new TextBox(frame,text,0,475,800,101,true);
+        txt = new TextBox(frame,text,0,475,800,TXT_HEIGHT,true,Style.BATTLE_TEXT2);
     }
     
     public boolean removeKeyListener(){
@@ -120,13 +131,13 @@ public class BattleFrontEnd {
         
         if(type == MAIN){
             String[] str = {"Attack","Pokemon","Item","Run"};
-            menu = new Menu(frame,str,0,yStart,600,576-yStart);
+            menu = new Menu(frame,str,300,yStart,500,TXT_HEIGHT,Style.BATTLE_TEXT3);
         }
         
         if(type == MOVE){
             Move[] moves = yours.getMoves();
             String[] str = {moves[0]==null?null:moves[0].name(),moves[1]==null?null:moves[1].name(),moves[2]==null?null:moves[2].name(),moves[3]==null?null:moves[3].name()};
-            menu = new Menu(frame,str,0,yStart,600,576-yStart);
+            menu = new Menu(frame,str,0,yStart,600,TXT_HEIGHT,Style.BATTLE_TEXT3);
         }
     }
     
@@ -285,7 +296,7 @@ public class BattleFrontEnd {
             int HP_XSHIFT = 55,HP_YSHIFT = 35;
             int NAME_XSHIFT = 35,NAME_YSHIFT = 0;
             int HP2_XSHIFT = 100,HP2_YSHIFT = 38;
-            int EXP_HEIGHT = 10,EXP_SHIFT=20,EXP_WIDTH=EXP_SHIFT+WIDTH+10,EXP_EXTENSION=5;
+            int EXP_HEIGHT = 10,EXP_SHIFT=20,EXP_WIDTH=EXP_SHIFT+WIDTH+10,EXP_EXTENSION=0;
 
             x += EXP_SHIFT;
 

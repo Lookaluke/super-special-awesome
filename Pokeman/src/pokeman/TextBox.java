@@ -13,6 +13,7 @@ import java.awt.Polygon;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.font.FontRenderContext;
+import java.awt.geom.Rectangle2D;
 import java.awt.geom.RoundRectangle2D;
 import java.io.File;
 import java.io.IOException;
@@ -36,9 +37,10 @@ public class TextBox{
     private int arrowOff;
     private boolean hasKeyListener;    
     private KeyListener key;
+    private Style style;
     
-    public TextBox(JFrame fr,String s,int x,int y,int width,int height,boolean scrolls){
-        
+    public TextBox(JFrame fr,String s,int x,int y,int width,int height,boolean scrolls,Style style){
+        this.style = style;
         try{
             f = Font.createFont(Font.TRUETYPE_FONT, new File("Pokemon RS part B.ttf"));
             f = f.deriveFont(Font.PLAIN, 30);
@@ -103,11 +105,21 @@ public class TextBox{
     
     public void draw(Graphics2D g2){
         if(!over){
-            g2.setColor(new Color(86,218,228));
-            g2.fill(new RoundRectangle2D.Double(x,y,width,height,curveFactor,curveFactor));
-            g2.setColor(Color.WHITE);
-            g2.fill(new RoundRectangle2D.Double(x+widthFactor/2,y+heightFactor/2,width-widthFactor,height-heightFactor,curveFactor,curveFactor));
-
+            
+            g2.setColor(style.getColor(false));
+            
+            if(style.getShape(false) == Style.ROUNDED_RECTANGLE)
+                g2.fill(new RoundRectangle2D.Double(x,y,width,height,curveFactor,curveFactor));
+            if(style.getShape(false) == Style.RECTANGLE)
+                g2.fill(new Rectangle2D.Double(x,y,width,height));
+            
+            g2.setColor(style.getColor(true));
+            
+            if(style.getShape(true) == Style.ROUNDED_RECTANGLE)
+                g2.fill(new RoundRectangle2D.Double(x+widthFactor/2,y+heightFactor/2,width-widthFactor,height-heightFactor,curveFactor,curveFactor));
+            if(style.getShape(true) == Style.RECTANGLE)
+                g2.fill(new Rectangle2D.Double(x+widthFactor/2,y+heightFactor/2,width-widthFactor,height-heightFactor));
+                
             g2.setColor(Color.BLACK);
 
 
