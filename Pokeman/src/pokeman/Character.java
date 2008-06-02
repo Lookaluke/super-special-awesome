@@ -3,6 +3,7 @@ package pokeman;
 
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.awt.Color;
 
 /**
  * 
@@ -21,7 +22,7 @@ public class Character extends Person{
         walking = new Animation("Walking");
         press = 0;
         jumping=0;
-        addPokemon(new Pokemon("Rattata",15));
+        addPokemon(new Pokemon("Meh",15));
         
     }
     
@@ -41,8 +42,14 @@ public class Character extends Person{
 
         }
         super.draw(g,currentX,currentY+moreHeight);
+        
+        if(moreHeight != 0)
+        {
+            g.setColor(Color.BLACK);
+            g.fillOval(Window.TILE_WIDTH * 12, (int)(Window.TILE_HEIGHT * 10.6), Window.TILE_WIDTH,Window.TILE_HEIGHT / 2);
+        }
     }
-
+        
     
     
     @Override
