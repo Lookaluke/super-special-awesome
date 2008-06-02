@@ -128,6 +128,14 @@ public class Move {
         
     }
     
+    public int attacksWhat(){
+        return attacksWhat;
+    }
+    
+    public boolean raises(){
+        return raises;
+    }
+    
     public Status statusEffect(){
         return effect;
     }

@@ -367,6 +367,42 @@ public class Pokemon implements Serializable
        specialmod = 0;
    }
    
+   public boolean increase(int what,int ammount){
+       boolean ret = false;
+       boolean realRet = false;
+       for(int i=0;i<ammount;i++){
+           if(what==Move.ATTACK)
+               ret = increaseAttack();
+           if(what==Move.DEFENSE)
+               ret = increaseDefense();
+           if(what==Move.SPECIAL)
+               ret = increaseSpecial();
+           if(what==Move.SPEED)
+               ret = increaseSpeed();
+           if(i==0)
+               realRet = ret;
+       }
+       return realRet;
+   }
+   
+  public boolean reduce(int what,int ammount){
+       boolean ret = false;
+       boolean realRet = false;
+       for(int i=0;i<ammount;i++){
+           if(what==Move.ATTACK)
+               ret = reduceAttack();
+           if(what==Move.DEFENSE)
+               ret = reduceDefense();
+           if(what==Move.SPECIAL)
+               ret = reduceSpecial();
+           if(what==Move.SPEED)
+               ret = reduceSpeed();
+           if(i==0)
+               realRet = ret;
+       }
+       return realRet;
+   }
+   
    public boolean increaseAttack(){
        if(attackmod < 6){
            attackmod++;

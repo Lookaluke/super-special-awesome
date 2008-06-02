@@ -19,6 +19,7 @@ public class Battle {
     
     private BattleFrontEnd frontEnd;
     private Thread turnThread;
+    private boolean isOver;
 
     
     
@@ -31,6 +32,7 @@ public class Battle {
         frontEnd.setPokemon(theirCurrent, false);
         frontEnd.setPokemon(yours,true);
         frontEnd.setText("A "+enemy.getName()+" has appeared!");
+        isOver = false;
     }
     
   
@@ -49,6 +51,12 @@ public class Battle {
      * @param g2
      */
     public void draw(Graphics2D g2){
+        boolean over = true;
+        for(int i=0;i<theirs.length;i++){
+            if(theirs[i].getCurrentHP()!=0)
+                over = false;
+        }
+        isOver = over;
         frontEnd.draw(g2);
         
         if(!frontEnd.waiting() && (turnThread==null || !turnThread.isAlive()))
@@ -60,6 +68,10 @@ public class Battle {
             turnThread.start();
         }
         
+    }
+    
+    public boolean isOver(){
+        return isOver;
     }
     
 }

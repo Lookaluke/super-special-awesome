@@ -76,7 +76,7 @@ public class Window extends JComponent{
         //menu = new Menu(frame,str,0,475,600,101);
         //player.allowUpdate(false);
         
-        battle = new Battle(player,new Pokemon("Rattata",80),frame);
+        battle = new Battle(player,new Pokemon("Friger",10),frame);
         
         this.frame = frame;
         
@@ -159,12 +159,13 @@ public class Window extends JComponent{
                 //people.get(i).update();
                 people.get(i).draw(g2, x, y);
             }
-            g2.setColor(Color.RED);
+            
+            /*g2.setColor(Color.RED);
 
             for(Collideable c:collision){
                 if(c.getNumber(0)!=0)
                     g2.draw(new Rectangle(c.getX()*TILE_WIDTH+x, c.getY()*TILE_HEIGHT+y, TILE_WIDTH, TILE_HEIGHT));
-            }
+            }*/
 
 
 
@@ -191,6 +192,8 @@ public class Window extends JComponent{
         
         if(control==1 && battle!=null){
             battle.draw(g2);
+            if(battle.isOver())
+                control = 0;
         }
         
 
@@ -416,7 +419,7 @@ public class Window extends JComponent{
             {
                 String str = player.read();
                 if(str!=null)
-                    txt = new TextBox(frame,str,0,475,800,101,true);
+                    txt = new TextBox(frame,str,0,475,800,101,true,Style.STANDARD_TEXT);
             }
         }
 
