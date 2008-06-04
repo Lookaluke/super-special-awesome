@@ -4,6 +4,7 @@ package pokeman;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.Color;
+import java.util.ArrayList;
 
 /**
  * 
@@ -16,6 +17,8 @@ public class Character extends Person{
     private Pokemon[] pkmn = new Pokemon[6];
     private int justUsed;
     private Person currentlyReading;
+    private ArrayList<Pokemon> allPokemon = new ArrayList<Pokemon>();
+    private static final int MAX_NUMBER_OF_POKEMON = 200;
     
     public Character(Window w){
         super("Walking","",(int)(Window.COLUMNS/2)*Window.TILE_WIDTH,(int)(Window.ROWS/2)*Window.TILE_HEIGHT,w);
@@ -190,4 +193,35 @@ public class Character extends Person{
         return pkmn;
     }
     
+    //takes pokemon in the index of current pkmn and adds to pc.
+    public boolean leavePokemon(int index){
+        if(index >= 0 && index <= 5 && allPokemon.size() < MAX_NUMBER_OF_POKEMON)
+        {
+            Pokemon transfer = pkmn[index];
+            pkmn[index] = null;
+            allPokemon.add(transfer);
+            return true;
+        }
+        else
+            return false;
+    }
+    
+    //takes pokemon in the index of pc and adds to pokemon if there is space.
+    public boolean takePokemon(int index){
+        if(index < allPokemon.size() && index >= 0)
+        {
+            for(int i = 0; i < pkmn.length; i++)
+            {
+                if(pkmn[i] == null)
+                {
+                    Pokemon transfer = allPokemon.remove(index);
+                    addPokemon(transfer);
+                    return true;
+                }
+            }
+            return false;
+        }
+        else
+            return false;
+    }
 }
