@@ -6,7 +6,7 @@ import javax.swing.JFrame;
 
 /**
  * The back-end to the battle system. Each battle is instantiated, with 
- * either a pokemon and 
+ * either a pokemon and you, or a trainer and you.
  * @author Kunal
  */
 
