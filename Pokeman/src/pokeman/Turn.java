@@ -42,10 +42,8 @@ public class Turn implements Runnable{
              theirMove = theirCurrent.getMoves()[movenumber]; 
         }
             
-        System.out.println(yours.getSpeed());
-        System.out.println(theirCurrent.getSpeed());
         
-        if (yours.getSpeed() > theirCurrent.getSpeed() || (yours.getSpeed() == theirCurrent.getSpeed() && Math.random()<0.5))
+        if (yours.getSpeed() >= theirCurrent.getSpeed())
         {
             //perform your move first
             while(frontEnd.waiting());
@@ -175,7 +173,6 @@ public class Turn implements Runnable{
             double typeModifer = m.element().multiplerAgainst(defender.getElement1()) * m.element().multiplerAgainst(defender.getElement2()) * 10;
             //tell front end its super/not very effective?
             int randomNumber = (int)(Math.random() * 39) + 217;
-            System.out.println((int)(((((Math.min(((((2*level/5 + 2)*attack*power)/Math.max(1, defense))/50), 997) + 2)*stab)*typeModifer)/10)*randomNumber)/255);
             return (int)(((((Math.min(((((2*level/5 + 2)*attack*power)/Math.max(1, defense))/50), 997) + 2)*stab)*typeModifer)/10)*randomNumber)/255;
         } else {
             return -1;

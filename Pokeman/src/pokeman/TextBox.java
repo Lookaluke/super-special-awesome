@@ -185,6 +185,7 @@ public class TextBox{
         public void keyTyped(KeyEvent e) {
 
             if(e.getKeyChar()=='z' && index==finalIndex){
+                
                 line+=2;
                 index = 0;
                 finalIndex = 0;

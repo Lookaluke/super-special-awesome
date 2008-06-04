@@ -95,15 +95,16 @@ public class BattleFrontEnd {
         drawInterface(g2, true, yours, 485, Window.HEIGHT-101-85-20);
         drawInterface(g2, false, theirs, 10, 30);        
         
+        
     }
     
     public void setPokemon(Pokemon p,boolean isYours){
         if(isYours){
             yours = p;
-            yourCurrentPercent = yours.getCurrentHP()/yours.getMaxHP();
+            yourCurrentPercent = yours.getCurrentHP()/(double)yours.getMaxHP();
         }else{
             theirs = p;
-            theirCurrentPercent = theirs.getCurrentHP()/theirs.getMaxHP();
+            theirCurrentPercent = theirs.getCurrentHP()/(double)theirs.getMaxHP();
         }
     }
     
@@ -347,7 +348,7 @@ public class BattleFrontEnd {
             if(done)
                 health = p.getCurrentHP();
             String hp = health + "/" + p.getMaxHP();
-            System.out.println(p.getCurrentHP());
+            //System.out.println(p.getCurrentHP());
             g2.drawString(hp, x+HP2_XSHIFT,y+HP2_YSHIFT+ (int)(f.getStringBounds(hp, new FontRenderContext(null,true,true)).getHeight()));
         } catch (FontFormatException e) {
             System.out.println("Bad font file");
