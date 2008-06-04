@@ -5,7 +5,9 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -70,6 +72,20 @@ public class Window extends JComponent{
      */
     public Window(JFrame frame){
         
+        
+        File file = new File("Images\\Pokeball.gif");
+        BufferedImage p = null;
+        try
+        {
+            p = ImageIO.read(file);
+        }
+        catch(IOException e)
+        {
+            e.printStackTrace();
+        }
+        Toolkit tools = Toolkit.getDefaultToolkit();
+        setCursor(tools.createCustomCursor(p, new Point(0,0),"Pokeball"));
+
         
         //txt = new TextBox(frame,"Hello welcome to pokemon razmatazz. How are you doing today? I am fine thanks for asking. My name is Mark, I'm the only person working on this project",0,475,800,101);
         //String[] str = {"Attack","Pokemon","Item","Run"};
