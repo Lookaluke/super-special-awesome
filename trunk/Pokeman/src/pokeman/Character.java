@@ -2,7 +2,6 @@
 package pokeman;
 
 import java.awt.Graphics2D;
-import java.awt.Rectangle;
 import java.awt.Color;
 import java.util.ArrayList;
 
@@ -69,6 +68,7 @@ public class Character extends Person{
 
         boolean isDoor = false;
         
+        
 
         if(justUsed==0 && col!=null && col.getNumber(0)>=-4 && col.getNumber(0)<=-1){
 
@@ -117,11 +117,18 @@ public class Character extends Person{
             justUsed = 4;
         else
             if(justUsed>0)
-                justUsed--;
+                justUsed--;   
 
+        if(direction!=Animation.NONE && col!=null && col.getNumber(0)>=50 && col.getNumber(0)<150)
+            getWindow().startBattle(new Battle(this,new Pokemon("Magikarp",45),getWindow().getFrame()));
+        
         makeMove(direction);
         
         direction = Animation.NONE;
+        
+        
+
+        
         
         
     }

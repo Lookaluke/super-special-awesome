@@ -120,6 +120,7 @@ public class Menu {
         }
 
         public void keyPressed(KeyEvent e) {
+            
             if(e.getKeyCode()==KeyEvent.VK_UP && selected-items.length/lines>=0 && (items[selected-items.length/lines]!=null))
                 selected-=items.length/lines;
             if(e.getKeyCode()==KeyEvent.VK_DOWN && selected+items.length/lines<=items.length-1 && (items[selected+items.length/lines]!=null))

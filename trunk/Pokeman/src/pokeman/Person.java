@@ -185,6 +185,7 @@ public class Person implements Comparable<Person>
         return direction;
     }
     
+    
     protected Collideable getCollision(int dir){
         Collideable col = null;
         if(dir==Animation.UP){

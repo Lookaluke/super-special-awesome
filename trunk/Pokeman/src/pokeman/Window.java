@@ -63,7 +63,7 @@ public class Window extends JComponent{
     private TextBox txt;
     private Menu menu;
     private Battle battle;
-    
+      
     private ArrayList<String> trainerSayings = new ArrayList<String>();
         
     /**
@@ -92,7 +92,8 @@ public class Window extends JComponent{
         //menu = new Menu(frame,str,0,475,600,101);
         //player.allowUpdate(false);
         
-        battle = new Battle(player,new Pokemon("Magikarp",45),frame);
+
+        
         
         this.frame = frame;
         
@@ -101,6 +102,7 @@ public class Window extends JComponent{
         this.setPreferredSize(new Dimension(WIDTH,HEIGHT));
         frame.pack();
         frame.addKeyListener(new KeyListen());
+        
                 
         loadTrainerSayings(trainerSayings,"Trainers\\Trainers.txt");
                 
@@ -126,7 +128,7 @@ public class Window extends JComponent{
         timerCounter = 0;
         pressBuffer = Animation.NONE;
         
-        control = 1;
+        control = 0;
         people.add(player);
         
         
@@ -206,10 +208,14 @@ public class Window extends JComponent{
             
         }
         
+        
         if(control==1 && battle!=null){
+
             battle.draw(g2);
-            if(battle.isOver())
+            if(battle.isOver()){
                 control = 0;
+                battle = null;
+            }
         }
         
 
@@ -423,6 +429,15 @@ public class Window extends JComponent{
         levelY = y;
     }
     
+    public void startBattle(Battle b){
+        control = 1;
+        battle = b;
+    }
+    
+    public JFrame getFrame(){
+        return frame;
+    }
+    
      /**
      * The class that implments the keyListener
      * This gets all the keyboard events
@@ -474,89 +489,89 @@ public class Window extends JComponent{
         public void actionPerformed(ActionEvent event){  
                         
 
-            
-            if(timerCounter==0 && !(upPressed || downPressed || rightPressed || leftPressed))
-            {
-                upPressed = pressBuffer == Animation.UP;// && collisionUp;
-                downPressed = pressBuffer == Animation.DOWN;// && collisionDown;
-                rightPressed = pressBuffer == Animation.RIGHT;// && collisionRight;
-                leftPressed = pressBuffer == Animation.LEFT;// && collisionLeft;
-            }
-            
-            /*
-             * Changes the animation 
-             */
-            if(timerCounter==0)
-            {
-                if(upPressed)
-                    player.direction(Animation.UP);   
-
-                if(downPressed)
-                    player.direction(Animation.DOWN); 
-
-                if(rightPressed)
-                    player.direction(Animation.RIGHT);   
-
-                if(leftPressed)
-                    player.direction(Animation.LEFT); 
-                
-
-            }
-            if(upPressed || downPressed || rightPressed || leftPressed)
-                timerCounter++;
-            else
-                timerCounter = 0;
-            
-            if(timerCounter==numberOfCounts)
-            {
-                timerCounter = 0;
-                            
-                if((stopUp && upPressed)){
-                    upPressed = false;
-                    stopUp = false;
-                    if(pressBuffer == Animation.UP)
-                        pressBuffer = Animation.NONE;
+            if(control==0){
+                if(timerCounter==0 && !(upPressed || downPressed || rightPressed || leftPressed))
+                {
+                    upPressed = pressBuffer == Animation.UP;// && collisionUp;
+                    downPressed = pressBuffer == Animation.DOWN;// && collisionDown;
+                    rightPressed = pressBuffer == Animation.RIGHT;// && collisionRight;
+                    leftPressed = pressBuffer == Animation.LEFT;// && collisionLeft;
                 }
-                if((stopDown && downPressed)){
-                    downPressed = false;
-                    stopDown = false;
-                    if(pressBuffer == Animation.DOWN)
-                        pressBuffer = Animation.NONE;
+
+                /*
+                 * Changes the animation 
+                 */
+                if(timerCounter==0)
+                {
+                    if(upPressed)
+                        player.direction(Animation.UP);   
+
+                    if(downPressed)
+                        player.direction(Animation.DOWN); 
+
+                    if(rightPressed)
+                        player.direction(Animation.RIGHT);   
+
+                    if(leftPressed)
+                        player.direction(Animation.LEFT); 
+
 
                 }
-                
-                if((stopRight && rightPressed)){
-                    rightPressed = false;
-                    stopRight = false;
-                    if(pressBuffer == Animation.RIGHT)
-                        pressBuffer = Animation.NONE;
+                if(upPressed || downPressed || rightPressed || leftPressed)
+                    timerCounter++;
+                else
+                    timerCounter = 0;
+
+                if(timerCounter==numberOfCounts)
+                {
+                    timerCounter = 0;
+
+                    if((stopUp && upPressed)){
+                        upPressed = false;
+                        stopUp = false;
+                        if(pressBuffer == Animation.UP)
+                            pressBuffer = Animation.NONE;
+                    }
+                    if((stopDown && downPressed)){
+                        downPressed = false;
+                        stopDown = false;
+                        if(pressBuffer == Animation.DOWN)
+                            pressBuffer = Animation.NONE;
+
+                    }
+
+                    if((stopRight && rightPressed)){
+                        rightPressed = false;
+                        stopRight = false;
+                        if(pressBuffer == Animation.RIGHT)
+                            pressBuffer = Animation.NONE;
+                    }
+
+                    if((stopLeft && leftPressed)){
+                        leftPressed = false;
+                        stopLeft = false;
+                        if(pressBuffer == Animation.LEFT)
+                            pressBuffer = Animation.NONE;
+                    }    
                 }
-                
-                if((stopLeft && leftPressed)){
-                    leftPressed = false;
-                    stopLeft = false;
-                    if(pressBuffer == Animation.LEFT)
-                        pressBuffer = Animation.NONE;
-                }    
+
+
+                x = -(player.getX()-(int)(Window.COLUMNS/2)*Window.TILE_WIDTH);
+                y = -(player.getY()-(int)(Window.ROWS/2)*Window.TILE_HEIGHT);
+
+                int tempX = player.getX()/WIDTH;
+                int tempY = -player.getY()/HEIGHT;
+
+                if(player.getX()<0)
+                    tempX--;
+                if(player.getY()<0)
+                    tempY++;
+
+                loadNewLevels(tempX,tempY);
+
+                levelX = tempX;
+                levelY = tempY;
             }
-
-            
-            x = -(player.getX()-(int)(Window.COLUMNS/2)*Window.TILE_WIDTH);
-            y = -(player.getY()-(int)(Window.ROWS/2)*Window.TILE_HEIGHT);
-            
-            int tempX = player.getX()/WIDTH;
-            int tempY = -player.getY()/HEIGHT;
-            
-            if(player.getX()<0)
-                tempX--;
-            if(player.getY()<0)
-                tempY++;
-            
-            loadNewLevels(tempX,tempY);
-            
-            levelX = tempX;
-            levelY = tempY;
-
                    
             
             repaint();
