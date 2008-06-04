@@ -92,7 +92,7 @@ public class Window extends JComponent{
         //menu = new Menu(frame,str,0,475,600,101);
         //player.allowUpdate(false);
         
-        battle = new Battle(player,new Pokemon("Friger",10),frame);
+        battle = new Battle(player,new Pokemon("Magikarp",45),frame);
         
         this.frame = frame;
         
@@ -126,7 +126,7 @@ public class Window extends JComponent{
         timerCounter = 0;
         pressBuffer = Animation.NONE;
         
-        control = 0;
+        control = 1;
         people.add(player);
         
         
