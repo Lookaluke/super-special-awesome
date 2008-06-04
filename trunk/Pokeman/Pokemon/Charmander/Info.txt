@@ -1,5 +1,5 @@
 Speed: Medium
-Element1: WATER, Element2: NOTHING
+Element1: FIRE, Element2: NOTHING
 Base Stats: Special:50, Attack:52, Defense:43, Speed:65, HP:39
 Moves:
 Tackle: 0

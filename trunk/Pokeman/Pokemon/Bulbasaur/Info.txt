@@ -1,5 +1,5 @@
 Speed: Medium
-Element1: WATER, Element2: NOTHING
+Element1: GRASS, Element2: NOTHING
 Base Stats: Special:65, Attack:49, Defense:49, Speed:45, HP:45
 Moves:
 Tackle: 0
