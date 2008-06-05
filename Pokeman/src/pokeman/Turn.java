@@ -43,10 +43,13 @@ public class Turn implements Runnable{
         }
             
         
+        boolean stop = true;
+        
         if (yours.getSpeed() >= theirCurrent.getSpeed())
         {
             //perform your move first
-            while(frontEnd.waiting());
+            while(frontEnd.waiting() && stop)
+                stop = !Thread.interrupted();
             frontEnd.setText(yours.getName()+" used "+yourMove.name());   
             frontEnd.removeKeyListener();
                     
@@ -63,9 +66,11 @@ public class Turn implements Runnable{
                     theirCurrent.reduce(yourMove.attacksWhat(),yourMove.power());
             }
 
-            while(frontEnd.waitingForHP());
+            while(frontEnd.waitingForHP() && stop)
+                stop = !Thread.interrupted();
             frontEnd.addKeyListener();
-            while(frontEnd.waiting());
+            while(frontEnd.waiting() && stop)
+                stop = !Thread.interrupted();
             
             frontEnd.setText(theirCurrent.getName()+" used "+theirMove.name());   
             frontEnd.removeKeyListener();
@@ -83,9 +88,11 @@ public class Turn implements Runnable{
                     yours.reduce(theirMove.attacksWhat(),theirMove.power());
             }
             
-            while(frontEnd.waitingForHP());
+            while(frontEnd.waitingForHP() && stop)
+                stop = !Thread.interrupted();
             frontEnd.addKeyListener();
-            while(frontEnd.waiting());
+            while(frontEnd.waiting() && stop)
+                stop = !Thread.interrupted();
             
         } 
         else 
@@ -105,9 +112,11 @@ public class Turn implements Runnable{
                     yours.reduce(theirMove.attacksWhat(),theirMove.power());
             }
             
-            while(frontEnd.waitingForHP());
+            while(frontEnd.waitingForHP() && stop)
+                stop = !Thread.interrupted();
             frontEnd.addKeyListener();
-            while(frontEnd.waiting());
+            while(frontEnd.waiting() && stop)
+                stop = !Thread.interrupted();
             
             frontEnd.setText(yours.getName()+" used "+yourMove.name());   
             frontEnd.removeKeyListener();
@@ -124,9 +133,11 @@ public class Turn implements Runnable{
                     theirCurrent.reduce(yourMove.attacksWhat(),yourMove.power());
             }
             
-            while(frontEnd.waitingForHP());
+            while(frontEnd.waitingForHP() && stop)
+                stop = !Thread.interrupted();
             frontEnd.addKeyListener();
-            while(frontEnd.waiting());
+            while(frontEnd.waiting() && stop)
+                stop = !Thread.interrupted();
         }
         //frontEnd.setText("It's super effective");
     }

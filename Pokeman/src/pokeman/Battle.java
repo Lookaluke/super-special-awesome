@@ -57,7 +57,7 @@ public class Battle {
                 over = false;
         }
         isOver = over && !frontEnd.waitingForHP();// && !frontEnd.waiting();
-
+        
 
         
         frontEnd.draw(g2);
@@ -69,6 +69,11 @@ public class Battle {
         if(result!=null && result instanceof Move){
             turnThread = new Thread(new Turn((Move)result,theirCurrent,yours,frontEnd));
             turnThread.start();
+        }
+        
+        if(isOver){
+            turnThread.interrupt();
+            turnThread = null;
         }
         
     }

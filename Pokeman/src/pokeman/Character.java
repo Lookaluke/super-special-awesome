@@ -119,7 +119,7 @@ public class Character extends Person{
             if(justUsed>0)
                 justUsed--;   
 
-        if(direction!=Animation.NONE && col!=null && col.getNumber(0)>=50 && col.getNumber(0)<150)
+        if(direction!=Animation.NONE && col!=null && col.getNumber(0)>=50 && col.getNumber(0)<150 && Math.random()<.1)
             getWindow().startBattle(new Battle(this,new Pokemon("Friger",10),getWindow().getFrame()));
         
         makeMove(direction);
