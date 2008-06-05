@@ -58,6 +58,8 @@ public class Battle {
         }
         isOver = over && !frontEnd.waitingForHP();// && !frontEnd.waiting();
 
+
+        
         frontEnd.draw(g2);
         
         if(!frontEnd.waiting() && (turnThread==null || !turnThread.isAlive()))
