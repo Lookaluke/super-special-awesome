@@ -182,8 +182,10 @@ public class TextBox{
     
     public class Key implements KeyListener{
 
-        public void keyTyped(KeyEvent e) {
 
+        
+        public void keyTyped(KeyEvent e) {
+        System.out.println("arg");
             if(e.getKeyChar()=='z' && index==finalIndex){
                 
                 line+=2;

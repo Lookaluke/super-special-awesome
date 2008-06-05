@@ -63,7 +63,7 @@ public class Window extends JComponent{
     private TextBox txt;
     private Menu menu;
     private Battle battle;
-      
+    
     private ArrayList<String> trainerSayings = new ArrayList<String>();
         
     /**
@@ -85,6 +85,7 @@ public class Window extends JComponent{
         }
         Toolkit tools = Toolkit.getDefaultToolkit();
         setCursor(tools.createCustomCursor(p, new Point(0,0),"Pokeball"));
+
 
         
         //txt = new TextBox(frame,"Hello welcome to pokemon razmatazz. How are you doing today? I am fine thanks for asking. My name is Mark, I'm the only person working on this project",0,475,800,101);
@@ -141,6 +142,7 @@ public class Window extends JComponent{
      */
     @Override
     public void paintComponent(Graphics g){
+
         Graphics2D g2 = (Graphics2D)g;
         if(control==0){
             g2.setColor(Color.BLACK);

@@ -24,7 +24,7 @@ public class Character extends Person{
         walking = new Animation("Walking");
         press = 0;
         jumping=0;
-        addPokemon(new Pokemon("Charmander",15));
+        addPokemon(new Pokemon("Meh",15));
         
     }
     
@@ -120,7 +120,7 @@ public class Character extends Person{
                 justUsed--;   
 
         if(direction!=Animation.NONE && col!=null && col.getNumber(0)>=50 && col.getNumber(0)<150)
-            getWindow().startBattle(new Battle(this,new Pokemon("Magikarp",45),getWindow().getFrame()));
+            getWindow().startBattle(new Battle(this,new Pokemon("Friger",10),getWindow().getFrame()));
         
         makeMove(direction);
         
