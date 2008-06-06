@@ -16,7 +16,21 @@ public class Pokeball extends Item<Pokemon> {
     
     @Override
     public boolean use(Pokemon other) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        int catchrate = other.getCatchRate();
+        int max = other.getMaxHP();
+        int curr = other.getCurrentHP();
+        double status = other.getStatus().getCatchMultipler();
+        int a = (int) ((((3 * max - 2 * curr) * catchrate * multiplier) / (3 * max)) * status);
+        if (a >= 255){
+            return true;
+        } else{
+            int b = (int) (1048560 / Math.sqrt(Math.sqrt(16711680.0 / a)));
+            int ran1 = (int) (Math.random() * 65535);
+            int ran2 = (int) (Math.random() * 65535);
+            int ran3 = (int) (Math.random() * 65535);
+            int ran4 = (int) (Math.random() * 65535);
+            return (ran1 <= b && ran2 <= b && ran3 <= b && ran4 <= b);
+        }
     }
     
 }
