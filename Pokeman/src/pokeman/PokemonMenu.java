@@ -83,6 +83,11 @@ public class PokemonMenu {
         }
     }
     
+    public Pokemon getResult(){
+        Pokemon p = character.currentPokemon()[switchIndex];
+        return p;
+    }
+    
     public void cancelButton(boolean selected,Graphics2D g2,int x,int y){
         
         Font f = Window.FONT;

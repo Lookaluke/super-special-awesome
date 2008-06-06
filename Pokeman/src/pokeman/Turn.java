@@ -31,101 +31,33 @@ public class Turn implements Runnable{
         
         //subtracts pp, and if the move has no PP, it breaks out
         //we may modify the return to give more info to the frontend
-        if(!yourMove.useMove())
-            return;
-        
-        
         
         Move theirMove=null;
         while(theirMove==null){
             int movenumber = (int)(Math.random() * 4);        
              theirMove = theirCurrent.getMoves()[movenumber]; 
         }
-            
-        
+
+
         boolean stop = true;
         
-        if (yours.getSpeed() >= theirCurrent.getSpeed())
-        {
-            //perform your move first
-            while(frontEnd.waiting() && stop)
-                stop = !Thread.interrupted();
-            frontEnd.setText(yours.getName()+" used "+yourMove.name());   
-            frontEnd.removeKeyListener();
-                    
-            //we need to modify takeDamage() to properly handle pokemon fainting
-            if(yourMove.attacksWhat()==Move.HP){
-                if(yourMove.raises())
-                    yours.heal(yourMove.power());
-                else
-                    theirCurrent.takeDamage(calculateDamage(yourMove, true));
-            }else{
-                if(yourMove.raises())
-                    yours.increase(yourMove.attacksWhat(),yourMove.power());
-                else
-                    theirCurrent.reduce(yourMove.attacksWhat(),yourMove.power());
-            }
+        if(yourMove!=null){
+            if(!yourMove.useMove())
+                return;
 
-            while(frontEnd.waitingForHP() && stop)
-                stop = !Thread.interrupted();
-            frontEnd.addKeyListener();
-            while(frontEnd.waiting() && stop)
-                stop = !Thread.interrupted();
-            
-            if(theirCurrent.getCurrentHP()!=0){
 
-                frontEnd.setText(theirCurrent.getName()+" used "+theirMove.name());   
-                frontEnd.removeKeyListener();
 
-                //now do their move
-                if(theirMove.attacksWhat()==Move.HP){
-                    if(theirMove.raises())
-                        theirCurrent.heal(theirMove.power());
-                    else
-                        yours.takeDamage(calculateDamage(theirMove, true));
-                }else{
-                    if(theirMove.raises())
-                        theirCurrent.increase(theirMove.attacksWhat(),theirMove.power());
-                    else
-                        yours.reduce(theirMove.attacksWhat(),theirMove.power());
-                }
 
-                while(frontEnd.waitingForHP() && stop)
-                    stop = !Thread.interrupted();
-                frontEnd.addKeyListener();
+
+            if (yours.getSpeed() >= theirCurrent.getSpeed())
+            {
+                //perform your move first
                 while(frontEnd.waiting() && stop)
                     stop = !Thread.interrupted();
-            }
-            
-        } 
-        else 
-        {
-            frontEnd.setText(theirCurrent.getName()+" used "+theirMove.name());   
-            frontEnd.removeKeyListener();
-            
-            if(theirMove.attacksWhat()==Move.HP){
-                if(theirMove.raises())
-                    theirCurrent.heal(theirMove.power());
-                else
-                    yours.takeDamage(calculateDamage(theirMove, true));
-            }else{
-                if(theirMove.raises())
-                    theirCurrent.increase(theirMove.attacksWhat(),theirMove.power());
-                else
-                    yours.reduce(theirMove.attacksWhat(),theirMove.power());
-            }
-            
-            while(frontEnd.waitingForHP() && stop)
-                stop = !Thread.interrupted();
-            frontEnd.addKeyListener();
-            while(frontEnd.waiting() && stop)
-                stop = !Thread.interrupted();
-            
-            if(yours.getCurrentHP()!=0){
-
                 frontEnd.setText(yours.getName()+" used "+yourMove.name());   
                 frontEnd.removeKeyListener();
 
+                //we need to modify takeDamage() to properly handle pokemon fainting
                 if(yourMove.attacksWhat()==Move.HP){
                     if(yourMove.raises())
                         yours.heal(yourMove.power());
@@ -143,7 +75,101 @@ public class Turn implements Runnable{
                 frontEnd.addKeyListener();
                 while(frontEnd.waiting() && stop)
                     stop = !Thread.interrupted();
+
+                if(theirCurrent.getCurrentHP()!=0){
+
+                    frontEnd.setText(theirCurrent.getName()+" used "+theirMove.name());   
+                    frontEnd.removeKeyListener();
+
+                    //now do their move
+                    if(theirMove.attacksWhat()==Move.HP){
+                        if(theirMove.raises())
+                            theirCurrent.heal(theirMove.power());
+                        else
+                            yours.takeDamage(calculateDamage(theirMove, true));
+                    }else{
+                        if(theirMove.raises())
+                            theirCurrent.increase(theirMove.attacksWhat(),theirMove.power());
+                        else
+                            yours.reduce(theirMove.attacksWhat(),theirMove.power());
+                    }
+
+                    while(frontEnd.waitingForHP() && stop)
+                        stop = !Thread.interrupted();
+                    frontEnd.addKeyListener();
+                    while(frontEnd.waiting() && stop)
+                        stop = !Thread.interrupted();
+                }
+
+            } 
+            else 
+            {
+                frontEnd.setText(theirCurrent.getName()+" used "+theirMove.name());   
+                frontEnd.removeKeyListener();
+
+                if(theirMove.attacksWhat()==Move.HP){
+                    if(theirMove.raises())
+                        theirCurrent.heal(theirMove.power());
+                    else
+                        yours.takeDamage(calculateDamage(theirMove, true));
+                }else{
+                    if(theirMove.raises())
+                        theirCurrent.increase(theirMove.attacksWhat(),theirMove.power());
+                    else
+                        yours.reduce(theirMove.attacksWhat(),theirMove.power());
+                }
+
+                while(frontEnd.waitingForHP() && stop)
+                    stop = !Thread.interrupted();
+                frontEnd.addKeyListener();
+                while(frontEnd.waiting() && stop)
+                    stop = !Thread.interrupted();
+
+                if(yours.getCurrentHP()!=0){
+
+                    frontEnd.setText(yours.getName()+" used "+yourMove.name());   
+                    frontEnd.removeKeyListener();
+
+                    if(yourMove.attacksWhat()==Move.HP){
+                        if(yourMove.raises())
+                            yours.heal(yourMove.power());
+                        else
+                            theirCurrent.takeDamage(calculateDamage(yourMove, true));
+                    }else{
+                        if(yourMove.raises())
+                            yours.increase(yourMove.attacksWhat(),yourMove.power());
+                        else
+                            theirCurrent.reduce(yourMove.attacksWhat(),yourMove.power());
+                    }
+
+                    while(frontEnd.waitingForHP() && stop)
+                        stop = !Thread.interrupted();
+                    frontEnd.addKeyListener();
+                    while(frontEnd.waiting() && stop)
+                        stop = !Thread.interrupted();
+                }
             }
+        }else{
+                frontEnd.setText(theirCurrent.getName()+" used "+theirMove.name());   
+                frontEnd.removeKeyListener();
+
+                if(theirMove.attacksWhat()==Move.HP){
+                    if(theirMove.raises())
+                        theirCurrent.heal(theirMove.power());
+                    else
+                        yours.takeDamage(calculateDamage(theirMove, true));
+                }else{
+                    if(theirMove.raises())
+                        theirCurrent.increase(theirMove.attacksWhat(),theirMove.power());
+                    else
+                        yours.reduce(theirMove.attacksWhat(),theirMove.power());
+                }
+
+                while(frontEnd.waitingForHP() && stop)
+                    stop = !Thread.interrupted();
+                frontEnd.addKeyListener();
+                while(frontEnd.waiting() && stop)
+                    stop = !Thread.interrupted();
         }
         //frontEnd.setText("It's super effective");
     }
