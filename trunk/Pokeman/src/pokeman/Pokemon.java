@@ -37,6 +37,8 @@ public class Pokemon implements Serializable
    Element element1, element2;
    Status status;
    
+   private int catchrate;
+   
    /**
     * Takes a file and the pokemon's level. The pokemon
     * file defines any pokemon.
@@ -465,5 +467,28 @@ public class Pokemon implements Serializable
            return true;
        } else 
            return false;
+   }
+   
+   public int getCatchRate(){
+       return catchrate;
+   }
+   
+   public Status getStatus(){
+       return status;
+   }
+   
+   /**
+    * under the impression that another status cannot be used
+    * if one is currently in effect.
+    * @param other
+    * @return true if the status was changed.
+    */
+   public boolean setStatus(Status other){
+       if(status==Status.NORMAL){
+           status = other;
+           return true;
+       } else {
+           return false;
+       }
    }
 }

@@ -171,4 +171,14 @@ public class Move {
     // if PP for all moves is 0, add a move called Struggle (handled by pokemon
     //and the front end, not by move.
     
+    public boolean refilPP(int amount){
+        if (getPP() == getTotalPP()){
+            return false;
+        } else {
+            currentPP += amount;
+            if (currentPP > totalPP)
+                currentPP = totalPP;
+            return true;
+        }
+    }
 }
