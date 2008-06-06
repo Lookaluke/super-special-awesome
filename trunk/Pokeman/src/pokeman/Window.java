@@ -94,7 +94,7 @@ public class Window extends JComponent{
             Toolkit tools = Toolkit.getDefaultToolkit();
             setCursor(tools.createCustomCursor(p, new Point(0, 0), "Pokeball"));
 
-            pkmMenu = new PokemonMenu(player);
+            //pkmMenu = new PokemonMenu(player,frame,false);
 
                     
             //String[] str = {"Attack","Pokemon","Item","Run"};
@@ -134,7 +134,7 @@ public class Window extends JComponent{
             timerCounter = 0;
             pressBuffer = Animation.NONE;
 
-            control = 2;
+            control = 0;
             people.add(player);
         } catch (FontFormatException ex) {
             Logger.getLogger(Window.class.getName()).log(Level.SEVERE, null, ex);

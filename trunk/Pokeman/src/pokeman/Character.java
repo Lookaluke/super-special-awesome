@@ -30,7 +30,12 @@ public class Character extends Person{
         press = 0;
         jumping=0;
         addPokemon(new Pokemon("Meh",15));
-        
+        addPokemon(new Pokemon("Rattata",8));
+        addPokemon(new Pokemon("Bulbasaur",7));
+        addPokemon(new Pokemon("Friger",6));
+        addPokemon(new Pokemon("Charmander",16));
+        addPokemon(new Pokemon("Magikarp",16));
+
     }
     
     public void draw(Graphics2D g,int currentX,int currentY){
@@ -221,6 +226,12 @@ public class Character extends Person{
     
     public Pokemon[] currentPokemon(){
         return pkmn;
+    }
+    
+    public void switchPokemon(int index1,int index2){
+        Pokemon hold = pkmn[index1];
+        pkmn[index1] = pkmn[index2];
+        pkmn[index2] = hold;
     }
     
     //takes pokemon in the index of current pkmn and adds to pc.

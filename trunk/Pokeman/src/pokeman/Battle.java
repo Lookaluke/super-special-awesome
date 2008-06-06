@@ -24,7 +24,7 @@ public class Battle {
     
     
     public Battle(Character you, Pokemon enemy,JFrame frame) {
-        frontEnd = new BattleFrontEnd(frame);
+        frontEnd = new BattleFrontEnd(frame,you);
         yours = you.currentPokemon()[0];
         theirs = new Pokemon[1];
         theirs[0] = enemy;
