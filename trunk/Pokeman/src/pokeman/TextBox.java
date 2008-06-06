@@ -41,14 +41,10 @@ public class TextBox{
     
     public TextBox(JFrame fr,String s,int x,int y,int width,int height,boolean scrolls,Style style){
         this.style = style;
-        try{
-            f = Font.createFont(Font.TRUETYPE_FONT, new File("Pokemon RS part B.ttf"));
-            f = f.deriveFont(Font.PLAIN, 30);
-        } catch (FontFormatException e) {
-            System.out.println("Bad font file");
-        } catch (IOException e){
-            System.out.println("Bad File Name");
-        }
+
+        f = Window.FONT;
+        f = f.deriveFont(Font.PLAIN, 30);
+
         
         this.x = x;
         this.y = y;

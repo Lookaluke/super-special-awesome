@@ -72,27 +72,30 @@ public class Turn implements Runnable{
             while(frontEnd.waiting() && stop)
                 stop = !Thread.interrupted();
             
-            frontEnd.setText(theirCurrent.getName()+" used "+theirMove.name());   
-            frontEnd.removeKeyListener();
-           
-            //now do their move
-            if(theirMove.attacksWhat()==Move.HP){
-                if(theirMove.raises())
-                    theirCurrent.heal(theirMove.power());
-                else
-                    yours.takeDamage(calculateDamage(theirMove, true));
-            }else{
-                if(theirMove.raises())
-                    theirCurrent.increase(theirMove.attacksWhat(),theirMove.power());
-                else
-                    yours.reduce(theirMove.attacksWhat(),theirMove.power());
+            if(theirCurrent.getCurrentHP()!=0){
+
+                frontEnd.setText(theirCurrent.getName()+" used "+theirMove.name());   
+                frontEnd.removeKeyListener();
+
+                //now do their move
+                if(theirMove.attacksWhat()==Move.HP){
+                    if(theirMove.raises())
+                        theirCurrent.heal(theirMove.power());
+                    else
+                        yours.takeDamage(calculateDamage(theirMove, true));
+                }else{
+                    if(theirMove.raises())
+                        theirCurrent.increase(theirMove.attacksWhat(),theirMove.power());
+                    else
+                        yours.reduce(theirMove.attacksWhat(),theirMove.power());
+                }
+
+                while(frontEnd.waitingForHP() && stop)
+                    stop = !Thread.interrupted();
+                frontEnd.addKeyListener();
+                while(frontEnd.waiting() && stop)
+                    stop = !Thread.interrupted();
             }
-            
-            while(frontEnd.waitingForHP() && stop)
-                stop = !Thread.interrupted();
-            frontEnd.addKeyListener();
-            while(frontEnd.waiting() && stop)
-                stop = !Thread.interrupted();
             
         } 
         else 
@@ -118,26 +121,29 @@ public class Turn implements Runnable{
             while(frontEnd.waiting() && stop)
                 stop = !Thread.interrupted();
             
-            frontEnd.setText(yours.getName()+" used "+yourMove.name());   
-            frontEnd.removeKeyListener();
-            
-            if(yourMove.attacksWhat()==Move.HP){
-                if(yourMove.raises())
-                    yours.heal(yourMove.power());
-                else
-                    theirCurrent.takeDamage(calculateDamage(yourMove, true));
-            }else{
-                if(yourMove.raises())
-                    yours.increase(yourMove.attacksWhat(),yourMove.power());
-                else
-                    theirCurrent.reduce(yourMove.attacksWhat(),yourMove.power());
+            if(yours.getCurrentHP()!=0){
+
+                frontEnd.setText(yours.getName()+" used "+yourMove.name());   
+                frontEnd.removeKeyListener();
+
+                if(yourMove.attacksWhat()==Move.HP){
+                    if(yourMove.raises())
+                        yours.heal(yourMove.power());
+                    else
+                        theirCurrent.takeDamage(calculateDamage(yourMove, true));
+                }else{
+                    if(yourMove.raises())
+                        yours.increase(yourMove.attacksWhat(),yourMove.power());
+                    else
+                        theirCurrent.reduce(yourMove.attacksWhat(),yourMove.power());
+                }
+
+                while(frontEnd.waitingForHP() && stop)
+                    stop = !Thread.interrupted();
+                frontEnd.addKeyListener();
+                while(frontEnd.waiting() && stop)
+                    stop = !Thread.interrupted();
             }
-            
-            while(frontEnd.waitingForHP() && stop)
-                stop = !Thread.interrupted();
-            frontEnd.addKeyListener();
-            while(frontEnd.waiting() && stop)
-                stop = !Thread.interrupted();
         }
         //frontEnd.setText("It's super effective");
     }
