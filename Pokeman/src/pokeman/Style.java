@@ -18,7 +18,8 @@ public class Style {
     public static final Style STANDARD_TEXT = new Style(new Color(86,218,228),Color.WHITE,ROUNDED_RECTANGLE,ROUNDED_RECTANGLE),
             BATTLE_TEXT = new Style(new Color(60,52,89),new Color(233,59,50),RECTANGLE,ROUNDED_RECTANGLE),
             BATTLE_TEXT2 = new Style(new Color(60,52,89),new Color(105,159,159),RECTANGLE,ROUNDED_RECTANGLE),
-            BATTLE_TEXT3 = new Style(new Color(60,52,89),Color.WHITE,RECTANGLE,ROUNDED_RECTANGLE);
+            BATTLE_TEXT3 = new Style(new Color(60,52,89),Color.WHITE,RECTANGLE,ROUNDED_RECTANGLE),
+            POKEMON_MENU = new Style(new Color(60,52,89),Color.WHITE,RECTANGLE,RECTANGLE);
     
     private Color out,in;
     private int inShape,outShape;

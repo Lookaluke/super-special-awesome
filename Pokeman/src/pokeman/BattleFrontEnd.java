@@ -31,26 +31,28 @@ public class BattleFrontEnd {
     
     private TextBox txt,back;
     private Menu menu,moveMenu;
+    private PokemonMenu pkmMenu;
     private int menuType;
     private JFrame frame;
     private BufferedImage background,circle;
 
     private Pokemon theirs,yours;
     private double yourCurrentPercent,theirCurrentPercent;
-
+    private Character player;
     
 
 
     
     private int yBorder = 30,yStart=475;
     
-    public BattleFrontEnd(JFrame frame){
+    public BattleFrontEnd(JFrame frame,Character player){
         try {
             this.frame = frame;
-            
+            this.player = player;
             menuType = NONE;
             back = new TextBox(frame,"",0,475,800,TXT_HEIGHT,false,Style.BATTLE_TEXT2);
             back.removeKeyListener();
+            pkmMenu = null;
             background = ImageIO.read(new File("Images\\BattleBackground4.png"));
             circle = ImageIO.read(new File("Images\\circle2.png"));
         } catch (IOException ex) {
@@ -59,41 +61,52 @@ public class BattleFrontEnd {
     }
     
     public void draw(Graphics2D g2){
-        
-        g2.drawImage(background,null,0,0);
-        g2.drawImage(circle,null,0,yStart-yBorder-circle.getHeight()+75);
-        g2.drawImage(circle,null,Window.WIDTH-circle.getWidth(),yBorder+75);
+        if(pkmMenu!=null){
+            pkmMenu.draw(g2);
+            if(pkmMenu.isOver())
+                pkmMenu = null;
+        }else{
+            g2.drawImage(background,null,0,0);
+            g2.drawImage(circle,null,0,yStart-yBorder-circle.getHeight()+75);
+            g2.drawImage(circle,null,Window.WIDTH-circle.getWidth(),yBorder+75);
 
-        back.draw(g2);
-        
-        if(txt!=null){
-            txt.draw(g2);
-            if(txt.isOver())
-            {
-                txt = null;                
+            back.draw(g2);
+
+            if(txt!=null){
+                txt.draw(g2);
+                if(txt.isOver())
+                {
+                    txt = null;                
+                }
             }
-        }
 
-        if(menu!=null){
-            menu.draw(g2);
-            if(menuType==MOVE){
-                int i = menu.getSelected();
-                txt = new TextBox(frame,"PP: "+yours.getMoves()[i].getPP()+"/"+yours.getMoves()[i].getTotalPP()+" "+yours.getMoves()[i].element(),600,yStart,200,TXT_HEIGHT,false,Style.BATTLE_TEXT3);
-                txt.removeKeyListener();
+            if(menu!=null){
+                menu.draw(g2);
+                if(menuType==MOVE){
+                    int i = menu.getSelected();
+                    txt = new TextBox(frame,"PP: "+yours.getMoves()[i].getPP()+"/"+yours.getMoves()[i].getTotalPP()+" "+yours.getMoves()[i].element(),600,yStart,200,TXT_HEIGHT,false,Style.BATTLE_TEXT3);
+                    txt.removeKeyListener();
+                }
+                if(menu.result()!=null && menu.result().equals("Attack"))
+                    makeMenu(MOVE);
+                if(menu.result()!=null && menuType==MOVE)
+                    txt = null;
+                if(menu.result()!=null && menu.result().equals("Pokemon")){
+                    pkmMenu = new PokemonMenu(player,frame,true);
+                    menu = null;
+                }
+
             }
-            if(menu.result()!=null && menu.result().equals("Attack"))
-                makeMenu(MOVE);
-            if(menu.result()!=null && menuType==MOVE)
-                txt = null;
+
+
+
+            g2.drawImage(yours.getBack(),null,0+circle.getWidth()/2-yours.getBack().getWidth()/2,Window.HEIGHT-TXT_HEIGHT-yours.getBack().getHeight());
+            g2.drawImage(theirs.getFront(),null,Window.WIDTH-circle.getWidth()/2-theirs.getBack().getWidth()/2,yBorder);
+
+            drawInterface(g2, true, yours, 485, Window.HEIGHT-101-85-20);
+            drawInterface(g2, false, theirs, 10, 30);   
+
         }
-
-
-        
-        g2.drawImage(yours.getBack(),null,0+circle.getWidth()/2-yours.getBack().getWidth()/2,Window.HEIGHT-TXT_HEIGHT-yours.getBack().getHeight());
-        g2.drawImage(theirs.getFront(),null,Window.WIDTH-circle.getWidth()/2-theirs.getBack().getWidth()/2,yBorder);
-        
-        drawInterface(g2, true, yours, 485, Window.HEIGHT-101-85-20);
-        drawInterface(g2, false, theirs, 10, 30);        
         
         
     }
@@ -145,7 +158,9 @@ public class BattleFrontEnd {
     public Object getResult(){
         if(menu == null)
             return null;
+        
         String result = menu.result();
+        
         if(result == null)
             return null;
         
@@ -155,10 +170,10 @@ public class BattleFrontEnd {
             ret = yours.getMoves()[menu.getSelected()];
         }
         
-        if(result!=null){
-            menu = null;
-            menuType = NONE;
-        }
+
+        menu = null;
+        menuType = NONE;
+
         return ret;
     }
     
