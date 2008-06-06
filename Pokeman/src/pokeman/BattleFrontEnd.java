@@ -170,7 +170,7 @@ public class BattleFrontEnd {
         return Math.abs(yourCurrentPercent-yours.getCurrentHP()/(double)yours.getMaxHP())>.1 || Math.abs(theirCurrentPercent-theirs.getCurrentHP()/(double)theirs.getMaxHP())>.1;
     }
     
-    public double drawHpBar(Graphics2D g2, int x, int y, int totalHP, int currentHP,double currentPercent){
+    public static double drawHpBar(Graphics2D g2, int x, int y, int totalHP, int currentHP,double currentPercent){
 
         //sizes for the large dark green round rectangle
         int MAINWIDTH = 132, MAINHEIGHT = 14, MAINARCS = 10;
@@ -288,72 +288,67 @@ public class BattleFrontEnd {
     
     public void drawInterface(Graphics2D g2, boolean yours, Pokemon p,int x, int y){
         
-        
-        try{
-            Font f = Font.createFont(Font.TRUETYPE_FONT, new File("Pokemon RS part B.ttf"));
-            f = f.deriveFont(Font.BOLD, 20);
-            
-            int WIDTH = 250,HEIGHT = 75,ARC = 20;
-            int HP_XSHIFT = 55,HP_YSHIFT = 35;
-            int NAME_XSHIFT = 35,NAME_YSHIFT = 0;
-            int HP2_XSHIFT = 100,HP2_YSHIFT = 38;
-            int EXP_HEIGHT = 10,EXP_SHIFT=20,EXP_WIDTH=EXP_SHIFT+WIDTH+10,EXP_EXTENSION=0;
 
-            x += EXP_SHIFT;
+        Font f = Window.FONT;
+        f = f.deriveFont(Font.BOLD, 20);
 
-            if(!yours){
-                HEIGHT -= 15;
-            }
+        int WIDTH = 250,HEIGHT = 75,ARC = 20;
+        int HP_XSHIFT = 55,HP_YSHIFT = 35;
+        int NAME_XSHIFT = 35,NAME_YSHIFT = 0;
+        int HP2_XSHIFT = 100,HP2_YSHIFT = 38;
+        int EXP_HEIGHT = 10,EXP_SHIFT=20,EXP_WIDTH=EXP_SHIFT+WIDTH+10,EXP_EXTENSION=0;
 
+        x += EXP_SHIFT;
 
-
-            g2.setFont(f);
-
-            g2.setColor(new Color(77,104,99));
-            g2.fill(new RoundRectangle2D.Double(x,y,WIDTH,HEIGHT,ARC,ARC));
-
-            if(yours){
-                int[] xPoints = {x-EXP_SHIFT,x+WIDTH-5,x+WIDTH-5,x+WIDTH+EXP_EXTENSION,x+WIDTH+EXP_EXTENSION,x};
-                int[] yPoints = {y+EXP_HEIGHT+HEIGHT,y+EXP_HEIGHT+HEIGHT,y+HEIGHT,y+HEIGHT,y+HEIGHT-20,y+HEIGHT-20};
-                g2.fill(new Polygon(xPoints,yPoints,6));
-                g2.fill(new Ellipse2D.Double(x+WIDTH-EXP_HEIGHT*2+EXP_EXTENSION,y+HEIGHT-EXP_HEIGHT,EXP_HEIGHT*2,EXP_HEIGHT*2));
-                g2.setFont(f.deriveFont(Font.BOLD, 10));
-                g2.setColor(new Color(239,229,7));
-                g2.drawString("EXP", x+8 , y+HEIGHT+EXP_HEIGHT-3);
-                g2.setFont(f.deriveFont(Font.BOLD, 20));
-            }
-
-
-
-            g2.setColor(new Color(32,56,0));
-            g2.fill(new RoundRectangle2D.Double(x+3,y+3,WIDTH-6,HEIGHT-6,ARC,ARC));
-            g2.setColor(new Color(252,249,216));        
-            g2.fill(new RoundRectangle2D.Double(x+5,y+5,WIDTH-10,HEIGHT-10,ARC,ARC));        
-
-            boolean done = false;
-            if(yours){
-                double temp = yourCurrentPercent;
-                yourCurrentPercent = drawHpBar(g2, x+HP_XSHIFT, y+HP_YSHIFT, p.getMaxHP(), p.getCurrentHP(),yourCurrentPercent);
-                done = Math.abs(yourCurrentPercent-temp)<.001;
-            }else
-                theirCurrentPercent = drawHpBar(g2, x+HP_XSHIFT, y+HP_YSHIFT, p.getMaxHP(), p.getCurrentHP(),theirCurrentPercent);
-            
-            g2.setColor(new Color(62,59,68));     
-            String name = p.getName() + "  Lv: "+p.getLevel();
-
-            g2.drawString(name, x+NAME_XSHIFT,y+NAME_YSHIFT+ (int)(f.getStringBounds(name, new FontRenderContext(null,true,true)).getHeight()));
-            if(!yours)
-                return;
-            int health = (int)(yourCurrentPercent*p.getMaxHP());
-            if(done)
-                health = p.getCurrentHP();
-            String hp = health + "/" + p.getMaxHP();
-            //System.out.println(p.getCurrentHP());
-            g2.drawString(hp, x+HP2_XSHIFT,y+HP2_YSHIFT+ (int)(f.getStringBounds(hp, new FontRenderContext(null,true,true)).getHeight()));
-        } catch (FontFormatException e) {
-            System.out.println("Bad font file");
-        } catch (IOException e){
-            System.out.println("Bad File Name");
+        if(!yours){
+            HEIGHT -= 15;
         }
+
+
+
+        g2.setFont(f);
+
+        g2.setColor(new Color(77,104,99));
+        g2.fill(new RoundRectangle2D.Double(x,y,WIDTH,HEIGHT,ARC,ARC));
+
+        if(yours){
+            int[] xPoints = {x-EXP_SHIFT,x+WIDTH-5,x+WIDTH-5,x+WIDTH+EXP_EXTENSION,x+WIDTH+EXP_EXTENSION,x};
+            int[] yPoints = {y+EXP_HEIGHT+HEIGHT,y+EXP_HEIGHT+HEIGHT,y+HEIGHT,y+HEIGHT,y+HEIGHT-20,y+HEIGHT-20};
+            g2.fill(new Polygon(xPoints,yPoints,6));
+            g2.fill(new Ellipse2D.Double(x+WIDTH-EXP_HEIGHT*2+EXP_EXTENSION,y+HEIGHT-EXP_HEIGHT,EXP_HEIGHT*2,EXP_HEIGHT*2));
+            g2.setFont(f.deriveFont(Font.BOLD, 10));
+            g2.setColor(new Color(239,229,7));
+            g2.drawString("EXP", x+8 , y+HEIGHT+EXP_HEIGHT-3);
+            g2.setFont(f.deriveFont(Font.BOLD, 20));
+        }
+
+
+
+        g2.setColor(new Color(32,56,0));
+        g2.fill(new RoundRectangle2D.Double(x+3,y+3,WIDTH-6,HEIGHT-6,ARC,ARC));
+        g2.setColor(new Color(252,249,216));        
+        g2.fill(new RoundRectangle2D.Double(x+5,y+5,WIDTH-10,HEIGHT-10,ARC,ARC));        
+
+        boolean done = false;
+        if(yours){
+            double temp = yourCurrentPercent;
+            yourCurrentPercent = drawHpBar(g2, x+HP_XSHIFT, y+HP_YSHIFT, p.getMaxHP(), p.getCurrentHP(),yourCurrentPercent);
+            done = Math.abs(yourCurrentPercent-temp)<.001;
+        }else
+            theirCurrentPercent = drawHpBar(g2, x+HP_XSHIFT, y+HP_YSHIFT, p.getMaxHP(), p.getCurrentHP(),theirCurrentPercent);
+
+        g2.setColor(new Color(62,59,68));     
+        String name = p.getName() + "  Lv: "+p.getLevel();
+
+        g2.drawString(name, x+NAME_XSHIFT,y+NAME_YSHIFT+ (int)(f.getStringBounds(name, new FontRenderContext(null,true,true)).getHeight()));
+        if(!yours)
+            return;
+        int health = (int)(yourCurrentPercent*p.getMaxHP());
+        if(done)
+            health = p.getCurrentHP();
+        String hp = health + "/" + p.getMaxHP();
+        //System.out.println(p.getCurrentHP());
+        g2.drawString(hp, x+HP2_XSHIFT,y+HP2_YSHIFT+ (int)(f.getStringBounds(hp, new FontRenderContext(null,true,true)).getHeight()));
+
     }
 }

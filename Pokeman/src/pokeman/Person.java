@@ -185,6 +185,10 @@ public class Person implements Comparable<Person>
         return direction;
     }
     
+    public boolean isMoving(){
+        return moving;
+    }
+    
     
     protected Collideable getCollision(int dir){
         Collideable col = null;

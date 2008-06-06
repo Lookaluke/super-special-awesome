@@ -3,7 +3,12 @@ package pokeman;
 
 import java.awt.Graphics2D;
 import java.awt.Color;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * 
@@ -119,10 +124,28 @@ public class Character extends Person{
             if(justUsed>0)
                 justUsed--;   
 
-        if(direction!=Animation.NONE && col!=null && col.getNumber(0)>=50 && col.getNumber(0)<150 && Math.random()<.1)
-            getWindow().startBattle(new Battle(this,new Pokemon("Friger",10),getWindow().getFrame()));
+         col = getCollision(Animation.NONE);
         
-        makeMove(direction);
+        if(direction!=Animation.NONE && !isMoving() && col!=null && col.getNumber(0)>=50 && col.getNumber(0)<150 && Math.random()<.1){
+            try {
+                ArrayList<String> s = new ArrayList<String>();
+                Scanner input = new Scanner(new File("Areas\\" + col.getNumber(0)+".txt"));
+                while (input.hasNextLine()) {
+                    s.add(input.nextLine());
+                }
+                String actual = s.get((int)(Math.random()*s.size()));
+                int firstIndex = actual.indexOf(":");
+                String name = actual.substring(0,firstIndex);
+                int level = Integer.parseInt(actual.substring(firstIndex+1));
+                System.out.println(name);
+                getWindow().startBattle(new Battle(this, new Pokemon(name, level), getWindow().getFrame()));
+            } catch (FileNotFoundException ex) {
+                System.out.println("area file doesn't exist");
+            }
+        }else
+             makeMove(direction);
+        
+
         
         direction = Animation.NONE;
         

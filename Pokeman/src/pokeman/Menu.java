@@ -38,14 +38,10 @@ public class Menu {
     
     public Menu(JFrame fr,String[] menuItems,int x,int y,int width,int height,Style s){
         style = s;
-        try{
-            f = Font.createFont(Font.TRUETYPE_FONT, new File("Pokemon RS part B.ttf"));
-            f = f.deriveFont(Font.PLAIN, 30);
-        } catch (FontFormatException e) {
-            System.out.println("Bad font file");
-        } catch (IOException e){
-            System.out.println("Bad File Name");
-        }
+
+        f = Window.FONT;
+        f = f.deriveFont(Font.PLAIN, 30);
+
         
         this.x = x;
         this.y = y;

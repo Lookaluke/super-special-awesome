@@ -3,6 +3,8 @@ package pokeman;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.FontFormatException;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -40,6 +42,10 @@ public class Window extends JComponent{
     public static final int COLUMNS = 25,ROWS=18,WIDTH = 800,HEIGHT = 576,TILE_WIDTH = WIDTH/COLUMNS,TILE_HEIGHT = HEIGHT/ROWS,
             BACKGROUND = 0,STATIC = 1,DYNAMIC = 2;
     public static final int numberOfCounts = 4;
+
+    public static Font FONT;
+
+    
     private static final String levelName = "Levels\\level";
     
     private BufferedImage[][] background = new BufferedImage[3][3];
@@ -63,6 +69,9 @@ public class Window extends JComponent{
     private TextBox txt;
     private Menu menu;
     private Battle battle;
+    private PokemonMenu pkmMenu;
+    
+
     
     private ArrayList<String> trainerSayings = new ArrayList<String>();
         
@@ -71,70 +80,72 @@ public class Window extends JComponent{
      * @param frame The frame that this window is in
      */
     public Window(JFrame frame){
-        
-        
-        File file = new File("Images\\Pokeball.gif");
-        BufferedImage p = null;
-        try
-        {
-            p = ImageIO.read(file);
+        try {
+
+            FONT = Font.createFont(Font.TRUETYPE_FONT, new File("Pokemon RS part B.ttf"));
+
+            File file = new File("Images\\Pokeball.gif");
+            BufferedImage p = null;
+            try {
+                p = ImageIO.read(file);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            Toolkit tools = Toolkit.getDefaultToolkit();
+            setCursor(tools.createCustomCursor(p, new Point(0, 0), "Pokeball"));
+
+            pkmMenu = new PokemonMenu(player);
+
+                    
+            //String[] str = {"Attack","Pokemon","Item","Run"};
+            //menu = new Menu(frame,str,0,475,600,101);
+            //player.allowUpdate(false);
+
+
+
+            this.frame = frame;
+
+            //Pokemon p = new Pokemon("Meh",5);
+            frame.add(this);
+            this.setPreferredSize(new Dimension(WIDTH, HEIGHT));
+            frame.pack();
+            frame.addKeyListener(new KeyListen());
+
+
+            loadTrainerSayings(trainerSayings, "Trainers\\Trainers.txt");
+
+            levelX = 0;
+            levelY = 0;
+            for (int i = -1; i <= 1; i++) {
+                for (int j = -1; j <= 1; j++) {
+                    loadLevel(levelX + i, levelY + j, i, j);
+                }
+            }
+            repaint();
+
+            frame.pack();
+            repaint();
+
+            frame.pack();
+
+            Timer t = new Timer(160 / numberOfCounts, new Action());
+            t.start();
+
+            timerCounter = 0;
+            pressBuffer = Animation.NONE;
+
+            control = 2;
+            people.add(player);
+        } catch (FontFormatException ex) {
+            Logger.getLogger(Window.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(Window.class.getName()).log(Level.SEVERE, null, ex);
         }
-        catch(IOException e)
-        {
-            e.printStackTrace();
-        }
-        Toolkit tools = Toolkit.getDefaultToolkit();
-        setCursor(tools.createCustomCursor(p, new Point(0,0),"Pokeball"));
-
-
-        
-        //txt = new TextBox(frame,"Hello welcome to pokemon razmatazz. How are you doing today? I am fine thanks for asking. My name is Mark, I'm the only person working on this project",0,475,800,101);
-        //String[] str = {"Attack","Pokemon","Item","Run"};
-        //menu = new Menu(frame,str,0,475,600,101);
-        //player.allowUpdate(false);
-        
-
-        
-        
-        this.frame = frame;
-        
-        //Pokemon p = new Pokemon("Meh",5);
-        frame.add(this);
-        this.setPreferredSize(new Dimension(WIDTH,HEIGHT));
-        frame.pack();
-        frame.addKeyListener(new KeyListen());
-        
-                
-        loadTrainerSayings(trainerSayings,"Trainers\\Trainers.txt");
-                
-        levelX = 0; 
-        levelY = 0;
-        for(int i=-1;i<=1;i++)
-            for(int j=-1;j<=1;j++)
-                loadLevel(levelX+i,levelY+j,i,j);
-
-        
-
-        
-        repaint();
-        
-        frame.pack();  
-        repaint();
-        
-        frame.pack();  
-        
-        Timer t = new Timer(160/numberOfCounts, new Action());
-        t.start();
-        
-        timerCounter = 0;
-        pressBuffer = Animation.NONE;
-        
-        control = 0;
-        people.add(player);
         
         
         
     }
+    
     
     /**
      * This method paints the world and everything in it
@@ -216,7 +227,17 @@ public class Window extends JComponent{
             battle.draw(g2);
             if(battle.isOver()){
                 control = 0;
+                pressBuffer = Animation.NONE;
                 battle = null;
+            }
+        }
+        
+        if(control==2 && pkmMenu!=null){
+            pkmMenu.draw(g2);
+            if(pkmMenu.isOver()){
+                control = 0;
+                pkmMenu = null;
+                pressBuffer = Animation.NONE;
             }
         }
         
