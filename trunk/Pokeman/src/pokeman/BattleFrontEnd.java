@@ -63,8 +63,7 @@ public class BattleFrontEnd {
     public void draw(Graphics2D g2){
         if(pkmMenu!=null){
             pkmMenu.draw(g2);
-            if(pkmMenu.isOver())
-                pkmMenu = null;
+
         }else{
             g2.drawImage(background,null,0,0);
             g2.drawImage(circle,null,0,yStart-yBorder-circle.getHeight()+75);
@@ -156,23 +155,35 @@ public class BattleFrontEnd {
     }
     
     public Object getResult(){
-        if(menu == null)
+
+        if(menu == null && pkmMenu==null)
             return null;
-        
-        String result = menu.result();
-        
-        if(result == null)
-            return null;
-        
         Object ret = null;
-        
-        if(menuType == MOVE){
-            ret = yours.getMoves()[menu.getSelected()];
+        if(menu!=null){
+            String result = menu.result();
+
+            if(result == null)
+                return null;
+
+            
+
+            if(menuType == MOVE){
+                ret = yours.getMoves()[menu.getSelected()];
+            }
+
+
+            menu = null;
+            menuType = NONE;
         }
         
-
-        menu = null;
-        menuType = NONE;
+        if(pkmMenu!=null && pkmMenu.isOver()){
+            
+            Pokemon p = pkmMenu.getResult();
+            if(p!=yours)
+                ret = p;
+            
+            pkmMenu = null;
+        }
 
         return ret;
     }
