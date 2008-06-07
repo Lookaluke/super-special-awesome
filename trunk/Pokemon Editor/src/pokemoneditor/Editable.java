@@ -6,8 +6,12 @@
 package pokemoneditor;
 
 
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.awt.geom.*;
 import java.awt.*;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyListener;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JComponent;
@@ -18,8 +22,11 @@ import java.awt.event.MouseEvent;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Scanner;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.Timer;
 
-public class Editable extends JComponent implements MouseListener,MouseMotionListener{
+public class Editable extends JComponent implements MouseListener,MouseMotionListener,KeyListener,ActionListener{
  
     
     private boolean linesOn;
@@ -31,21 +38,30 @@ public class Editable extends JComponent implements MouseListener,MouseMotionLis
     private BufferedImage[][][] images = new BufferedImage[3][COLUMNS][ROWS];
     private String[][][] extraImageData = new String[3][COLUMNS][ROWS];
     
-    private ArrayList<BufferedImage> img = new ArrayList<BufferedImage>(20); 
-    private ArrayList<String> imgNames = new ArrayList<String>(20); 
+    private ArrayList<BufferedImage> img;
+    private ArrayList<String> imgNames;
+    private int[] codes;
     
     private String extraInfo;
+    private String music;
+    
+    private int holdX=-1,holdY=-1;
     
     /** Creates a new instance of Editable */
-    public Editable(ArrayList<BufferedImage> imgs ,ArrayList<String> strs) {
+    public Editable(JFrame frame,ArrayList<BufferedImage> imgs ,ArrayList<String> strs, int[] codes) {
         xRate = (WIDTH/COLUMNS);
         yRate = (HEIGHT/ROWS);
         linesOn = true;
         addMouseListener(this);
         addMouseMotionListener(this);
+        frame.addKeyListener(this);
+        Timer t = new Timer(100,this);
+        t.start();
         img = imgs;
         imgNames = strs;
+        this.codes = codes;
         extraInfo = "";
+        music = JOptionPane.showInputDialog("Music name:");
     }
     
     public void paintComponent(Graphics g){
@@ -80,8 +96,32 @@ public class Editable extends JComponent implements MouseListener,MouseMotionLis
             }
         }        
         
-        if(currentImage!=null && linesOn)
-            g2.drawImage(currentImage,null,mouseX,mouseY);
+        if(currentImage!=null && linesOn){
+            if(holdX==-1 && holdY==-1){
+                BufferedImage mouse = new BufferedImage(currentImage.getWidth(), currentImage.getHeight(), BufferedImage.TYPE_4BYTE_ABGR_PRE);
+                mouse.setData(currentImage.getData());
+                Graphics2D imgGraphics = mouse.createGraphics();
+                imgGraphics.setColor(Color.RED);
+                imgGraphics.draw(new Rectangle2D.Double(0, 0, currentImage.getWidth()-1, currentImage.getHeight()-1));
+                g2.drawImage(mouse,null,mouseX,mouseY);
+            }else{
+                int x1 = holdX/xRate;
+                int y1 = holdY/yRate;
+                int x2 = mouseX/xRate;
+                int y2 = mouseY/yRate;
+                for(int x=x1;x<=x2;x++){
+                    for(int y=y1;y<=y2;y++){
+                        g2.drawImage(currentImage,null,x*xRate,y*yRate);
+                    }
+                }
+            }
+        }
+        
+        if(holdX!=-1 && holdY!=-1){
+            g2.setColor(Color.BLUE);
+            System.out.println(mouseX);
+            g2.draw(new Rectangle(holdX,holdY,mouseX-holdX+xRate,mouseY-holdY+yRate));
+        }
     }
     
     /**
@@ -140,6 +180,7 @@ public class Editable extends JComponent implements MouseListener,MouseMotionLis
         }
         try {
             PrintWriter writer = new PrintWriter(new File(name + "collision.txt"));
+            writer.println(music);
             int width = WIDTH/COLUMNS;
             int height = HEIGHT/ROWS;
             String arr[][] = new String[COLUMNS][ROWS];
@@ -150,10 +191,38 @@ public class Editable extends JComponent implements MouseListener,MouseMotionLis
                     arr[x][y]="1";
                 }   
             }
+            
             for(int y=0;y<ROWS;y++)
             {
                 for(int x = 0;x<COLUMNS;x++)
-                {                
+                {  
+                    arr[x][y] = "1";
+                }
+            }
+            
+            for(int y=0;y<ROWS;y++)
+            {
+                for(int x = 0;x<COLUMNS;x++)
+                {            
+                    
+                    if(images[BACKGROUND][x][y]!=null){
+                        for(int i=0;i<=(images[BACKGROUND][x][y].getWidth()-.001)/width;i++){
+                            for(int j=0;j<=(images[BACKGROUND][x][y].getHeight()-.001)/height;j++){
+                                if(x+i<arr.length && y+j<arr[0].length)
+                                    arr[x+i][y+j] = "0";
+
+                            }
+                        }
+                    }
+                    
+                }
+            }
+            
+            for(int y=0;y<ROWS;y++)
+            {
+                for(int x = 0;x<COLUMNS;x++)
+                {            
+                    
                     if(images[STATIC][x][y]!=null){
                         String code = "1";
                         if(extraImageData[STATIC][x][y]!=null && !extraImageData[STATIC][x][y].equals(""))
@@ -162,15 +231,6 @@ public class Editable extends JComponent implements MouseListener,MouseMotionLis
                             for(int j=0;j<=(images[STATIC][x][y].getHeight()-.001)/height;j++){
                                 if(x+i<arr.length && y+j<arr[0].length)
                                     arr[x+i][y+j] = code;
-                                
-                            }
-                        }
-                    }
-                    if(images[BACKGROUND][x][y]!=null){
-                        for(int i=0;i<=(images[BACKGROUND][x][y].getWidth()-.001)/width;i++){
-                            for(int j=0;j<=(images[BACKGROUND][x][y].getHeight()-.001)/height;j++){
-                                if(x+i<arr.length && y+j<arr[0].length)
-                                    arr[x+i][y+j] = "0";
                                 
                             }
                         }
@@ -245,6 +305,7 @@ public class Editable extends JComponent implements MouseListener,MouseMotionLis
         
         try {
             Scanner input = new Scanner(new File(name + "collision.txt"));
+            music = input.nextLine();
             String line = "";
             while(input.hasNextLine()){
                  line += input.nextLine();
@@ -286,14 +347,51 @@ public class Editable extends JComponent implements MouseListener,MouseMotionLis
     public void mouseReleased(MouseEvent e) 
     {    
         if(e.getButton()==MouseEvent.BUTTON1)
-        {
-            images[currentLayer][mouseX/xRate][mouseY/yRate] = currentImage;
-            extraImageData[currentLayer][mouseX/xRate][mouseY/yRate] = extraInfo;
+        {            
+            String str = "";
+            
+            if(extraInfo.equals("")){
+                int index = imgNames.indexOf(currentImage);
+                if(index>=0)
+                    str = ""+codes[index];
+            }
+            else
+                str = extraInfo;
+            
+            if(holdX!=-1 && holdY!=-1){             
+                int x1 = holdX/xRate;
+                int y1 = holdY/yRate;
+                int x2 = mouseX/xRate;
+                int y2 = mouseY/yRate;
+                for(int x=x1;x<=x2;x++){
+                    for(int y=y1;y<=y2;y++){
+                        images[currentLayer][x][y] = currentImage;
+                        extraImageData[currentLayer][x][y] = str;
+                    }
+                }
+            }else{
+                images[currentLayer][mouseX/xRate][mouseY/yRate] = currentImage;
+                extraImageData[currentLayer][mouseX/xRate][mouseY/yRate] = str;
+
+            }
         }
         if(e.getButton()==MouseEvent.BUTTON3)
         {
-            images[currentLayer][mouseX/xRate][mouseY/yRate] = null;
-            extraImageData[currentLayer][mouseX/xRate][mouseY/yRate] = "";
+            if(holdX!=-1 && holdY!=-1){
+                int x1 = holdX/xRate;
+                int y1 = holdY/yRate;
+                int x2 = mouseX/xRate;
+                int y2 = mouseY/yRate;
+                for(int x=x1;x<=x2;x++){
+                    for(int y=y1;y<=y2;y++){
+                        images[currentLayer][x][y] = null;
+                        extraImageData[currentLayer][x][y] = "";
+                    }
+                }
+            }else{
+                images[currentLayer][mouseX/xRate][mouseY/yRate] = null;
+                extraImageData[currentLayer][mouseX/xRate][mouseY/yRate] = "";
+            }
         }
         if(e.getButton()==MouseEvent.BUTTON2)
         {
@@ -336,6 +434,30 @@ public class Editable extends JComponent implements MouseListener,MouseMotionLis
             oldX = mouseX;
             oldY = mouseY;
         }
+    }
+
+    public void keyTyped(KeyEvent e) {
+    }
+
+    public void keyPressed(KeyEvent e) {
+        if(e.getKeyCode()==KeyEvent.VK_CONTROL && holdX==-1 && holdY==-1){
+            
+            holdX = mouseX;
+            holdY = mouseY;
+            System.out.println(mouseX);
+        }
+    }
+
+    public void keyReleased(KeyEvent e) {
+        if(e.getKeyCode()==KeyEvent.VK_CONTROL){
+            holdX = -1;
+            holdY = -1;
+            
+        }
+    }
+
+    public void actionPerformed(ActionEvent e) {
+        repaint();
     }
     
     

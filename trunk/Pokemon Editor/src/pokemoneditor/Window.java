@@ -7,10 +7,13 @@ package pokemoneditor;
 
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.awt.AWTException;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.*;
@@ -21,6 +24,7 @@ public class Window extends javax.swing.JFrame {
     
     ArrayList<BufferedImage> img = new ArrayList<BufferedImage>(20); 
     ArrayList<String> imgNames = new ArrayList<String>(20); 
+    
     
     BufferedImage currentImage;
     Editable e;
@@ -38,7 +42,7 @@ public class Window extends javax.swing.JFrame {
         extraWindow.setVisible(true);
         selection.pack();
         
-        e = new Editable(img,imgNames);
+        e = new Editable(this,img,imgNames,loadCodes("Images\\codes.txt"));
         editablePanel.add(e);
         e.setBounds(0,0,Editable.WIDTH+1,Editable.HEIGHT+1);
         e.setVisible(true);             
@@ -296,6 +300,7 @@ public class Window extends javax.swing.JFrame {
         
         return num;
     }
+    
     private void showSelectActionPerformed(java.awt.event.ActionEvent evt) {                                           
         selection.setVisible(true);
     }                                          
@@ -387,6 +392,23 @@ public class Window extends javax.swing.JFrame {
             }            
         }
         return list;        
+    }
+    
+    private int[] loadCodes(String file){
+        int[] codes = new int[imgNames.size()];
+        try {
+            Scanner input = new Scanner(new File(file));
+            
+            while (input.hasNextLine()) {
+                String line = input.nextLine();
+                int index = imgNames.indexOf(line.substring(0, line.indexOf(":")));
+                codes[index] = Integer.parseInt(line.substring(line.indexOf(":") + 1));
+            }
+            
+        } catch (FileNotFoundException ex) {
+            System.out.println("cannot load");
+        }
+        return codes;
     }
     
     
