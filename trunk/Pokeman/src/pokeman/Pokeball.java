@@ -21,7 +21,7 @@ public class Pokeball extends Item<Pokemon> {
             multiplier = 1.5;
         } else if(name.equals("Ultra Ball")){
             setPrice(1200);
-            multiplier = 1.5;
+            multiplier = 2;
         } else if(name.equals("Master Ball")){
             setPrice(0);
             multiplier = 255;
