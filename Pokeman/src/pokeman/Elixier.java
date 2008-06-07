@@ -1,21 +1,28 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+
 
 package pokeman;
 
 /**
- *
+ * Valid names for elixiers are "Max Elixier" and "Elixier"
+ * other names will throw exceptions
  * @author Kunal
  */
 public class Elixier extends Item<Pokemon> {
     
     private int amountToHeal;
     
-    public Elixier(){
-        super("Elixier", 1000, 1);
-        amountToHeal = 5;
+    public Elixier(String name){
+        super(name, 1);
+        
+        if(name.equals("Max Elixier")){
+            setPrice(0);
+            amountToHeal = -1;
+        } else if (name.equals("Elixier")) {
+            setPrice(1000);
+            amountToHeal = 10;
+        } else {
+            throw new IllegalArgumentException("Invalid name");
+        }
     }
     
     

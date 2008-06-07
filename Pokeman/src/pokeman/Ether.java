@@ -9,9 +9,16 @@ public class Ether extends Item<Move> {
     
     private int amountToHeal;
     
-    public Ether(){
-        super("Ether", 500, 1);
-        amountToHeal = 5;
+    public Ether(String name){
+        super(name, 1);
+        
+        if(name.equals("Ether")){
+            setPrice(3000);
+            amountToHeal = 300;
+        } else if (name.equals("Max Ether")){
+            setPrice(0);
+            amountToHeal = -1;
+        }
     }
     
     @Override
