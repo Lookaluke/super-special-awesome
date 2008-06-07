@@ -14,6 +14,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -43,6 +44,8 @@ public class Window extends JComponent{
             BACKGROUND = 0,STATIC = 1,DYNAMIC = 2;
     public static final int numberOfCounts = 4;
 
+    public static final MusicSystem MUSIC = new MusicSystem();
+    
     public static Font FONT;
 
     
@@ -71,6 +74,8 @@ public class Window extends JComponent{
     private Battle battle;
     private PokemonMenu pkmMenu;
     
+    private int currentFilledBox,maximumBoxes = COLUMNS*ROWS;
+    
 
     
     private ArrayList<String> trainerSayings = new ArrayList<String>();
@@ -83,7 +88,10 @@ public class Window extends JComponent{
         try {
 
             FONT = Font.createFont(Font.TRUETYPE_FONT, new File("Pokemon RS part B.ttf"));
-
+            
+            MUSIC.loadMusic("Music\\Pallet Town.mid");
+            MUSIC.play(true);
+            
             File file = new File("Images\\Pokeball.gif");
             BufferedImage p = null;
             try {
@@ -95,7 +103,7 @@ public class Window extends JComponent{
             setCursor(tools.createCustomCursor(p, new Point(0, 0), "Pokeball"));
 
             //pkmMenu = new PokemonMenu(player,frame,false);
-
+            //battle = new Battle(player,new Pokemon("Meh",10),frame);
                     
             //String[] str = {"Attack","Pokemon","Item","Run"};
             //menu = new Menu(frame,str,0,475,600,101);
@@ -105,7 +113,6 @@ public class Window extends JComponent{
 
             this.frame = frame;
 
-            //Pokemon p = new Pokemon("Meh",5);
             frame.add(this);
             this.setPreferredSize(new Dimension(WIDTH, HEIGHT));
             frame.pack();
@@ -155,7 +162,7 @@ public class Window extends JComponent{
     public void paintComponent(Graphics g){
 
         Graphics2D g2 = (Graphics2D)g;
-        if(control==0){
+        if(control==0 || control==3){
             g2.setColor(Color.BLACK);
             g2.fill(new Rectangle(0,0,WIDTH,HEIGHT));
 
@@ -215,6 +222,44 @@ public class Window extends JComponent{
                 {
                     menu = null;
                     player.allowUpdate(true);
+                }
+            }
+            
+            if(control==3){
+                currentFilledBox+=10;
+                int w=COLUMNS-1,h=ROWS-1;
+                boolean horizontal=true,dir = true;
+                int xBlock=0,yBlock=0;
+                for(int i=0;i<currentFilledBox;i++){
+                   if(horizontal && ((dir && xBlock>=w) || (!dir && xBlock<=COLUMNS-1-w))){
+                       horizontal = !horizontal;
+                       if(!dir)
+                           w--;
+                   }
+                   if(!horizontal && ((dir && yBlock>=h) || (!dir && yBlock<=ROWS-h))){
+                       horizontal = !horizontal;
+                       if(!dir)
+                           h--;
+                       dir = !dir;
+                   }
+                   g2.fill(new Rectangle2D.Double(xBlock*TILE_WIDTH,yBlock*TILE_HEIGHT,TILE_WIDTH,TILE_HEIGHT));
+                   if(horizontal){
+                       if(dir)
+                           xBlock++;
+                       else
+                           xBlock--;
+                   }else{
+                        if(dir)
+                            yBlock++;
+                        else
+                            yBlock--;
+                   }
+                   
+                }
+                if(currentFilledBox>=maximumBoxes)
+                {
+                    currentFilledBox = 0;
+                    control = 1;
                 }
             }
             
@@ -453,8 +498,10 @@ public class Window extends JComponent{
     }
     
     public void startBattle(Battle b){
-        control = 1;
+        control = 3;
         battle = b;
+        MUSIC.loadMusic("Music\\WildBattle.mid");
+        MUSIC.play(true);
     }
     
     public JFrame getFrame(){

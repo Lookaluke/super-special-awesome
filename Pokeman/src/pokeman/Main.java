@@ -17,9 +17,7 @@ public class Main {
         frame.setResizable(false);
         frame.setTitle("Pokemon Razzmatazz");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        MusicSystem m = new MusicSystem();
-        m.loadMusic("Music\\bluedabadee.mid");
-        //m.play(true);
+        
 
         frame.setVisible(true);
         new Window(frame);
