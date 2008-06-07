@@ -31,6 +31,7 @@ public class PokemonMenu {
     private boolean switching;
     private int switchIndex;
     private boolean inBattle;
+    private boolean refreshZ;
     
     private static final int X_SHIFT = 50,Y_SHIFT=150,WIDTH1=200,HEIGHT1=120,Y_SHIFT2 = 100,X_SHIFT2 = X_SHIFT+WIDTH1+20,WIDTH2 = Window.WIDTH -X_SHIFT2-20,HEIGHT2 = 50,WIDTH3=150,HEIGHT3=50;
     private static final Color SELECTED_OUT_LINE = new Color(247,144,47),NOT_SELECTED_OUT_LINE = new Color(58,76,98),SELECTED_UP = new Color(248,185,144),SELECTED_DOWN = new Color(253,208,203),
@@ -49,6 +50,7 @@ public class PokemonMenu {
         over = false;
         switching = false;
         switchIndex = -1;
+        refreshZ = false;
     }
     
     public void draw(Graphics2D g2){
@@ -84,6 +86,8 @@ public class PokemonMenu {
     }
     
     public Pokemon getResult(){
+        if(switchIndex>=6 || switchIndex<0)
+            return null;
         Pokemon p = character.currentPokemon()[switchIndex];
         return p;
     }
@@ -205,7 +209,8 @@ public class PokemonMenu {
 
         public void keyTyped(KeyEvent e) {
             if(menu==null){
-                if(e.getKeyChar()=='z'){
+                if(e.getKeyChar()=='z' && !refreshZ){
+                    refreshZ = true;
                     if(!switching){
                         if(selected == 6){
                             over = true;
@@ -228,7 +233,7 @@ public class PokemonMenu {
                     }
                 }
                 if(e.getKeyChar()=='x'){
-                    over = true;
+                    selected = 6;
                 }
             }
         }
@@ -249,6 +254,9 @@ public class PokemonMenu {
         }
 
         public void keyReleased(KeyEvent e) {
+            if(e.getKeyChar()=='z'){
+                refreshZ = false;
+            }
         }
         
     }

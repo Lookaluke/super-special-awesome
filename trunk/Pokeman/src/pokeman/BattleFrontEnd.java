@@ -39,6 +39,7 @@ public class BattleFrontEnd {
     private Pokemon theirs,yours;
     private double yourCurrentPercent,theirCurrentPercent;
     private Character player;
+    private int youDown,theirDown;
     
 
 
@@ -84,7 +85,12 @@ public class BattleFrontEnd {
                 if(menuType==MOVE){
                     int i = menu.getSelected();
                     txt = new TextBox(frame,"PP: "+yours.getMoves()[i].getPP()+"/"+yours.getMoves()[i].getTotalPP()+" "+yours.getMoves()[i].element(),600,yStart,200,TXT_HEIGHT,false,Style.BATTLE_TEXT3);
-                    txt.removeKeyListener();
+                    txt.removeKeyListener();                    
+                }
+                if(menu.result()!=null && menu.result().equals("BACK")){
+                    if(menuType==MOVE)
+                        txt = null;
+                        makeMenu(MAIN);
                 }
                 if(menu.result()!=null && menu.result().equals("Attack"))
                     makeMenu(MOVE);
@@ -176,13 +182,15 @@ public class BattleFrontEnd {
             menuType = NONE;
         }
         
-        if(pkmMenu!=null && pkmMenu.isOver()){
-            
+        if(pkmMenu!=null && pkmMenu.isOver()){                
             Pokemon p = pkmMenu.getResult();
+            
             if(p!=yours)
                 ret = p;
-            
+
             pkmMenu = null;
+            if(p==null)
+                makeMenu(MAIN);
         }
 
         return ret;

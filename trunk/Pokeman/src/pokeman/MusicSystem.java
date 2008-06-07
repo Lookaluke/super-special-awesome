@@ -23,8 +23,9 @@ public class MusicSystem implements Closeable
 {
     
     private File f = null;
-    Sequence sequence = null;
-    Sequencer sequencer = null;
+    private Sequence sequence = null;
+    private Sequencer sequencer = null;
+    private boolean stop = false;
             
     /**
      * Currently, this method takes in the exact midi file location as a string.
@@ -57,9 +58,11 @@ public class MusicSystem implements Closeable
      * @param loop a boolean, true if it loops, false if it doesn't
      */
     public void play(boolean loop){
-        if(loop)
-            sequencer.setLoopCount(Sequencer.LOOP_CONTINUOUSLY);   
-        sequencer.start();
+        if(!stop){
+            if(loop)
+                sequencer.setLoopCount(Sequencer.LOOP_CONTINUOUSLY);   
+            sequencer.start();
+        }
     }
     
     public void pause(){
@@ -77,6 +80,11 @@ public class MusicSystem implements Closeable
     public void close(){
         pause();
         sequencer.close();
+    }
+    
+    public void stop(){
+        pause();
+        stop = true;
     }
 }
 

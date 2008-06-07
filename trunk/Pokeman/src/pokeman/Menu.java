@@ -15,8 +15,6 @@ import java.awt.event.KeyListener;
 import java.awt.font.FontRenderContext;
 import java.awt.geom.Rectangle2D;
 import java.awt.geom.RoundRectangle2D;
-import java.io.File;
-import java.io.IOException;
 import javax.swing.JFrame;
 
 /**
@@ -116,7 +114,6 @@ public class Menu {
         }
 
         public void keyPressed(KeyEvent e) {
-            System.out.println("blah");
             if(e.getKeyCode()==KeyEvent.VK_UP && selected-items.length/lines>=0 && (items[selected-items.length/lines]!=null))
                 selected-=items.length/lines;
             if(e.getKeyCode()==KeyEvent.VK_DOWN && selected+items.length/lines<=items.length-1 && (items[selected+items.length/lines]!=null))
@@ -127,6 +124,10 @@ public class Menu {
                 selected--;
             if(e.getKeyCode()==KeyEvent.VK_Z){
                 result = items[selected];
+                frame.removeKeyListener(this);
+            }
+            if(e.getKeyCode()==KeyEvent.VK_X){
+                result = "BACK";
                 frame.removeKeyListener(this);
             }
 
