@@ -16,9 +16,8 @@ public abstract class Item<T> implements Serializable {
     private String name;
     private int quantity;
     
-    public Item(String name, int price, int quantity){
+    public Item(String name, int quantity){
         this.name = name;
-        this.price = price;
         this.quantity = quantity;
     }
     
@@ -57,6 +56,11 @@ public abstract class Item<T> implements Serializable {
         return quantity;
     }
     
+    /**
+     * 
+     * @param extra
+     * @return false if the new resulting quantity is 
+     */
     public boolean stockUp(int extra){
         int tempstock = quantity + extra;
         if (tempstock > 99){
@@ -67,7 +71,22 @@ public abstract class Item<T> implements Serializable {
         }
     }
     
+    /**
+     * this method is used to tell if the user already has one of this type.
+     * if the user does, then methods that use this should increment, rather
+     * than add a new item to the bag.
+     * @param other
+     * @return
+     */
     public boolean equals(Object other){
         return ((Item)other).getName().equals(name);
+    }
+    
+    /**
+     * protected so that only the subclass can change its price
+     * @param price
+     */
+    protected void setPrice(int price){
+        this.price = price;
     }
 }

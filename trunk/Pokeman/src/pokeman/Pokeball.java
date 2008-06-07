@@ -10,8 +10,22 @@ public class Pokeball extends Item<Pokemon> {
     
     private double multiplier;
     
-    public Pokeball(){
-        super("Pokeball", 200, 1);
+    public Pokeball(String name){
+        super(name, 1);
+        
+        if(name.equals("Poke Ball")){
+            setPrice(200);
+            multiplier = 1;
+        } else if (name.equals("Great Ball")){
+            setPrice(600);
+            multiplier = 1.5;
+        } else if(name.equals("Ultra Ball")){
+            setPrice(1200);
+            multiplier = 1.5;
+        } else if(name.equals("Master Ball")){
+            setPrice(0);
+            multiplier = 255;
+        }
     }
     
     @Override
