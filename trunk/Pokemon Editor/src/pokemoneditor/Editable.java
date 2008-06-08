@@ -37,6 +37,9 @@ public class Editable extends JComponent implements MouseListener,MouseMotionLis
     
     private BufferedImage[][][] images = new BufferedImage[3][COLUMNS][ROWS];
     private String[][][] extraImageData = new String[3][COLUMNS][ROWS];
+    private int[][][] rotated = new int[3][COLUMNS][ROWS];
+    
+    private int currentRotation;
     
     private ArrayList<BufferedImage> img;
     private ArrayList<String> imgNames;
@@ -62,6 +65,7 @@ public class Editable extends JComponent implements MouseListener,MouseMotionLis
         this.codes = codes;
         extraInfo = "";
         music = JOptionPane.showInputDialog("Music name:");
+        currentRotation = 0;
     }
     
     public void paintComponent(Graphics g){
@@ -78,8 +82,24 @@ public class Editable extends JComponent implements MouseListener,MouseMotionLis
             {
                 for(int x = 0;x<COLUMNS;x++)
                 {
-                    if(images[j][x][y]!=null)
-                        g2.drawImage(images[j][x][y],null,x*xRate,y*yRate);
+                    if(images[j][x][y]!=null){
+                        AffineTransform a = new AffineTransform();
+                        a.setToTranslation(x*xRate,y*yRate);
+                        switch(rotated[j][x][y]){
+                            case 0:
+                                break;
+                            case 1:
+                                a.rotate(Math.toRadians(90),images[j][x][y].getWidth()/2,images[j][x][y].getHeight()/2);
+                                break;    
+                            case 2:
+                                a.rotate(Math.toRadians(180),images[j][x][y].getWidth()/2,images[j][x][y].getHeight()/2);
+                                break;    
+                            case 3:
+                                a.rotate(Math.toRadians(270),images[j][x][y].getWidth()/2,images[j][x][y].getHeight()/2);
+                                break;
+                        }
+                        g2.drawImage(images[j][x][y],a,null);
+                    }
                 }
             }
         }
@@ -97,21 +117,54 @@ public class Editable extends JComponent implements MouseListener,MouseMotionLis
         }        
         
         if(currentImage!=null && linesOn){
+            AffineTransform a = new AffineTransform();
+
             if(holdX==-1 && holdY==-1){
                 BufferedImage mouse = new BufferedImage(currentImage.getWidth(), currentImage.getHeight(), BufferedImage.TYPE_4BYTE_ABGR_PRE);
                 mouse.setData(currentImage.getData());
                 Graphics2D imgGraphics = mouse.createGraphics();
                 imgGraphics.setColor(Color.RED);
                 imgGraphics.draw(new Rectangle2D.Double(0, 0, currentImage.getWidth()-1, currentImage.getHeight()-1));
-                g2.drawImage(mouse,null,mouseX,mouseY);
+                
+
+                a.setToTranslation(mouseX,mouseY);
+                switch(currentRotation){
+                case 0:
+                    break;
+                case 1:
+                    a.rotate(Math.toRadians(90),currentImage.getWidth()/2,currentImage.getHeight()/2);
+                    break;    
+                case 2:
+                    a.rotate(Math.toRadians(180),currentImage.getWidth()/2,currentImage.getHeight()/2);
+                    break;    
+                case 3:
+                    a.rotate(Math.toRadians(270),currentImage.getWidth()/2,currentImage.getHeight()/2);
+                    break;
+                }
+                g2.drawImage(mouse,a,null);
             }else{
                 int x1 = holdX/xRate;
                 int y1 = holdY/yRate;
                 int x2 = mouseX/xRate;
                 int y2 = mouseY/yRate;
+                
                 for(int x=x1;x<=x2;x++){
                     for(int y=y1;y<=y2;y++){
-                        g2.drawImage(currentImage,null,x*xRate,y*yRate);
+                        a.setToTranslation(x*xRate,y*yRate);
+                        switch(currentRotation){
+                            case 0:
+                                break;
+                            case 1:
+                                a.rotate(Math.toRadians(90),currentImage.getWidth()/2,currentImage.getHeight()/2);
+                                break;    
+                            case 2:
+                                a.rotate(Math.toRadians(180),currentImage.getWidth()/2,currentImage.getHeight()/2);
+                                break;    
+                            case 3:
+                                a.rotate(Math.toRadians(270),currentImage.getWidth()/2,currentImage.getHeight()/2);
+                                break;
+                        }
+                        g2.drawImage(currentImage,a,null);
                     }
                 }
             }
@@ -166,7 +219,7 @@ public class Editable extends JComponent implements MouseListener,MouseMotionLis
                 for(int x = 0;x<COLUMNS;x++)
                 {                
                     if(images[layer][x][y]!=null)
-                        str+=imgNames.get(img.indexOf(images[layer][x][y]));
+                        str+=imgNames.get(img.indexOf(images[layer][x][y]))+"~"+rotated[layer][x][y];
                     if(layer!=STATIC && extraImageData[layer][x][y]!=null && !extraImageData[layer][x][y].equals(""))
                         str+=":"+extraImageData[layer][x][y];
                     str+=",";
@@ -278,12 +331,25 @@ public class Editable extends JComponent implements MouseListener,MouseMotionLis
 
 
                     if (str.charAt(i) == ',') {
+                        System.out.print(currentString);
+                        int rotate = 0;
+                        int index = currentString.indexOf("~");
+                        if(index>0){
+                            try{
+                                rotate = Integer.parseInt(currentString.substring(index+1));
+                            }catch(Exception e){
+                            }
+                            currentString = currentString.substring(0,index);
+                        }
+                        System.out.println(rotate);
+                        
                         if (imgNames.indexOf(currentString) != -1) {
                             images[layer][x][y] = img.get(imgNames.indexOf(currentString));
                         } else {
                             images[layer][x][y] = null;
                         }
                         extraImageData[layer][x][y] = extraData;
+                        rotated[layer][x][y] = rotate;
                         x++;
                         currentString = "";
                         extraData = "";
@@ -368,6 +434,7 @@ public class Editable extends JComponent implements MouseListener,MouseMotionLis
                     for(int y=y1;y<=y2;y++){
                         images[currentLayer][x][y] = currentImage;
                         extraImageData[currentLayer][x][y] = str;
+                        rotated[currentLayer][x][y] = currentRotation;
                     }
                 }
             }else{
@@ -380,6 +447,7 @@ public class Editable extends JComponent implements MouseListener,MouseMotionLis
                         images[currentLayer][x][y] = null;
                 images[currentLayer][mouseX/xRate][mouseY/yRate] = currentImage;
                 extraImageData[currentLayer][mouseX/xRate][mouseY/yRate] = str;
+                rotated[currentLayer][mouseX/xRate][mouseY/yRate] = currentRotation;
 
             }
         }
@@ -394,11 +462,13 @@ public class Editable extends JComponent implements MouseListener,MouseMotionLis
                     for(int y=y1;y<=y2;y++){
                         images[currentLayer][x][y] = null;
                         extraImageData[currentLayer][x][y] = "";
+                        rotated[currentLayer][x][y] = 0;
                     }
                 }
             }else{
                 images[currentLayer][mouseX/xRate][mouseY/yRate] = null;
                 extraImageData[currentLayer][mouseX/xRate][mouseY/yRate] = "";
+                rotated[currentLayer][mouseX/xRate][mouseY/yRate] = 0;
             }
         }
         if(e.getButton()==MouseEvent.BUTTON2)
@@ -448,6 +518,18 @@ public class Editable extends JComponent implements MouseListener,MouseMotionLis
     }
 
     public void keyPressed(KeyEvent e) {
+        if(e.getKeyCode()==KeyEvent.VK_UP){
+            currentRotation = 0;
+        }
+        if(e.getKeyCode()==KeyEvent.VK_RIGHT){
+            currentRotation = 1;
+        }
+        if(e.getKeyCode()==KeyEvent.VK_LEFT){
+            currentRotation = 3;
+        }
+        if(e.getKeyCode()==KeyEvent.VK_DOWN){
+            currentRotation = 2;
+        }
         if(e.getKeyCode()==KeyEvent.VK_CONTROL && holdX==-1 && holdY==-1){
             
             holdX = mouseX;
