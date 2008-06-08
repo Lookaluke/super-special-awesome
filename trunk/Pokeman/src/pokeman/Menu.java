@@ -52,6 +52,8 @@ public class Menu {
         
         textHeight = (int)f.getStringBounds(items[0], new FontRenderContext(null,true,true)).getHeight();
         lines = (height-heightFactor*2-ySpaceFactor+15)/(textHeight);
+        if(lines>items.length)
+            lines = items.length;
         result = null;
         selected = 0;
     }
@@ -78,19 +80,23 @@ public class Menu {
         g2.setFont(f);
         if(result==null){
             int perLine = items.length/lines;
+            if(perLine==0)
+                perLine=1;
             int xSpace = (width-2*widthFactor-xSpaceFactor)/perLine;
             for(int j=0;j<lines;j++){
                 for(int i=0;i<perLine;i++){
-                    String str = items[j*perLine+i];
-                    if(items[j*perLine+i]==null)
-                        str = "---";
-                    g2.drawString(str,x+widthFactor+xSpaceFactor*(i+1)+xSpace*i,y+heightFactor+ySpaceFactor*(j)+textHeight*(j+1)-15);
-                    if(selected == j*perLine+i){
-                        int x1 = x+widthFactor+xSpaceFactor*(i+1)+xSpace*i;
-                        int y1 = y+heightFactor+ySpaceFactor*(j)+textHeight*(j+1);
-                        int[] xCoords = {x1-15,x1-15,x1-5};
-                        int[] yCoords = {y1-5-15,y1-19-15,y1-12-15}; 
-                        g2.fill(new Polygon(xCoords,yCoords,3));
+                    if(j*perLine+i<items.length){
+                        String str = items[j*perLine+i];
+                        if(items[j*perLine+i]==null)
+                            str = "---";
+                        g2.drawString(str,x+widthFactor+xSpaceFactor*(i+1)+xSpace*i,y+heightFactor+ySpaceFactor*(j)+textHeight*(j+1)-15);
+                        if(selected == j*perLine+i){
+                            int x1 = x+widthFactor+xSpaceFactor*(i+1)+xSpace*i;
+                            int y1 = y+heightFactor+ySpaceFactor*(j)+textHeight*(j+1);
+                            int[] xCoords = {x1-15,x1-15,x1-5};
+                            int[] yCoords = {y1-5-15,y1-19-15,y1-12-15}; 
+                            g2.fill(new Polygon(xCoords,yCoords,3));
+                        }
                     }
                 }
             }

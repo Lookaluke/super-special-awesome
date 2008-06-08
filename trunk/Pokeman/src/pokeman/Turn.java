@@ -18,12 +18,14 @@ public class Turn implements Runnable{
     private BattleFrontEnd frontEnd;
     private boolean stop = true;
     private ArrayList<String> queue = new ArrayList<String>();
+    private Character player;
     
-    public Turn(Move yourMove,Pokemon theirCurrent,Pokemon yours,BattleFrontEnd frontEnd){
+    public Turn(Character c,Move yourMove,Pokemon theirCurrent,Pokemon yours,BattleFrontEnd frontEnd){
         this.yourMove = yourMove;
         this.theirCurrent = theirCurrent;
         this.yours = yours;
         this.frontEnd = frontEnd;
+        player = c;
     }
     
     @SuppressWarnings("empty-statement")
@@ -72,6 +74,7 @@ public class Turn implements Runnable{
     private void performMove(Pokemon doer,Pokemon reciever,Move m){
         
         if(doer.getCurrentHP()!=0){
+            
 
             frontEnd.setText(doer.getName()+" used "+m.name());   
             frontEnd.removeKeyListener();
@@ -79,10 +82,10 @@ public class Turn implements Runnable{
             //now do their move
             if(m.attacksWhat()==Move.HP){
                 if(m.raises()){
-                    doer.heal(calculateDamage(m, true));
+                    doer.heal(m.power());
                     queue.add(doer.getName()+" healed itself.");
                 }else
-                    reciever.takeDamage(calculateDamage(m, true));
+                    reciever.takeDamage(calculateDamage(m, doer==yours));
             }else{
                 if(m.raises())
                     changeStats(false,doer,m.attacksWhat(),m.power());
@@ -106,6 +109,8 @@ public class Turn implements Runnable{
             }
         }
     }
+    
+
     
     /**
      * Retuns false if it couldn't increase or decrease the stat
@@ -172,6 +177,7 @@ public class Turn implements Runnable{
      */
     private int calculateDamage(Move m, boolean isPerson){
         
+        System.out.println(isPerson);
         
         Pokemon attacker;
         Pokemon defender;
@@ -216,8 +222,7 @@ public class Turn implements Runnable{
             
             if(typeModifer<=5)
                 queue.add("It's not very effective");
-            
-            return (int)(((((Math.min(((((2*level/5 + 2)*attack*power)/Math.max(1, defense))/50), 997) + 2)*stab)*typeModifer)/10)*randomNumber)/255;
+            return (int)(((((Math.min(((((2*level/5.0 + 2)*attack*power)/(double)Math.max(1, defense))/50.0), 997) + 2)*stab)*typeModifer)/10.0)*randomNumber)/255;
         } else {
             return -1;
         }

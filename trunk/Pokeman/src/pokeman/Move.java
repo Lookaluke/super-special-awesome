@@ -101,7 +101,7 @@ public class Move {
     }
     
     private String getInfo(String s,String after){
-        int index = s.indexOf(after)+after.length()+1;
+        int index = s.indexOf(after)+after.length();
         int index2 = s.indexOf(",",index);
         if(index2==-1)
             return s.substring(index).trim();
