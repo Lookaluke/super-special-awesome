@@ -23,7 +23,7 @@ public class Pokemon implements Serializable
    private String name;
    //these are base stats (except currentHP)
    private int baseHP, currentHP, level, experience, levelGrowth, attack,
-           defense, special, speed;
+           defense, special, speed,catchRate;
    
    private int attackmod, defensemod, specialmod, speedmod;
    private BufferedImage front,back;
@@ -37,7 +37,6 @@ public class Pokemon implements Serializable
    Element element1, element2;
    Status status;
    
-   private int catchrate;
    
    /**
     * Takes a file and the pokemon's level. The pokemon
@@ -59,7 +58,7 @@ public class Pokemon implements Serializable
            level = l;
            
            Scanner input = new Scanner(new File(f + "info.txt"));
-           
+           catchRate = Integer.parseInt(getInfo(input.nextLine(),"Catch Rate:"));
            String lg = getInfo(input.nextLine(),"Speed:");
            if(lg.equals("Fast")){
                levelGrowth = FAST;
@@ -435,7 +434,7 @@ public class Pokemon implements Serializable
    }
    
    public int getCatchRate(){
-       return catchrate;
+       return catchRate;
    }
    
    public Status getStatus(){

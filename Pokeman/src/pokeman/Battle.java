@@ -66,7 +66,7 @@ public class Battle {
             if(theirs[i].getCurrentHP()!=0)
                 over = false;
         }
-        isOver = over && !frontEnd.waitingForHP() && !frontEnd.waiting();
+        isOver = over && !frontEnd.waitingForHP() && !frontEnd.waiting() && !turnThread.isAlive();
         
 
         
