@@ -350,11 +350,12 @@ public class Editable extends JComponent implements MouseListener,MouseMotionLis
         {            
             String str = "";
             
-            if(extraInfo.equals("")){
-                int index = imgNames.indexOf(currentImage);
-                if(index>=0)
-                    str = ""+codes[index];
-            }
+            
+            int index = img.indexOf(currentImage);
+            if(index>0)
+                System.out.println(codes[index]);
+            if(index>=0 && codes[index]!=0)
+                str = ""+codes[index];
             else
                 str = extraInfo;
             
@@ -370,6 +371,13 @@ public class Editable extends JComponent implements MouseListener,MouseMotionLis
                     }
                 }
             }else{
+                int x1 = mouseX/xRate;
+                int y1 = mouseY/yRate;
+                int x2 = (mouseX+currentImage.getWidth())/xRate;
+                int y2 = (mouseY+currentImage.getHeight())/yRate;
+                for(int x=x1;x<x2;x++)
+                    for(int y=y1;y<y2;y++)
+                        images[currentLayer][x][y] = null;
                 images[currentLayer][mouseX/xRate][mouseY/yRate] = currentImage;
                 extraImageData[currentLayer][mouseX/xRate][mouseY/yRate] = str;
 
