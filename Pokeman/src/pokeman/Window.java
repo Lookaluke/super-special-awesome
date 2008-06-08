@@ -46,6 +46,7 @@ public class Window extends JComponent{
 
     public static final MusicSystem MUSIC = new MusicSystem();
     
+    private static final int TXT_HEIGHT = 101;
     public static Font FONT;
 
     
@@ -71,6 +72,8 @@ public class Window extends JComponent{
     
     private int control;
     private TextBox txt;
+    private TextBox area;
+    private int times;
     private Menu menu;
     private Battle battle;
     private PokemonMenu pkmMenu;
@@ -170,6 +173,7 @@ public class Window extends JComponent{
             if(control==0 && music[1][1]!=null && !MUSIC.getName().equals(music[1][1])){
                 MUSIC.loadMusic(music[1][1]);
                 MUSIC.play(true);
+                area = new TextBox(frame,music[1][1].substring(6,music[1][1].length()-4),0,475,800,TXT_HEIGHT,false,Style.STANDARD_TEXT);;
             }
             
             for(int i=0;i<3;i++){
@@ -209,7 +213,21 @@ public class Window extends JComponent{
                 if(c.getNumber(0)!=0)
                     g2.draw(new Rectangle(c.getX()*TILE_WIDTH+x, c.getY()*TILE_HEIGHT+y, TILE_WIDTH, TILE_HEIGHT));
             }*/
-
+            if(area != null)
+            {
+                if(times < 100)
+                {
+                    area.draw(g2);
+                    times++;
+                }
+                else
+                {
+                    times = 0;
+                    area.destroy();
+                    area = null;
+                }
+            }
+            
 
 
             if(txt!=null){
