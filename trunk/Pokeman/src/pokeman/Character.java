@@ -28,11 +28,11 @@ public class Character extends Person{
         press = 0;
         jumping=0;
         int levelX = 0;
-        int levelY = 1;
+        int levelY = 4;
         setX(levelX*Window.WIDTH+(int)(Window.COLUMNS/2)*Window.TILE_WIDTH);
         setY((-levelY)*Window.HEIGHT+(int)(Window.ROWS/2)*Window.TILE_HEIGHT);
         getWindow().setLevel(levelX,levelY);
-        addPokemon(new Pokemon("Meh",1));
+        addPokemon(new Pokemon("Meh",15));
         addPokemon(new Pokemon("Rattata",8));
         addPokemon(new Pokemon("Bulbasaur",7));
         addPokemon(new Pokemon("Friger",6));
@@ -193,16 +193,16 @@ public class Character extends Person{
             currentlyReading = p;
             return;
         }
-        /*if(c.getNumber(0)==-5){
+        if(c.getNumber(0)==-5){
             for(Collideable col:getWindow().getCollision()){
-                if(col.getMaker() instanceof Person){
-                    Person p = (Person)col.getMaker();
-                    if(p.getName()="Nurse"){
-                         
-                    }
+                if(col.getMaker() instanceof NurseJoy){
+                    NurseJoy p = (NurseJoy)col.getMaker();
+                    this.allowUpdate(false);
+                    currentlyReading = p;
+                    p.talk(this);
                 }
             }
-        }*/
+        }
 
     } 
     
@@ -224,7 +224,7 @@ public class Character extends Person{
     protected boolean canMove(int dir){
         Collideable col = getCollision(dir);
         
-        boolean lower = (col==null || ((col.getNumber(0)<1 || col.getNumber(0)>4) || (col.getNumber(0)==2 && dir == Animation.DOWN) || (col.getNumber(0)==3 && dir == Animation.RIGHT) || (col.getNumber(0)==4 && dir == Animation.LEFT)));
+        boolean lower = (col==null || ((col.getNumber(0)==0 || col.getNumber(0)>4) || (col.getNumber(0)==2 && dir == Animation.DOWN) || (col.getNumber(0)==3 && dir == Animation.RIGHT) || (col.getNumber(0)==4 && dir == Animation.LEFT)));
         return (lower);      
     }
     

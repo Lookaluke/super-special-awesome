@@ -96,7 +96,7 @@ public class Window extends JComponent{
             
             //MUSIC.loadMusic("Music\\Pallet Town.mid");
             //MUSIC.play(true);
-            MUSIC.stop();
+            //MUSIC.stop();
             
             File file = new File("Images\\Pokeball.gif");
             BufferedImage p = null;
@@ -116,7 +116,8 @@ public class Window extends JComponent{
             //player.allowUpdate(false);
 
 
-
+            player = new Character(this);
+            
             this.frame = frame;
 
             frame.add(this);
@@ -127,7 +128,7 @@ public class Window extends JComponent{
 
             loadTrainerSayings(trainerSayings, "Trainers\\Trainers.txt");
 
-            player = new Character(this);
+            
             
             //levelX = 0;
             //levelY = 0;
@@ -174,7 +175,7 @@ public class Window extends JComponent{
             g2.setColor(Color.BLACK);
             g2.fill(new Rectangle(0,0,WIDTH,HEIGHT));
 
-            if(control==0 && music[1][1]!=null && !MUSIC.getName().equals(music[1][1])){
+            if(player.allowedToUpdate() && control==0 && music[1][1]!=null && !MUSIC.getName().equals(music[1][1])){
                 MUSIC.loadMusic(music[1][1]);
                 MUSIC.play(true);
                 area = new TextBox(frame,music[1][1].substring(6,music[1][1].length()-4),0,500,800,76,false,true,Style.SIGN);
@@ -445,7 +446,11 @@ public class Window extends JComponent{
                         personName = smallString;
                     personName = personName.replaceAll(".png", "").replaceAll(".PNG","");
                     if(personName.length()>1){
-                        people.add(new Person(personName,trainerSayings.get(value),x1*TILE_WIDTH+xCoord*WIDTH,y1*TILE_HEIGHT+yCoord*-HEIGHT,this));
+                        if(value==-5){
+                            people.add(new NurseJoy(x1*TILE_WIDTH+xCoord*WIDTH,y1*TILE_HEIGHT+yCoord*-HEIGHT,this));
+                        }else{
+                            people.add(new Person(personName,trainerSayings.get(value),x1*TILE_WIDTH+xCoord*WIDTH,y1*TILE_HEIGHT+yCoord*-HEIGHT,this));
+                        }
                     }
                         
                     
@@ -569,7 +574,7 @@ public class Window extends JComponent{
         public void keyPressed(KeyEvent keyEvent) {   
 
             
-            if(true){
+            if(player.allowedToUpdate()){
                 if(keyEvent.getKeyCode()==KeyEvent.VK_UP)
                     pressBuffer = Animation.UP;
                 if(keyEvent.getKeyCode()==KeyEvent.VK_DOWN)

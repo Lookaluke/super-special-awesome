@@ -6,3 +6,4 @@
 5 Be careful out there honey.
 6 Are you going to Veridian city? yes:Ok then be careful! no:You should really go!
 7 I work for the store in Veridian city come on down and buy some stuff!
+8 You can get your pokemon healed here just talk to Nurse Joy.

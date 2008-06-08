@@ -1,8 +1,6 @@
 package pokeman;
 
 import java.awt.Graphics2D;
-import java.util.ArrayList;
-import java.util.Collections;
 
 
 public class Person implements Comparable<Person>
@@ -18,7 +16,9 @@ public class Person implements Comparable<Person>
     private Collideable lastEdition,newEdition;
     private TextBox txt;
     private boolean question;
+    private boolean yes;
     private Menu menu;
+    private boolean stationary;
     
 
     /**
@@ -62,8 +62,13 @@ public class Person implements Comparable<Person>
                     this.allowUpdate(true);
                     txt = null;
                 }else{
-                    String[] str = {"yes","no"};
-                    menu = new Menu(getWindow().getFrame(),str,50,400,100,100,Style.STANDARD_TEXT);
+                    if(menu==null){
+                        String[] str = {"yes","no"};
+                        menu = new Menu(getWindow().getFrame(),str,50,400,100,100,Style.STANDARD_TEXT);
+                        txt = new TextBox(getWindow().getFrame(),"",0,475,800,101,true,false,Style.STANDARD_TEXT); 
+                        txt.removeKeyListener();
+                        question = false;
+                    }
                     
                 }                
             }
@@ -74,11 +79,16 @@ public class Person implements Comparable<Person>
             String ret = menu.result();
             if(ret!=null){
                 String str = "";
-                if(ret.equals("yes"))
-                    str = getSpeech().substring(getSpeech().indexOf("yes:"),getSpeech().indexOf("no:"));
-                else
-                    str = getSpeech().substring(getSpeech().indexOf("no:"));
+                if(ret.equals("yes")){
+                    str = getSpeech().substring(getSpeech().indexOf("yes:")+"yes:".length(),getSpeech().indexOf("no:"));
+                    yes = true;
+                }else{
+                    str = getSpeech().substring(getSpeech().indexOf("no:")+"no:".length());
+                    yes = false;
+                }
                 txt = new TextBox(getWindow().getFrame(),str,0,475,800,101,true,false,Style.STANDARD_TEXT);
+                menu = null;
+                
             }
         }
         
@@ -92,8 +102,7 @@ public class Person implements Comparable<Person>
             walk.nextFrame(direction);
         }
         
-        if(moving){   
-
+        if(moving && !stationary){   
             if(direction == Animation.RIGHT)
                 x += Window.TILE_WIDTH/Window.numberOfCounts;
             if(direction == Animation.LEFT)
@@ -102,7 +111,8 @@ public class Person implements Comparable<Person>
                 y -= Window.TILE_WIDTH/Window.numberOfCounts;
             if(direction == Animation.DOWN)
                 y += Window.TILE_WIDTH/Window.numberOfCounts;
-            
+
+
             if(counter>=(Window.numberOfCounts-1))
             {
                 counter = 0;
@@ -134,36 +144,43 @@ public class Person implements Comparable<Person>
      */
     public void makeMove(int dir){
         
-        if(!moving && dir!=Animation.NONE){
-            
-            xChange = 0;
-            yChange = 0;
-
-            switch(dir){
-                case Animation.UP:
-                    yChange = -1;
-                    break;
-                case Animation.DOWN:
-                    yChange = 1;
-                    break;
-                case Animation.RIGHT:
-                    xChange = 1;
-                    break;
-                case Animation.LEFT:
-                    xChange = -1;
-                    break;
-            }
+        if((!moving || stationary) && dir!=Animation.NONE){
             
             direction = dir;
             
-            if(canMove(dir)){
+            if(!stationary){
 
+                xChange = 0;
+                yChange = 0;
+
+                switch(dir){
+                    case Animation.UP:
+                        yChange = -1;
+                        break;
+                    case Animation.DOWN:
+                        yChange = 1;
+                        break;
+                    case Animation.RIGHT:
+                        xChange = 1;
+                        break;
+                    case Animation.LEFT:
+                        xChange = -1;
+                        break;
+                }
+
+
+
+                if(canMove(dir)){
+
+                    moving = true;
+
+                    Collideable col = getCollision(dir);
+
+                    newEdition = new Collideable(this,x/Window.TILE_WIDTH+xChange,y/Window.TILE_HEIGHT+1+yChange,1,0,0);
+                    w.addToCollision(newEdition);
+                }
+            }else{
                 moving = true;
-                
-                Collideable col = getCollision(dir);
-                
-                newEdition = new Collideable(this,x/Window.TILE_WIDTH+xChange,y/Window.TILE_HEIGHT+1+yChange,1,0,0);
-                w.addToCollision(newEdition);
             }
             counter = 0;
         }
@@ -195,6 +212,10 @@ public class Person implements Comparable<Person>
         return y;
     }
     
+    public void setStationary(boolean s){
+        stationary = s;
+    }
+    
     public String getSpeech(){
         return speech;
     }
@@ -223,16 +244,33 @@ public class Person implements Comparable<Person>
         return moving;
     }
     
-    public void talk(){
-        this.allowUpdate(false);
-        String str = "";
-        if(getSpeech().indexOf("?")!=-1){
-            question = true;
-            str = getSpeech().substring(0,getSpeech().indexOf("?"));
-        }
-        txt = new TextBox(getWindow().getFrame(),str,0,475,800,101,true,false,Style.STANDARD_TEXT);
+    public void removeKeyListener(){
+        if(txt!=null)
+            txt.removeKeyListener();
     }
     
+    public void addKeyListener(){
+        if(txt!=null)
+            txt.addKeyListener();
+    }
+    
+    public void talk(){
+        if(!moving){
+            this.allowUpdate(false);
+            String str = getSpeech();
+            if(getSpeech().indexOf("?")!=-1){
+                question = true;
+                str = getSpeech().substring(0,getSpeech().indexOf("?"));
+            }
+            txt = new TextBox(getWindow().getFrame(),str,0,475,800,101,true,false,Style.STANDARD_TEXT);
+        }
+    }
+    
+    public boolean saidYes(){
+        boolean hold = yes;
+        yes = false;
+        return hold;
+    }
     
     protected Collideable getCollision(int dir){
         Collideable col = null;

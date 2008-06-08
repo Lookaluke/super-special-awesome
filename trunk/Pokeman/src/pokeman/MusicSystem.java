@@ -92,7 +92,11 @@ public class MusicSystem implements Closeable
     }
     
     public void pause(){
-        sequencer.stop();
+        sequencer.stop(); 
+    }
+    
+    public boolean playing(){
+        return sequencer.isRunning();
     }
     
     /**
