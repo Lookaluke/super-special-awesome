@@ -1,3 +1,4 @@
+Catch Rate: 5
 Speed: Fast
 Element1: NORMAL, Element2: PSYCHIC
 Base Stats: Special:25, Attack:40, Defense:25, Speed:75, HP:30

@@ -1,3 +1,4 @@
+Catch Rate: 45
 Speed: Medium
 Element1: WATER, Element2: NOTHING
 Base Stats: Special:50, Attack:48, Defense:65, Speed:43, HP:44
