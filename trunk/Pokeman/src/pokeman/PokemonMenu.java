@@ -46,8 +46,8 @@ public class PokemonMenu {
         this.hasCancel = hasCancel;
         character = c;
         selected = 0;
-        txt = new TextBox(frame,"Choose a Pokemon.",0,Window.HEIGHT-80,500,80,false,Style.POKEMON_MENU);
-        switchingTxt = new TextBox(frame,"Switch with...",0,Window.HEIGHT-80,500,80,false,Style.POKEMON_MENU);
+        txt = new TextBox(frame,"Choose a Pokemon.",0,Window.HEIGHT-80,500,80,false,false,Style.POKEMON_MENU);
+        switchingTxt = new TextBox(frame,"Switch with...",0,Window.HEIGHT-80,500,80,false,false,Style.POKEMON_MENU);
         txt.removeKeyListener();
         switchingTxt.removeKeyListener();
         over = false;

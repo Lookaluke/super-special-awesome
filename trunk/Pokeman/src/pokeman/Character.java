@@ -7,8 +7,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * 
@@ -29,6 +27,11 @@ public class Character extends Person{
         walking = new Animation("Walking");
         press = 0;
         jumping=0;
+        int levelX = 0;
+        int levelY = 1;
+        setX(levelX*Window.WIDTH+(int)(Window.COLUMNS/2)*Window.TILE_WIDTH);
+        setY((-levelY)*Window.HEIGHT+(int)(Window.ROWS/2)*Window.TILE_HEIGHT);
+        getWindow().setLevel(levelX,levelY);
         addPokemon(new Pokemon("Meh",1));
         addPokemon(new Pokemon("Rattata",8));
         addPokemon(new Pokemon("Bulbasaur",7));
@@ -53,6 +56,8 @@ public class Character extends Person{
                 direction(getDirection());
 
         }
+        if(currentlyReading==null || currentlyReading.allowedToUpdate())
+            allowUpdate(true);
         super.draw(g,currentX,currentY+moreHeight);
         
         if(moreHeight != 0)
@@ -164,10 +169,12 @@ public class Character extends Person{
         return walking.getFrame().getWidth();
     }
     
-    public String read(){
+    public void read(){
+        if(!this.allowedToUpdate())
+            return;
         Collideable c = getCollision(getDirection());
         if(c==null)
-            return null;
+            return;
         Object maker = c.getMaker();
         if(maker instanceof Person){
             
@@ -181,12 +188,22 @@ public class Character extends Person{
                 p.setDirection(Animation.LEFT);
             if(getDirection() == Animation.LEFT)
                 p.setDirection(Animation.RIGHT);
-            p.allowUpdate(false);
+            p.talk();
             this.allowUpdate(false);
             currentlyReading = p;
-            return p.getSpeech();
+            return;
         }
-        return null;
+        /*if(c.getNumber(0)==-5){
+            for(Collideable col:getWindow().getCollision()){
+                if(col.getMaker() instanceof Person){
+                    Person p = (Person)col.getMaker();
+                    if(p.getName()="Nurse"){
+                         
+                    }
+                }
+            }
+        }*/
+
     } 
     
     public void unRead(){

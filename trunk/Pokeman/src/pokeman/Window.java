@@ -65,7 +65,7 @@ public class Window extends JComponent{
     private int jump;
     private JFrame frame;
     
-    private Character player = new Character(this);
+    private Character player;
     
     private int timerCounter;
     private Collideable special;
@@ -73,6 +73,7 @@ public class Window extends JComponent{
     private int control;
     private TextBox txt;
     private TextBox area;
+    private int areaTime;
     private int times;
     private Menu menu;
     private Battle battle;
@@ -95,6 +96,7 @@ public class Window extends JComponent{
             
             //MUSIC.loadMusic("Music\\Pallet Town.mid");
             //MUSIC.play(true);
+            MUSIC.stop();
             
             File file = new File("Images\\Pokeball.gif");
             BufferedImage p = null;
@@ -125,8 +127,10 @@ public class Window extends JComponent{
 
             loadTrainerSayings(trainerSayings, "Trainers\\Trainers.txt");
 
-            levelX = 0;
-            levelY = 0;
+            player = new Character(this);
+            
+            //levelX = 0;
+            //levelY = 0;
             for (int i = -1; i <= 1; i++) {
                 for (int j = -1; j <= 1; j++) {
                     loadLevel(levelX + i, levelY + j, i, j);
@@ -173,8 +177,13 @@ public class Window extends JComponent{
             if(control==0 && music[1][1]!=null && !MUSIC.getName().equals(music[1][1])){
                 MUSIC.loadMusic(music[1][1]);
                 MUSIC.play(true);
-                area = new TextBox(frame,music[1][1].substring(6,music[1][1].length()-4),0,475,800,TXT_HEIGHT,false,Style.STANDARD_TEXT);;
+                area = new TextBox(frame,music[1][1].substring(6,music[1][1].length()-4),0,500,800,76,false,true,Style.SIGN);
+                area.removeKeyListener();
+                areaTime = 0;
             }
+            areaTime++;
+            if(areaTime>50)
+                area = null;
             
             for(int i=0;i<3;i++){
                 for(int j=0;j<3;j++){
@@ -424,7 +433,11 @@ public class Window extends JComponent{
                     int value = 0;
                     String personName="";
                     if(smallString.indexOf(":")!=-1){
-                        personName = smallString.substring(0,smallString.indexOf(":"));
+                        int index = smallString.indexOf("~");
+                        if(index>0)
+                            personName = smallString.substring(0,index);
+                        else
+                            personName = smallString.substring(0,smallString.indexOf(":"));
                         smallString = smallString.substring(smallString.indexOf(":")+1);
                         
                         value = Integer.parseInt(smallString.substring(0));
@@ -547,11 +560,9 @@ public class Window extends JComponent{
     {
         
         public void keyTyped(KeyEvent keyEvent) {    
-            if(timerCounter==0 && keyEvent.getKeyChar()=='z' && (txt==null || txt.isOver()))
+            if(timerCounter==0 && keyEvent.getKeyChar()=='z')
             {
-                String str = player.read();
-                if(str!=null)
-                    txt = new TextBox(frame,str,0,475,800,101,true,Style.STANDARD_TEXT);
+                player.read();
             }
         }
 

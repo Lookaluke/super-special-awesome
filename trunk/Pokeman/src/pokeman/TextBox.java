@@ -38,10 +38,11 @@ public class TextBox{
     private boolean hasKeyListener;    
     private KeyListener key;
     private Style style;
+    private boolean centered;
     
-    public TextBox(JFrame fr,String s,int x,int y,int width,int height,boolean scrolls,Style style){
+    public TextBox(JFrame fr,String s,int x,int y,int width,int height,boolean scrolls,boolean centered,Style style){
         this.style = style;
-
+        this.centered = centered;
         f = Window.FONT;
         f = f.deriveFont(Font.PLAIN, 30);
 
@@ -140,8 +141,13 @@ public class TextBox{
                         g2.drawString(str[i+line], x+widthFactor, y+heightFactor+textHeight*(i+1)+spaceFactor*(i-1)-15); 
                     else
                     {
-                        if(index-tempIndex+str[i+line].length()>0)
-                            g2.drawString(str[i+line].substring(0,index-tempIndex+str[i+line].length()), x+widthFactor, y+heightFactor+textHeight*(i+1)+spaceFactor*(i-1)-15);
+                        if(index-tempIndex+str[i+line].length()>0){
+                            String string = str[i+line].substring(0,index-tempIndex+str[i+line].length());
+                            if(centered)
+                                g2.drawString(string, (int)(x+width/2-f.getStringBounds(string, new FontRenderContext(null,true,true)).getWidth()/2), y+heightFactor+textHeight*(i+1)+spaceFactor*(i-1)-15);
+                            else
+                                g2.drawString(string, x+widthFactor, y+heightFactor+textHeight*(i+1)+spaceFactor*(i-1)-15);
+                        }
                     }
                     
                         
