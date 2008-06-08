@@ -32,15 +32,18 @@ public class PokemonMenu {
     private int switchIndex;
     private boolean inBattle;
     private boolean refreshZ;
+    private boolean hasCancel;
+    private int toalButtons;
     
     private static final int X_SHIFT = 50,Y_SHIFT=150,WIDTH1=200,HEIGHT1=120,Y_SHIFT2 = 100,X_SHIFT2 = X_SHIFT+WIDTH1+20,WIDTH2 = Window.WIDTH -X_SHIFT2-20,HEIGHT2 = 50,WIDTH3=150,HEIGHT3=50;
     private static final Color SELECTED_OUT_LINE = new Color(247,144,47),NOT_SELECTED_OUT_LINE = new Color(58,76,98),SELECTED_UP = new Color(248,185,144),SELECTED_DOWN = new Color(253,208,203),
             NOT_SELECTED_UP = new Color(56,144,216), NOT_SELECTED_DOWN = new Color(133,191,215);
     
-    public PokemonMenu(Character c,JFrame frame,boolean inBattle){
+    public PokemonMenu(Character c,JFrame frame,boolean inBattle,boolean hasCancel){
         frame.addKeyListener(new Key());
         this.frame = frame;
         this.inBattle = inBattle;
+        this.hasCancel = hasCancel;
         character = c;
         selected = 0;
         txt = new TextBox(frame,"Choose a Pokemon.",0,Window.HEIGHT-80,500,80,false,Style.POKEMON_MENU);
@@ -51,6 +54,7 @@ public class PokemonMenu {
         switching = false;
         switchIndex = -1;
         refreshZ = false;
+        toalButtons = hasCancel?7:6;
     }
     
     public void draw(Graphics2D g2){
@@ -62,7 +66,8 @@ public class PokemonMenu {
         for(int i=1;i<6;i++){
             smallPkm(selected==i,g2,character.currentPokemon()[i],i-1);
         }
-        cancelButton(selected==6, g2,Window.WIDTH-WIDTH3-20,Window.HEIGHT-HEIGHT3-20);
+        if(hasCancel)
+            cancelButton(selected==6, g2,Window.WIDTH-WIDTH3-20,Window.HEIGHT-HEIGHT3-20);
         if(switching)
             switchingTxt.draw(g2);
         else
@@ -72,7 +77,7 @@ public class PokemonMenu {
             menu.draw(g2);
             if(menu.result()!=null){
                 if(menu.result().equals("Switch")){
-                    if(inBattle){
+                    if(inBattle){                        
                         switchIndex = selected;
                         over = true;
                     }else{
@@ -224,7 +229,17 @@ public class PokemonMenu {
                             x = X_SHIFT2;
                             y = Y_SHIFT2+(selected-1)*(HEIGHT2+15);
                         }
-                        String[] str = {"Stats","Switch","Cancel"};
+                        String[] str = null;
+                        if(character.currentPokemon()[selected].getCurrentHP()==0){
+                            str = new String[2];
+                            str[0] = "Stats";
+                            str[1] = "Cancel";
+                        }else{
+                            str = new String[3];
+                            str[0] = "Stats";
+                            str[1] = "Switch";
+                            str[2] = "Cancel";
+                        }
                         menu = new Menu(frame,str,x,y,150,150,Style.POKEMON_MENU);
                     }else{
                         character.switchPokemon(switchIndex, selected);
@@ -241,14 +256,15 @@ public class PokemonMenu {
         public void keyPressed(KeyEvent e) {
             if(menu==null){
                 if(e.getKeyCode()==KeyEvent.VK_RIGHT || e.getKeyCode()==KeyEvent.VK_DOWN){
+                    System.out.println(selected);
                     selected+=1;
-                    selected%=7;
+                    selected%=toalButtons;
                 }
                 if(e.getKeyCode()==KeyEvent.VK_LEFT || e.getKeyCode()==KeyEvent.VK_UP){
                     selected-=1;
                     if(selected<0)
-                        selected+=7;
-                    selected%=7;
+                        selected+=toalButtons;
+                    selected%=toalButtons;
                 }
             }
         }

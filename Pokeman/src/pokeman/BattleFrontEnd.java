@@ -26,7 +26,7 @@ import javax.swing.JFrame;
  */
 public class BattleFrontEnd {
     
-    public static final int NONE = -1,MAIN = 0,MOVE = 1;
+    public static final int NONE = -1,MAIN = 0,MOVE = 1,POKEMON = 2;
     private static final int TXT_HEIGHT = 101;
     
     private TextBox txt,back;
@@ -97,7 +97,7 @@ public class BattleFrontEnd {
                 if(menu.result()!=null && menuType==MOVE)
                     txt = null;
                 if(menu.result()!=null && menu.result().equals("Pokemon")){
-                    pkmMenu = new PokemonMenu(player,frame,true);
+                    pkmMenu = new PokemonMenu(player,frame,true,true);
                     menu = null;
                 }
 
@@ -158,6 +158,11 @@ public class BattleFrontEnd {
             String[] str = {moves[0]==null?null:moves[0].name(),moves[1]==null?null:moves[1].name(),moves[2]==null?null:moves[2].name(),moves[3]==null?null:moves[3].name()};
             menu = new Menu(frame,str,0,yStart,600,TXT_HEIGHT,Style.BATTLE_TEXT3);
         }
+        
+        if(type == POKEMON){
+            pkmMenu = new PokemonMenu(player,frame,true,false);
+            menu = null;
+        }
     }
     
     public Object getResult(){
@@ -191,13 +196,14 @@ public class BattleFrontEnd {
             pkmMenu = null;
             if(p==null)
                 makeMenu(MAIN);
+            menuType = NONE;
         }
 
         return ret;
     }
     
     public boolean waiting(){
-        return txt!=null || menu!=null || moveMenu!=null;
+        return txt!=null || menu!=null || moveMenu!=null || pkmMenu!=null;
     }
     
     public boolean waitingForHP(){

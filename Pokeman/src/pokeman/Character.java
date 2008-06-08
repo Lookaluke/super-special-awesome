@@ -29,7 +29,7 @@ public class Character extends Person{
         walking = new Animation("Walking");
         press = 0;
         jumping=0;
-        addPokemon(new Pokemon("Meh",15));
+        addPokemon(new Pokemon("Meh",1));
         addPokemon(new Pokemon("Rattata",8));
         addPokemon(new Pokemon("Bulbasaur",7));
         addPokemon(new Pokemon("Friger",6));
@@ -142,7 +142,6 @@ public class Character extends Person{
                 int firstIndex = actual.indexOf(":");
                 String name = actual.substring(0,firstIndex);
                 int level = Integer.parseInt(actual.substring(firstIndex+1));
-                System.out.println(name);
                 getWindow().startBattle(new Battle(this, new Pokemon(name, level), getWindow().getFrame()));
             } catch (FileNotFoundException ex) {
                 System.out.println("area file doesn't exist");

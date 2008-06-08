@@ -28,6 +28,8 @@ public class Pokemon implements Serializable
    private int attackmod, defensemod, specialmod, speedmod;
    private BufferedImage front,back;
    private Move[] moves = new Move[4];
+   private String evolution;
+   private int evolutionLevel;
    
    //the next two are parallel...this may result in problems and Mr. Horn
    //told us not to do this.
@@ -59,6 +61,7 @@ public class Pokemon implements Serializable
            
            Scanner input = new Scanner(new File(f + "info.txt"));
            catchRate = Integer.parseInt(getInfo(input.nextLine(),"Catch Rate:"));
+
            String lg = getInfo(input.nextLine(),"Speed:");
            if(lg.equals("Fast")){
                levelGrowth = FAST;
@@ -92,11 +95,20 @@ public class Pokemon implements Serializable
            //get base stats
            String stat = input.nextLine();
            special = Integer.parseInt(getInfo(stat,"Special:"));
-           attack = Integer.parseInt(getInfo(stat,"Attack:"));
+           attack = Integer.parseInt(getInfo(stat,"Attack:"));           
            defense = Integer.parseInt(getInfo(stat,"Defense:"));
            speed = Integer.parseInt(getInfo(stat,"Speed:"));
            baseHP = Integer.parseInt(getInfo(stat,"HP:"));
            currentHP = getMaxHP();
+           
+           //System.out.println(f+":\n"+stat+"\nSpecial: "+special+" Attack: "+attack+" Defense: "+defense+" Speed: "+speed+" HP "+baseHP);
+           String ev = input.nextLine();
+           evolution = getInfo(ev,"Evolution:").trim();
+           if(!evolution.equals(""))
+                evolutionLevel = Integer.parseInt(getInfo(ev,"Level:"));
+           else
+                evolutionLevel = 0;
+           
            input.nextLine();
            
            //set up possible moves
@@ -124,7 +136,7 @@ public class Pokemon implements Serializable
    }
    
     private String getInfo(String s,String after){
-        int index = s.indexOf(after)+after.length()+1;
+        int index = s.indexOf(after)+after.length();
         int index2 = s.indexOf(",",index);
         if(index2==-1)
             return s.substring(index).trim();
@@ -201,9 +213,9 @@ public class Pokemon implements Serializable
     */
     public int getAttack(){
         if (attackmod > 0){
-           return (int) (((2 * attack * level/(double)100) + 5) * (3+attackmod)/3.0);
+           return (int) (((2 * attack * level/100.0) + 5) * (3+attackmod)/3.0);
         } else {
-            return (int)(((2 * attack * level/(double)100) + 5) * 3.0/(3-attackmod));
+            return (int)(((2 * attack * level/100.0) + 5) * 3.0/(3-attackmod));
         }
     }
    
@@ -212,9 +224,9 @@ public class Pokemon implements Serializable
     */
    public int getDefense(){
        if (defensemod > 0){
-           return (int) (((2 * defense * level/(double)100) + 5) * (3+defensemod)/3.0);
+           return (int) (((2 * defense * level/100.0) + 5) * (3+defensemod)/3.0);
         } else {
-            return (int)(((2 * defense * level/(double)100) + 5) * 3.0/(3-defensemod));
+            return (int)(((2 * defense * level/100.0) + 5) * 3.0/(3-defensemod));
         }
    }
    
@@ -223,9 +235,9 @@ public class Pokemon implements Serializable
     */
    public int getSpecial(){
        if (specialmod > 0){
-           return (int) (((2 * special * level/(double)100) + 5) * (3+specialmod)/3.0);
+           return (int) (((2 * special * level/100.0) + 5) * (3+specialmod)/3.0);
         } else {
-            return (int)(((2 * special * level/(double)100) + 5) * 3.0/(3-specialmod));
+            return (int)(((2 * special * level/100.0) + 5) * 3.0/(3-specialmod));
         }
    }
    
@@ -234,9 +246,9 @@ public class Pokemon implements Serializable
     */
    public int getSpeed(){
        if (speedmod > 0){
-           return (int) (((2 * speed * level/(double)100) + 5) * (3+speedmod)/3.0);
+           return (int) (((2 * speed * level/100.0) + 5) * (3+speedmod)/3.0);
         } else {
-            return (int)(((2 * speed * level/(double)100) + 5) * 3.0/(3-speedmod));
+            return (int)(((2 * speed * level/100.0) + 5) * 3.0/(3-speedmod));
         }
    }
    
@@ -244,7 +256,7 @@ public class Pokemon implements Serializable
     * @return max HP
     */
    public int getMaxHP(){
-       return (int)(2 * baseHP * level/(double)100) + 10 + level;
+       return (int)(2 * baseHP * level/100.0) + 10 + level;
    }
    
    /**
@@ -439,6 +451,14 @@ public class Pokemon implements Serializable
    
    public Status getStatus(){
        return status;
+   }
+   
+   public String getEvolution(){
+       return evolution;
+   }
+   
+   public int getEvolutionLevel(){
+       return evolutionLevel;
    }
    
    /**
