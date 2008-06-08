@@ -58,7 +58,7 @@ public class Pokemon implements Serializable
            status = Status.NORMAL;
            
            level = l;
-           
+        
            Scanner input = new Scanner(new File(f + "info.txt"));
            catchRate = Integer.parseInt(getInfo(input.nextLine(),"Catch Rate:"));
 
