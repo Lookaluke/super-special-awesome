@@ -68,7 +68,7 @@ public class Battle {
         }
         isOver = over && !frontEnd.waitingForHP() && !frontEnd.waiting() && !turnThread.isAlive();
         
-        if(yours.getCurrentHP()==0 && !frontEnd.waiting())
+        if(yours.getCurrentHP()==0 && !frontEnd.waiting() && (turnThread==null || !turnThread.isAlive()) && (pkmChangeThread==null || !pkmChangeThread.isAlive()))
         {
             frontEnd.makeMenu(BattleFrontEnd.POKEMON);
         }
@@ -81,11 +81,11 @@ public class Battle {
         Object result = frontEnd.getResult();
         if(result!=null){
             turnThread=null;
-            if(result instanceof Move){
+            if(result instanceof Move && (turnThread==null || !turnThread.isAlive()) && (pkmChangeThread==null || !pkmChangeThread.isAlive())){
                 turnThread = new Thread(new Turn(player,(Move)result,theirCurrent,yours,frontEnd));
                 turnThread.start();
             }
-            if(result instanceof Pokemon){
+            if(result instanceof Pokemon && (pkmChangeThread==null || !pkmChangeThread.isAlive()) && (turnThread==null || !turnThread.isAlive())){
                 pkmChangeThread = new Thread(new Change((Pokemon)result));
                 pkmChangeThread.start();                
                 waitingForPkmThread = true;
