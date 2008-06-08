@@ -109,7 +109,6 @@ public class MusicSystem implements Closeable
     }
     
     public void stop(){
-        pause();
         stop = true;
     }
     

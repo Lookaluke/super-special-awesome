@@ -30,6 +30,7 @@ public class Pokemon implements Serializable
    private Move[] moves = new Move[4];
    private String evolution;
    private int evolutionLevel;
+   private int baseExp;
    
    //the next two are parallel...this may result in problems and Mr. Horn
    //told us not to do this.
@@ -108,6 +109,8 @@ public class Pokemon implements Serializable
                 evolutionLevel = Integer.parseInt(getInfo(ev,"Level:"));
            else
                 evolutionLevel = 0;
+           
+           baseExp = Integer.parseInt(getInfo(input.nextLine(),"Base Exp:"));
            
            input.nextLine();
            

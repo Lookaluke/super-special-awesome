@@ -51,7 +51,7 @@ public class BattleFrontEnd {
             this.frame = frame;
             this.player = player;
             menuType = NONE;
-            back = new TextBox(frame,"",0,475,800,TXT_HEIGHT,false,Style.BATTLE_TEXT2);
+            back = new TextBox(frame,"",0,475,800,TXT_HEIGHT,false,false,Style.BATTLE_TEXT2);
             back.removeKeyListener();
             pkmMenu = null;
             background = ImageIO.read(new File("Images\\BattleBackground4.png"));
@@ -84,7 +84,7 @@ public class BattleFrontEnd {
                 menu.draw(g2);
                 if(menuType==MOVE){
                     int i = menu.getSelected();
-                    txt = new TextBox(frame,"PP: "+yours.getMoves()[i].getPP()+"/"+yours.getMoves()[i].getTotalPP()+" "+yours.getMoves()[i].element(),600,yStart,200,TXT_HEIGHT,false,Style.BATTLE_TEXT3);
+                    txt = new TextBox(frame,"PP: "+yours.getMoves()[i].getPP()+"/"+yours.getMoves()[i].getTotalPP()+" "+yours.getMoves()[i].element(),600,yStart,200,TXT_HEIGHT,false,false,Style.BATTLE_TEXT3);
                     txt.removeKeyListener();                    
                 }
                 if(menu.result()!=null && menu.result().equals("BACK")){
@@ -127,7 +127,7 @@ public class BattleFrontEnd {
     }
     
     public void setText(String text){
-        txt = new TextBox(frame,text,0,475,800,TXT_HEIGHT,true,Style.BATTLE_TEXT2);
+        txt = new TextBox(frame,text,0,475,800,TXT_HEIGHT,true,false,Style.BATTLE_TEXT2);
     }
     
     public boolean removeKeyListener(){

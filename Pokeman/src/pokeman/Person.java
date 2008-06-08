@@ -16,6 +16,9 @@ public class Person implements Comparable<Person>
     private int counter;
     private Window w;
     private Collideable lastEdition,newEdition;
+    private TextBox txt;
+    private boolean question;
+    private Menu menu;
     
 
     /**
@@ -52,6 +55,33 @@ public class Person implements Comparable<Person>
     public void draw(Graphics2D g,int currentX,int currentY){
         counter++;
 
+        if(txt!=null){
+            txt.draw(g);
+            if(txt.isOver()){
+                if(!question){
+                    this.allowUpdate(true);
+                    txt = null;
+                }else{
+                    String[] str = {"yes","no"};
+                    menu = new Menu(getWindow().getFrame(),str,50,400,100,100,Style.STANDARD_TEXT);
+                    
+                }                
+            }
+        }
+        
+        if(menu!=null){
+            menu.draw(g);
+            String ret = menu.result();
+            if(ret!=null){
+                String str = "";
+                if(ret.equals("yes"))
+                    str = getSpeech().substring(getSpeech().indexOf("yes:"),getSpeech().indexOf("no:"));
+                else
+                    str = getSpeech().substring(getSpeech().indexOf("no:"));
+                txt = new TextBox(getWindow().getFrame(),str,0,475,800,101,true,false,Style.STANDARD_TEXT);
+            }
+        }
+        
         if(allowedToUpdate)
             update();
         if(!moving)
@@ -89,7 +119,7 @@ public class Person implements Comparable<Person>
      */
     protected void update(){
 
-        if(counter>=50)
+        if(counter>=50 && Math.random()<.1)
         {
             int dir = (int)(Math.random()*4);
             makeMove(dir);            
@@ -173,6 +203,10 @@ public class Person implements Comparable<Person>
         allowedToUpdate = allow;
     }
     
+    public boolean allowedToUpdate(){
+        return allowedToUpdate;
+    }
+    
     public void setDirection(int direction){
         this.direction = direction;
     }
@@ -187,6 +221,16 @@ public class Person implements Comparable<Person>
     
     public boolean isMoving(){
         return moving;
+    }
+    
+    public void talk(){
+        this.allowUpdate(false);
+        String str = "";
+        if(getSpeech().indexOf("?")!=-1){
+            question = true;
+            str = getSpeech().substring(0,getSpeech().indexOf("?"));
+        }
+        txt = new TextBox(getWindow().getFrame(),str,0,475,800,101,true,false,Style.STANDARD_TEXT);
     }
     
     
