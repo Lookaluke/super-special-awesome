@@ -52,6 +52,7 @@ public class Window extends JComponent{
     private static final String levelName = "Levels\\level";
     
     private BufferedImage[][] background = new BufferedImage[3][3];
+    private String[][] music = new String[3][3];
     
     private int levelX,levelY;
     private int x,y;
@@ -89,8 +90,8 @@ public class Window extends JComponent{
 
             FONT = Font.createFont(Font.TRUETYPE_FONT, new File("Pokemon RS part B.ttf"));
             
-            MUSIC.loadMusic("Music\\Pallet Town.mid");
-            MUSIC.play(true);
+            //MUSIC.loadMusic("Music\\Pallet Town.mid");
+            //MUSIC.play(true);
             
             File file = new File("Images\\Pokeball.gif");
             BufferedImage p = null;
@@ -166,8 +167,11 @@ public class Window extends JComponent{
             g2.setColor(Color.BLACK);
             g2.fill(new Rectangle(0,0,WIDTH,HEIGHT));
 
-            //System.out.println("X "+levelX+" Y: "+levelY);
-
+            if(control==0 && music[1][1]!=null && !MUSIC.getName().equals(music[1][1])){
+                MUSIC.loadMusic(music[1][1]);
+                MUSIC.play(true);
+            }
+            
             for(int i=0;i<3;i++){
                 for(int j=0;j<3;j++){
                     if(background[i][j]!=null){
@@ -196,6 +200,7 @@ public class Window extends JComponent{
             for(int i = 0;i<people.size();i++){
                 //people.get(i).update();
                 people.get(i).draw(g2, x, y);
+                
             }
             
             /*g2.setColor(Color.RED);
@@ -307,7 +312,7 @@ public class Window extends JComponent{
             //System.out.println("XCoord: "+xCoord+" YCoord: "+yCoord);
             
             background[-offsetX+1][offsetY+1] = ImageIO.read(new File(temp+".png"));
-            load(xCoord,yCoord);
+            music[-offsetX+1][offsetY+1] = load(xCoord,yCoord);
         } catch (IOException ex) {
             background[-offsetX+1][offsetY+1] = null;
         }
@@ -348,12 +353,16 @@ public class Window extends JComponent{
      * 
      * @param xCoord x coordinate of the level
      * @param yCoord y coordinate of the level
+     * @return The music of this level
+     * 
      */
-    private void load(int xCoord,int yCoord){
+    private String load(int xCoord,int yCoord){
         String name=levelName+xCoord+","+yCoord;
+        String musicName = "";
         try {
             Scanner input = new Scanner(new File(name + "collision.txt"));
             String str = "";
+            musicName = "Music\\"+input.nextLine()+".mid";
             while (input.hasNextLine()) {
                 str += input.nextLine();
             }
@@ -420,6 +429,8 @@ public class Window extends JComponent{
         } catch (FileNotFoundException ex) {
             System.out.println("File" + name + "not found");
         }
+        
+        return musicName;
     }
     
     /**
@@ -436,9 +447,11 @@ public class Window extends JComponent{
                 int c = Collections.binarySearch(collision,new Collideable(this,x1+xCoord*COLUMNS,y1+yCoord*-ROWS,0,0,0));
                 if(c>=0)
                     collision.remove(collision.get(c));
-                int p = Collections.binarySearch(people,new Person("","",x1*TILE_WIDTH+xCoord*WIDTH,y1*TILE_HEIGHT+yCoord*HEIGHT,null));
-                if(p>=0 && player!=people.get(p))
+                int p = Collections.binarySearch(people,new Person("","",x1*TILE_WIDTH+xCoord*WIDTH,y1*TILE_HEIGHT-yCoord*HEIGHT,null));
+                if(p>=0 && player!=people.get(p)){
                     people.remove(people.get(p));
+                    
+                }
 
                     
             }
@@ -665,12 +678,14 @@ public class Window extends JComponent{
                 for(int i=0;i<2;i++){
                     for(int j=0;j<3;j++){
                         background[i][j] = background[i+1][j];
+                        music[i][j] = music[i+1][j];
                     }
                 }
             }else{
                 for(int i=1;i>=0;i--){
                     for(int j=0;j<3;j++){
                         background[i+1][j] = background[i][j];
+                        music[i+1][j] = music[i][j];
                     }
                 } 
             }
@@ -690,12 +705,14 @@ public class Window extends JComponent{
                 for(int i=0;i<2;i++){
                     for(int j=0;j<3;j++){
                         background[j][i] = background[j][i+1];
+                        music[j][i] = music[j][i+1];
                     }
                 }
             }else{
                 for(int i=1;i>=0;i--){
                     for(int j=0;j<3;j++){
                         background[j][i+1] = background[j][i];
+                        music[j][i+1] = music[j][i];
                     }
                 } 
             }              

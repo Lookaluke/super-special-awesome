@@ -1,5 +1,7 @@
 package pokeman;
 import java.io.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.sound.midi.*;
 /**<
  * This class controls all music related tasks for: 
@@ -23,8 +25,10 @@ public class MusicSystem implements Closeable
 {
     
     private File f = null;
+    private String name = "";
     private Sequence sequence = null;
     private Sequencer sequencer = null;
+    private MidiChannel[] channel = null;
     private boolean stop = false;
             
     /**
@@ -37,12 +41,16 @@ public class MusicSystem implements Closeable
         if(sequence != null)
             pause();
         f = new File(filePath);
+        name = filePath;
         try
         {
             sequence = MidiSystem.getSequence(f);
             sequencer = MidiSystem.getSequencer();
+            
             sequencer.setSequence(sequence);
             sequencer.open();
+            
+            
         }
         catch(InvalidMidiDataException imde) {
             System.out.println("Error type: invalid data");
@@ -58,11 +66,29 @@ public class MusicSystem implements Closeable
      * @param loop a boolean, true if it loops, false if it doesn't
      */
     public void play(boolean loop){
-        if(!stop){
-            if(loop)
-                sequencer.setLoopCount(Sequencer.LOOP_CONTINUOUSLY);   
-            sequencer.start();
-        }
+
+            if (!stop) {
+                if (loop) {
+                    sequencer.setLoopCount(Sequencer.LOOP_CONTINUOUSLY);
+                }
+                sequencer.start();
+            }
+            /*Synthesizer synth = MidiSystem.getSynthesizer();
+            synth.open();
+            MidiChannel[] channels = synth.getChannels();
+            double gain = 0.0;
+            for (int i=0; i<channels.length; i++) {
+                channels[i].controlChange(7, (int)(gain * 127.0));
+            }
+            Receiver receiver = MidiSystem.getReceiver();
+
+            ShortMessage volumeMessage= new ShortMessage();
+            int volume = 1;
+            for (int i = 0; i < 16; i++) {
+              volumeMessage.setMessage(ShortMessage.CONTROL_CHANGE, i, 7, volume);
+              receiver.send(volumeMessage, -1);
+            }*/
+
     }
     
     public void pause(){
@@ -85,6 +111,10 @@ public class MusicSystem implements Closeable
     public void stop(){
         pause();
         stop = true;
+    }
+    
+    public String getName(){
+        return name;
     }
 }
 
