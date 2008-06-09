@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 
 package pokeman;
 
@@ -121,10 +117,10 @@ public class Turn implements Runnable{
      * @param ammount The ammount to raise or decrease
      * @return True if it could increase or decrease false otherwise
      */
-    private boolean changeStats(boolean lower,Pokemon p,int what,int ammount){
+    private boolean changeStats(boolean lower,Pokemon p,int what,int amount){
        boolean ret = false;
        boolean realRet = false;
-       for(int i=0;i<ammount;i++){
+       for(int i=0;i<amount;i++){
             if(what==Move.ATTACK){
                if(lower){
                    ret = p.reduceAttack();
@@ -215,13 +211,13 @@ public class Turn implements Runnable{
             int randomNumber = (int)(Math.random() * 39) + 217;
             
             if(randomNumber>=248)
-                queue.add("It was a critical hit");
+                queue.add("A critical hit!");
             
             if(typeModifer>=20)
-                queue.add("It's super effective");
+                queue.add("It's super effective!");
             
             if(typeModifer<=5)
-                queue.add("It's not very effective");
+                queue.add("It's not very effective...");
             return (int)(((((Math.min(((((2*level/5.0 + 2)*attack*power)/(double)Math.max(1, defense))/50.0), 997) + 2)*stab)*typeModifer)/10.0)*randomNumber)/255;
         } else {
             return -1;

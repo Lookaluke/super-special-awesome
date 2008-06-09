@@ -10,7 +10,9 @@ public class HealingItem extends Item<Pokemon>{
     private int amountToHeal;
     
     /**
-     * takes a string for the name of the item
+     * takes a string for the name of the item. Valid entries
+     * include "Potion", "Super Potion", "Hyper Potion", and "Max Potion".
+     * anything else will throw an exception
      * @param s
      */
     public HealingItem(String s){
@@ -27,6 +29,8 @@ public class HealingItem extends Item<Pokemon>{
         } else if(s.equals("Max Potion")){
             amountToHeal = -1;
             setPrice(2500);
+        } else {
+            throw new IllegalArgumentException("Invalid healing item name");
         }
     }
     
@@ -41,5 +45,4 @@ public class HealingItem extends Item<Pokemon>{
             return true;
         }
     }
-    
 }
