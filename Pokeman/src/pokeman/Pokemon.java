@@ -311,28 +311,19 @@ public class Pokemon implements Serializable
     * currently, its probably broken for multiple levels
     */
    public void addExperience(int exp){
-       experience+=exp;
-       if(willLevelUp(experience)){
-           level++;
+       
+       while(exp > 0){
+           if(exp > expToNextLevel()){
+               exp -= expToNextLevel();
+               experience += expToNextLevel();
+               level++;
+           } else {
+               experience += exp;
+               exp=0;
+           }
        }
    }
    
-   private boolean willLevelUp(int moreExp){
-       int tempexp = experience + moreExp;
-       int nextlevel = level+1;
-       if(levelGrowth == FAST){
-           return tempexp >= (int) (.8 * Math.pow(nextlevel, 3));
-       } else if (levelGrowth == MEDIUM){
-           return tempexp >= (int) (Math.pow(nextlevel, 3));
-       } else if (levelGrowth == SLOW) {
-           return tempexp >= (int) (1.25 * Math.pow(nextlevel, 3));
-       } else if (levelGrowth == FADING){
-           return tempexp >= (int) (1.2*Math.pow(nextlevel, 3) - 15 *
-                   Math.pow(nextlevel, 2) + 100 * nextlevel - 140);
-       } else {
-           throw new IllegalStateException("invalid pokemon growth rate");
-       }
-   }
    
    /**
     * allows damage to be done
@@ -471,11 +462,52 @@ public class Pokemon implements Serializable
     * @return true if the status was changed.
     */
    public boolean setStatus(Status other){
-       if(status==Status.NORMAL){
-           status = other;
-           return true;
-       } else {
+       if(other == status){
            return false;
+       } else {
+           if (status == Status.NORMAL){
+               status = other;
+               return true;
+           } else if (status != Status.NORMAL && other == Status.NORMAL){
+               status = other;
+               return true;
+           } else {
+               return false;
+           }
+       }
+   }
+   
+   public int expToNextLevel(){
+       
+       int nextlevel = level+1;
+       if(levelGrowth == FAST){
+           return (int) (.8 * Math.pow(nextlevel, 3)) - experience;
+       } else if (levelGrowth == MEDIUM){
+           return (int) (Math.pow(nextlevel, 3)) - experience;
+       } else if (levelGrowth == SLOW) {
+           return (int) (1.25 * Math.pow(nextlevel, 3)) - experience;
+       } else if (levelGrowth == FADING){
+           return (int) (1.2*Math.pow(nextlevel, 3) - 15 *
+                   Math.pow(nextlevel, 2) + 100 * nextlevel - 140) - experience;
+       } else {
+           throw new IllegalStateException("invalid pokemon growth rate");
+       }
+   }
+   
+   public int expBetweenCurrentAndNext(){
+       int nextLevel = level+1;
+       if(levelGrowth == FAST){
+           return (int) (.8 * Math.pow(nextLevel, 3)) - (int) (.8 * Math.pow(level, 3));
+       } else if (levelGrowth == MEDIUM){
+           return (int) (Math.pow(nextLevel, 3)) - (int) (Math.pow(level, 3));
+       } else if (levelGrowth == SLOW) {
+           return (int) (1.25 * Math.pow(nextLevel, 3)) - (int) (1.25 * Math.pow(level, 3));
+       } else if (levelGrowth == FADING){
+           return (int) (1.2*Math.pow(nextLevel, 3) - 15 *
+                   Math.pow(nextLevel, 2) + 100 * nextLevel - 140) - (int) (1.2*Math.pow(level, 3) - 15 *
+                   Math.pow(level, 2) + 100 * level - 140);
+       } else {
+           throw new IllegalStateException("invalid pokemon growth rate");
        }
    }
 }
