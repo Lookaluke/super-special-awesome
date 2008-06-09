@@ -84,6 +84,7 @@ public class Window extends JComponent{
 
     
     private ArrayList<String> trainerSayings = new ArrayList<String>();
+    private ArrayList<String> peopleSayings = new ArrayList<String>();
         
     /**
      * Makes a new window that draws all the specified stuff on
@@ -126,8 +127,8 @@ public class Window extends JComponent{
             frame.addKeyListener(new KeyListen());
 
 
+            loadTrainerSayings(peopleSayings, "Trainers\\People.txt");
             loadTrainerSayings(trainerSayings, "Trainers\\Trainers.txt");
-
             
             
             //levelX = 0;
@@ -253,6 +254,15 @@ public class Window extends JComponent{
                 menu.draw(g2);
                 if(menu.result()!=null)
                 {
+                    if(menu!=null && menu.result().equals("Exit") || menu.result().equals("BACK")){
+                        menu = null;
+                        player.allowUpdate(true);
+                    }
+                    if(menu!=null && menu.result().equals("Pokemon")){
+                        menu = null;
+                        control = 2;
+                        pkmMenu = new PokemonMenu(player,frame,false,true);
+                    }
                     menu = null;
                     player.allowUpdate(true);
                 }
@@ -307,6 +317,7 @@ public class Window extends JComponent{
                 control = 0;
                 pressBuffer = Animation.NONE;
                 battle = null;
+                player.allowUpdate(true);
             }
         }
         
@@ -315,6 +326,7 @@ public class Window extends JComponent{
             if(pkmMenu.isOver()){
                 control = 0;
                 pkmMenu = null;
+                player.allowUpdate(true);
                 pressBuffer = Animation.NONE;
             }
         }
@@ -449,7 +461,36 @@ public class Window extends JComponent{
                         if(value==-5){
                             people.add(new NurseJoy(x1*TILE_WIDTH+xCoord*WIDTH,y1*TILE_HEIGHT+yCoord*-HEIGHT,this));
                         }else{
-                            people.add(new Person(personName,trainerSayings.get(value),x1*TILE_WIDTH+xCoord*WIDTH,y1*TILE_HEIGHT+yCoord*-HEIGHT,this));
+                            if(value>1000){
+                                String string = trainerSayings.get(value-1001);
+                                String[] pokemon = new String[6];
+                                String pkm = string.substring(string.indexOf("pokemon: ")+"pokemon: ".length());
+                                int lastIndex = 0;
+                                int length = 0;
+                                for(int i=0;i<6;i++){
+                                    boolean cont = true;
+                                    int index = pkm.indexOf(",",lastIndex);
+                                    if(index<0){
+                                        index = pkm.length();
+                                        cont = false;
+                                    }
+
+                                    pokemon[i] = pkm.substring(lastIndex,index);
+                                    lastIndex = pkm.indexOf(",")+1;
+                                    pokemon[i].trim();
+                                    System.out.println(pokemon[i]);
+                                    length = i+1;
+                                    if(!cont)
+                                        break;
+
+                                }
+                                Pokemon[] pokemen = new Pokemon[length];
+                                for(int i=0;i<length;i++){                                    
+                                    pokemen[i] = new Pokemon(pokemon[i].substring(0,pokemon[i].indexOf(" ")),Integer.parseInt(pokemon[i].substring(pokemon[i].indexOf(" ")+1)));
+                                }
+                                people.add(new Trainer(personName,string.substring(1,string.indexOf("after:")),string.substring(string.indexOf("after:")+"after:".length(),string.indexOf("pokemon:")),x1*TILE_WIDTH+xCoord*WIDTH,y1*TILE_HEIGHT+yCoord*-HEIGHT,this,pokemen,value-1001,Integer.parseInt(string.substring(0,1))));
+                            }else
+                                people.add(new Person(personName,peopleSayings.get(value),x1*TILE_WIDTH+xCoord*WIDTH,y1*TILE_HEIGHT+yCoord*-HEIGHT,this));
                         }
                     }
                         
@@ -501,12 +542,11 @@ public class Window extends JComponent{
             Scanner s = new Scanner(f);
             while(s.hasNextLine()){
                 s.next();
-                strs.add(s.nextLine());
+                strs.add(s.nextLine().trim());
             }
         } catch (FileNotFoundException ex) {
             Logger.getLogger(Window.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
     }
     
     public void addToCollision(Collideable c){
@@ -549,8 +589,6 @@ public class Window extends JComponent{
     public void startBattle(Battle b){
         control = 3;
         battle = b;
-        MUSIC.loadMusic("Music\\WildBattle.mid");
-        MUSIC.play(true);
     }
     
     public JFrame getFrame(){
@@ -575,6 +613,11 @@ public class Window extends JComponent{
 
             
             if(player.allowedToUpdate()){
+                if(keyEvent.getKeyCode()==KeyEvent.VK_ENTER){
+                    String[] str = {"Pokedex","Pokemon","Item","You","Save","Option","Exit"};
+                    menu = new Menu(frame,str,550,50,200,350,Style.POKEMON_MENU);
+                    player.allowUpdate(false);
+                }                    
                 if(keyEvent.getKeyCode()==KeyEvent.VK_UP)
                     pressBuffer = Animation.UP;
                 if(keyEvent.getKeyCode()==KeyEvent.VK_DOWN)

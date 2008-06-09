@@ -17,14 +17,17 @@ public class Battle {
     
     //should this be an int?
     private Pokemon theirCurrent;
+    private Trainer enemy;
     
     private BattleFrontEnd frontEnd;
     private Thread turnThread,pkmChangeThread;
-    private boolean isOver,waitingForPkmThread;
+    private boolean trainer,isOver,waitingForPkmThread;
 
     
     
     public Battle(Character you, Pokemon enemy,JFrame frame) {
+        Window.MUSIC.loadMusic("Music\\WildBattle.mid");
+        Window.MUSIC.play(true);
         frontEnd = new BattleFrontEnd(frame,you);
         player = you;
         for(int i=0;i<6;i++){
@@ -43,17 +46,35 @@ public class Battle {
         frontEnd.setText("A "+enemy.getName()+" has appeared!");
         isOver = false;
         waitingForPkmThread = false;
+        trainer = false;
     }
     
-  
-    
-    /*
-    public Battle(Character you, Trainer enemy){
-        theirs = enemy.getPokemonArray();
+    public Battle(Character you, Trainer enemy,JFrame frame) {
+        Window.MUSIC.loadMusic("Music\\Trainer Battle.mid");
+        Window.MUSIC.play(true);
+        this.enemy = enemy;
+        frontEnd = new BattleFrontEnd(frame,you);
+        player = you;
+        for(int i=0;i<6;i++){
+            if(you.currentPokemon()[i]!=null && you.currentPokemon()[i].getCurrentHP()!=0)
+            {
+                yours = you.currentPokemon()[i];
+                break;
+            }
+        }
+        
+        theirs = new Pokemon[1];
+        theirs = enemy.getPokemon();
         theirCurrent = theirs[0];
-        here, we set the music to trainer music
+        frontEnd.setPokemon(theirCurrent, false);
+        frontEnd.setPokemon(yours,true);
+        frontEnd.setText(enemy.getName()+" wants to fight. "+enemy.getName()+" uses "+theirCurrent.getName());
+
+        isOver = false;
+        waitingForPkmThread = false;
+        trainer = true;
     }
-    */
+    
 
     
     /**
@@ -66,16 +87,30 @@ public class Battle {
             if(theirs[i].getCurrentHP()!=0)
                 over = false;
         }
+        
+        if(trainer && !over && theirCurrent.getCurrentHP()==0 && (turnThread==null || !turnThread.isAlive()) && (pkmChangeThread==null || !pkmChangeThread.isAlive())){
+            
+            for(int i=0;i<theirs.length;i++){
+                if(theirs[i].getCurrentHP()!=0){
+                    theirCurrent = theirs[i];
+                    break;
+                }
+            }
+            frontEnd.setText(enemy.getName()+" uses "+theirCurrent.getName());
+            frontEnd.setPokemon(theirCurrent, false);
+        }       
+
+        
         isOver = over && !frontEnd.waitingForHP() && !frontEnd.waiting() && !turnThread.isAlive();
         
-        if(yours.getCurrentHP()==0 && !frontEnd.waiting() && (turnThread==null || !turnThread.isAlive()) && (pkmChangeThread==null || !pkmChangeThread.isAlive()))
+        if(yours.getCurrentHP()==0 &&!frontEnd.waiting() && (turnThread==null || !turnThread.isAlive()) && (pkmChangeThread==null || !pkmChangeThread.isAlive()))
         {
             frontEnd.makeMenu(BattleFrontEnd.POKEMON);
         }
         
         frontEnd.draw(g2);
         
-        if(!frontEnd.waiting() && !over && (turnThread==null || !turnThread.isAlive()) && !waitingForPkmThread && yours.getCurrentHP()!=0)
+        if(!frontEnd.waiting() && !over && (turnThread==null || !turnThread.isAlive()) && !waitingForPkmThread && yours.getCurrentHP()!=0 && theirCurrent.getCurrentHP()!=0)
             frontEnd.makeMenu(BattleFrontEnd.MAIN);
         
         Object result = frontEnd.getResult();
@@ -107,6 +142,9 @@ public class Battle {
                 pkmChangeThread.interrupt();
             pkmChangeThread = null;
         }
+        
+        
+
         
     }
     

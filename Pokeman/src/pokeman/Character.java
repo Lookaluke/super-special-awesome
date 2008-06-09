@@ -21,6 +21,7 @@ public class Character extends Person{
     private Person currentlyReading;
     private ArrayList<Pokemon> allPokemon = new ArrayList<Pokemon>();
     private static final int MAX_NUMBER_OF_POKEMON = 200;
+    private boolean[] trainersBeaten = new boolean[1000];
     
     public Character(Window w){
         super("Walking","",(int)(Window.COLUMNS/2)*Window.TILE_WIDTH,(int)(Window.ROWS/2)*Window.TILE_HEIGHT,w);
@@ -32,7 +33,7 @@ public class Character extends Person{
         setX(levelX*Window.WIDTH+(int)(Window.COLUMNS/2)*Window.TILE_WIDTH);
         setY((-levelY)*Window.HEIGHT+(int)(Window.ROWS/2)*Window.TILE_HEIGHT);
         getWindow().setLevel(levelX,levelY);
-        addPokemon(new Pokemon("Meh",15));
+        addPokemon(new Pokemon("Meh",17));
         addPokemon(new Pokemon("Rattata",8));
         addPokemon(new Pokemon("Bulbasaur",7));
         addPokemon(new Pokemon("Friger",6));
@@ -56,8 +57,6 @@ public class Character extends Person{
                 direction(getDirection());
 
         }
-        if(currentlyReading==null || currentlyReading.allowedToUpdate())
-            allowUpdate(true);
         super.draw(g,currentX,currentY+moreHeight);
         
         if(moreHeight != 0)
@@ -188,7 +187,7 @@ public class Character extends Person{
                 p.setDirection(Animation.LEFT);
             if(getDirection() == Animation.LEFT)
                 p.setDirection(Animation.RIGHT);
-            p.talk();
+            p.talk(this);
             this.allowUpdate(false);
             currentlyReading = p;
             return;
@@ -242,6 +241,14 @@ public class Character extends Person{
     
     public Pokemon[] currentPokemon(){
         return pkmn;
+    }
+    
+    public void beaten(int number){
+        trainersBeaten[number] = true;
+    }
+    
+    public boolean hasBeaten(int number){
+        return trainersBeaten[number];
     }
     
     public void switchPokemon(int index1,int index2){

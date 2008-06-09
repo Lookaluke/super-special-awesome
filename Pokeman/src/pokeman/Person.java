@@ -7,7 +7,7 @@ public class Person implements Comparable<Person>
 {
     private String name,speech;
     private int x,y,direction;
-    int xChange,yChange;
+    private int xChange,yChange;
     private Animation walk;
     private boolean moving,allowedToUpdate;
     private int screenX,screenY;
@@ -19,6 +19,7 @@ public class Person implements Comparable<Person>
     private boolean yes;
     private Menu menu;
     private boolean stationary;
+    private Character player;
     
 
     /**
@@ -60,6 +61,7 @@ public class Person implements Comparable<Person>
             if(txt.isOver()){
                 if(!question){
                     this.allowUpdate(true);
+                    this.getPlayerTalkingTo().allowUpdate(true);
                     txt = null;
                 }else{
                     if(menu==null){
@@ -254,8 +256,18 @@ public class Person implements Comparable<Person>
             txt.addKeyListener();
     }
     
-    public void talk(){
+    public Character getPlayerTalkingTo(){
+        return player;
+    }
+    
+    public void setSpeech(String s){
+        speech = s;
+    }
+    
+    public void talk(Character player){
+        
         if(!moving){
+            this.player = player;
             this.allowUpdate(false);
             String str = getSpeech();
             if(getSpeech().indexOf("?")!=-1){
