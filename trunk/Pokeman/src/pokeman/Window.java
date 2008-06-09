@@ -176,7 +176,7 @@ public class Window extends JComponent{
             g2.setColor(Color.BLACK);
             g2.fill(new Rectangle(0,0,WIDTH,HEIGHT));
 
-            if(player.allowedToUpdate() && control==0 && music[1][1]!=null && !MUSIC.getName().equals(music[1][1])){
+            if(control==0 && player.allowedToUpdate() && control==0 && music[1][1]!=null && !MUSIC.getName().equals(music[1][1])){
                 MUSIC.loadMusic(music[1][1]);
                 MUSIC.play(true);
                 area = new TextBox(frame,music[1][1].substring(6,music[1][1].length()-4),0,500,800,76,false,true,Style.SIGN);
@@ -213,9 +213,10 @@ public class Window extends JComponent{
             }
             Collections.sort(people);
             for(int i = 0;i<people.size();i++){
-                //people.get(i).update();
-                people.get(i).draw(g2, x, y);
-                
+                people.get(i).draw(g2, x, y);    
+            }
+            for(int i = 0;i<people.size();i++){
+                people.get(i).drawTextAndMenus(g2);
             }
             
             /*g2.setColor(Color.RED);

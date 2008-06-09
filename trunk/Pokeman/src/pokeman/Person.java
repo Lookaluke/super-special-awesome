@@ -56,6 +56,40 @@ public class Person implements Comparable<Person>
     public void draw(Graphics2D g,int currentX,int currentY){
         counter++;
 
+
+        
+        if(allowedToUpdate)
+            update();
+        if(!moving)
+            walk.standingFrame();
+        g.drawImage(walk.getFrame(),null,x+currentX,y+currentY);
+        
+        if(counter%4==0 || walk.getDirection()!=direction){
+            walk.nextFrame(direction);
+        }
+        
+        if(moving && !stationary){   
+            if(direction == Animation.RIGHT)
+                x += Window.TILE_WIDTH/Window.numberOfCounts;
+            if(direction == Animation.LEFT)
+                x -= Window.TILE_WIDTH/Window.numberOfCounts;
+            if(direction == Animation.UP)
+                y -= Window.TILE_WIDTH/Window.numberOfCounts;
+            if(direction == Animation.DOWN)
+                y += Window.TILE_WIDTH/Window.numberOfCounts;
+
+
+            if(counter>=(Window.numberOfCounts-1))
+            {
+                counter = 0;
+                moving = false;
+                w.removeFromCollision(lastEdition);
+                lastEdition = newEdition;
+            }
+        }
+    }
+    
+    public void drawTextAndMenus(Graphics2D g){
         if(txt!=null){
             txt.draw(g);
             if(txt.isOver()){
@@ -91,36 +125,6 @@ public class Person implements Comparable<Person>
                 txt = new TextBox(getWindow().getFrame(),str,0,475,800,101,true,false,Style.STANDARD_TEXT);
                 menu = null;
                 
-            }
-        }
-        
-        if(allowedToUpdate)
-            update();
-        if(!moving)
-            walk.standingFrame();
-        g.drawImage(walk.getFrame(),null,x+currentX,y+currentY);
-        
-        if(counter%4==0 || walk.getDirection()!=direction){
-            walk.nextFrame(direction);
-        }
-        
-        if(moving && !stationary){   
-            if(direction == Animation.RIGHT)
-                x += Window.TILE_WIDTH/Window.numberOfCounts;
-            if(direction == Animation.LEFT)
-                x -= Window.TILE_WIDTH/Window.numberOfCounts;
-            if(direction == Animation.UP)
-                y -= Window.TILE_WIDTH/Window.numberOfCounts;
-            if(direction == Animation.DOWN)
-                y += Window.TILE_WIDTH/Window.numberOfCounts;
-
-
-            if(counter>=(Window.numberOfCounts-1))
-            {
-                counter = 0;
-                moving = false;
-                w.removeFromCollision(lastEdition);
-                lastEdition = newEdition;
             }
         }
     }
