@@ -14,7 +14,6 @@ import java.awt.Graphics2D;
 public class NurseJoy extends Person{
     
     private int counter;
-    private Character player;
     
     public NurseJoy(int x,int y,Window w){
         super("NurseJoy","Welcome to the pokemon center. Would you like me to heal your pokemon? yes:Alright no:Ok come again",x,y,w);
@@ -23,6 +22,7 @@ public class NurseJoy extends Person{
     
     @Override
     public void draw(Graphics2D g,int currentX,int currentY){
+        Character player = this.getPlayerTalkingTo();
         if(saidYes()){
             for(int i=0;i<player.currentPokemon().length;i++){
                 player.currentPokemon()[i].reset();
@@ -52,10 +52,5 @@ public class NurseJoy extends Person{
     
     @Override
     protected void update(){
-    }
-    
-    public void talk(Character c){
-        player = c;
-        super.talk();
     }
 }
