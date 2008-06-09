@@ -5,5 +5,7 @@
 5-49 Random things
 50-150 - Pokemon Regions
 (-4)-(-1) - Doors left right down up respectively
--5 Pokemon
--6 Item
+-5 Pokemon Center
+-6 PokeMart
+-7 Pokemon
+-8 Item
