@@ -13,7 +13,6 @@ public class Turn implements Runnable{
     private Pokemon theirCurrent,yours;
     private BattleFrontEnd frontEnd;
     private boolean stop = true;
-    private ArrayList<String> queue = new ArrayList<String>();
     private Character player;
     
     public Turn(Character c,Move yourMove,Pokemon theirCurrent,Pokemon yours,BattleFrontEnd frontEnd){
@@ -79,7 +78,7 @@ public class Turn implements Runnable{
             if(m.attacksWhat()==Move.HP){
                 if(m.raises()){
                     doer.heal(m.power());
-                    queue.add(doer.getName()+" healed itself.");
+                    frontEnd.setText(doer.getName()+" healed itself.");
                 }else
                     reciever.takeDamage(calculateDamage(m, doer==yours));
             }else{
@@ -89,20 +88,15 @@ public class Turn implements Runnable{
                     changeStats(true,reciever,m.attacksWhat(),m.power());
             }
 
-            while(frontEnd.waitingForHP() && stop)
+            while(frontEnd.waitingForHPAndExp() && stop)
                 stop = !Thread.interrupted();
             frontEnd.addKeyListener();
             while(frontEnd.waiting() && stop)
                 stop = !Thread.interrupted();
             if(reciever.getCurrentHP()==0)
-                queue.add(reciever.getName()+" fainted");
+                frontEnd.setText(reciever.getName()+" fainted");
             
-            int size = queue.size();
-            for(int i=0;i<size;i++){
-                frontEnd.setText(queue.remove(0));
-                while(frontEnd.waiting() && stop)
-                    stop = !Thread.interrupted();                
-            }
+
         }
     }
     
@@ -124,37 +118,37 @@ public class Turn implements Runnable{
             if(what==Move.ATTACK){
                if(lower){
                    ret = p.reduceAttack();
-                   queue.add(p.getName()+"'s attack fell.");
+                   frontEnd.setText(p.getName()+"'s attack fell.");
                }else{
                    ret = p.increaseAttack();
-                   queue.add(p.getName()+"'s attack rose.");
+                   frontEnd.setText(p.getName()+"'s attack rose.");
                }
             }
             if(what==Move.DEFENSE){
                 if(lower){
                     ret = p.reduceDefense();
-                    queue.add(p.getName()+"'s defense fell.");
+                    frontEnd.setText(p.getName()+"'s defense fell.");
                 }else{
                     ret = p.increaseDefense();
-                    queue.add(p.getName()+"'s defense rose.");
+                    frontEnd.setText(p.getName()+"'s defense rose.");
                 }
             }
             if(what==Move.SPECIAL){
                 if(lower){
                     ret = p.reduceSpecial();
-                    queue.add(p.getName()+"'s special fell.");
+                    frontEnd.setText(p.getName()+"'s special fell.");
                 }else{
                     ret = p.increaseSpecial();
-                    queue.add(p.getName()+"'s special rose.");
+                    frontEnd.setText(p.getName()+"'s special rose.");
                 }
             }
             if(what==Move.SPEED){
                 if(lower){
                     ret = p.reduceSpeed();
-                    queue.add(p.getName()+"'s speed fell.");
+                    frontEnd.setText(p.getName()+"'s speed fell.");
                 }else{
                     ret = p.increaseSpeed();
-                    queue.add(p.getName()+"'s speed rose.");
+                    frontEnd.setText(p.getName()+"'s speed rose.");
                 }
             }
             if(i==0)
@@ -211,13 +205,13 @@ public class Turn implements Runnable{
             int randomNumber = (int)(Math.random() * 39) + 217;
             
             if(randomNumber>=248)
-                queue.add("A critical hit!");
+                frontEnd.setText("A critical hit!");
             
             if(typeModifer>=20)
-                queue.add("It's super effective!");
+                frontEnd.setText("It's super effective!");
             
             if(typeModifer<=5)
-                queue.add("It's not very effective...");
+                frontEnd.setText("It's not very effective...");
             return (int)(((((Math.min(((((2*level/5.0 + 2)*attack*power)/(double)Math.max(1, defense))/50.0), 997) + 2)*stab)*typeModifer)/10.0)*randomNumber)/255;
         } else {
             return -1;

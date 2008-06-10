@@ -94,6 +94,7 @@ public class Person implements Comparable<Person>
             txt.draw(g);
             if(txt.isOver()){
                 if(!question){
+                    System.out.println("here");
                     this.allowUpdate(true);
                     this.getPlayerTalkingTo().allowUpdate(true);
                     txt = null;

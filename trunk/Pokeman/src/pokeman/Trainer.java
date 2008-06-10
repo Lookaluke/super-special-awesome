@@ -56,33 +56,27 @@ public class Trainer extends Person {
             }
         }  
         
-        if(start){
-            if(this.getCollision(this.getDirection())!=null && this.getCollision(this.getDirection()).getMaker() instanceof Character){
-                talk((Character)this.getCollision(this.getDirection()).getMaker());
-                start = false;
-            }else
-                this.makeMove(this.getDirection());
-        }else{
-
-            ArrayList<Collideable> collideables = getWindow().getCollision();
-            for(Collideable c:collideables)
-            {
-                if(c.getMaker() instanceof Character){
-                    Character character = (Character)c.getMaker();
-                    if(this.getDirection()==Animation.DOWN && character.getY()-this.getY()>0 && character.getY()-this.getY()<Window.TILE_HEIGHT*6 && character.getX()==this.getX() ||
-                            this.getDirection()==Animation.UP && character.getY()-this.getY()<0 && character.getY()-this.getY()>-Window.TILE_HEIGHT*6 && character.getX()==this.getX() ||
-                            this.getDirection()==Animation.RIGHT && character.getX()-this.getX()>0 && character.getX()-this.getX()<Window.TILE_HEIGHT*6 && character.getY()==this.getY() ||
-                            this.getDirection()==Animation.LEFT && character.getX()-this.getX()<0 && character.getX()-this.getX()>-Window.TILE_HEIGHT*6 && character.getY()==this.getY()){
-                        start = true;
-                        if(!battle){
-                            Window.MUSIC.loadMusic("Music\\Trainer Confrontation.mid");
-                            Window.MUSIC.play(false);
-                            character.allowUpdate(false);
-                        }
+        if(!getWindow().getPerson().hasBeaten(number)){
+            if(start){
+                if(this.getCollision(this.getDirection())!=null && this.getCollision(this.getDirection()).getMaker() instanceof Character){
+                    talk((Character)this.getCollision(this.getDirection()).getMaker());
+                    start = false;
+                }else
+                    this.makeMove(this.getDirection());
+            }else{
+                Character character = getWindow().getPerson();
+                if(this.getDirection()==Animation.DOWN && character.getY()-this.getY()>0 && character.getY()-this.getY()<Window.TILE_HEIGHT*6 && character.getX()==this.getX() ||
+                        this.getDirection()==Animation.UP && character.getY()-this.getY()<0 && character.getY()-this.getY()>-Window.TILE_HEIGHT*6 && character.getX()==this.getX() ||
+                        this.getDirection()==Animation.RIGHT && character.getX()-this.getX()>0 && character.getX()-this.getX()<Window.TILE_HEIGHT*6 && character.getY()==this.getY() ||
+                        this.getDirection()==Animation.LEFT && character.getX()-this.getX()<0 && character.getX()-this.getX()>-Window.TILE_HEIGHT*6 && character.getY()==this.getY()){
+                    start = true;
+                    if(!battle){
+                        Window.MUSIC.loadMusic("Music\\Trainer Confrontation.mid");
+                        Window.MUSIC.play(false);
+                        character.allowUpdate(false);
                     }
                 }
             }
-            
         }
         
 
