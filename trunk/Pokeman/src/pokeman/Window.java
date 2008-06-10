@@ -76,6 +76,7 @@ public class Window extends JComponent{
     private int areaTime;
     private int times;
     private Menu menu;
+    private List list;
     private Battle battle;
     private PokemonMenu pkmMenu;
     
@@ -120,7 +121,13 @@ public class Window extends JComponent{
             player = new Character(this);
             
             this.frame = frame;
-
+            String[] f = new String[5];
+            f[0] = "a";
+            f[1] = "b";
+            f[2] = "c";
+            f[3] = "d";
+            f[4] = "e";
+            list = new List(frame ,f ,0 ,0 ,100 ,150 ,Style.STANDARD_TEXT);
             frame.add(this);
             this.setPreferredSize(new Dimension(WIDTH, HEIGHT));
             frame.pack();
@@ -250,6 +257,8 @@ public class Window extends JComponent{
                     player.unRead();
                 }
             }
+            if(list != null)
+                list.draw(g2);
             
             if(menu!=null){
                 menu.draw(g2);
