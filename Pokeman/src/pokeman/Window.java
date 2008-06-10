@@ -596,6 +596,10 @@ public class Window extends JComponent{
         return frame;
     }
     
+    public Character getPerson(){
+        return player;
+    }
+    
      /**
      * The class that implments the keyListener
      * This gets all the keyboard events

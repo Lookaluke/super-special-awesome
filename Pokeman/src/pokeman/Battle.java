@@ -2,6 +2,7 @@
 package pokeman;
 
 import java.awt.Graphics2D;
+import java.util.ArrayList;
 import javax.swing.JFrame;
 
 /**
@@ -22,6 +23,7 @@ public class Battle {
     private BattleFrontEnd frontEnd;
     private Thread turnThread,pkmChangeThread;
     private boolean trainer,isOver,waitingForPkmThread;
+    private ArrayList<Pokemon> pokemonUsed = new ArrayList<Pokemon>();
 
     
     
@@ -37,6 +39,8 @@ public class Battle {
                 break;
             }
         }
+        
+        pokemonUsed.add(yours);
         
         theirs = new Pokemon[1];
         theirs[0] = enemy;
@@ -63,6 +67,8 @@ public class Battle {
             }
         }
         
+        pokemonUsed.add(yours);
+        
         theirs = new Pokemon[1];
         theirs = enemy.getPokemon();
         theirCurrent = theirs[0];
@@ -88,29 +94,69 @@ public class Battle {
                 over = false;
         }
         
-        if(trainer && !over && theirCurrent.getCurrentHP()==0 && (turnThread==null || !turnThread.isAlive()) && (pkmChangeThread==null || !pkmChangeThread.isAlive())){
+        if(!frontEnd.waiting() && trainer && theirCurrent!=null && theirCurrent.getCurrentHP()==0 && (turnThread==null || !turnThread.isAlive()) && (pkmChangeThread==null || !pkmChangeThread.isAlive())){
             
-            for(int i=0;i<theirs.length;i++){
-                if(theirs[i].getCurrentHP()!=0){
-                    theirCurrent = theirs[i];
-                    break;
+            for(int i=0;i<pokemonUsed.size();i++){
+                if(pokemonUsed.get(i).getCurrentHP()==0){
+                    i--;
+                    pokemonUsed.remove(i);
+                }                    
+            }
+            
+            int b = theirCurrent.getBaseExp();
+            int l = theirCurrent.getLevel();
+            double mult;
+            
+            
+            if(theirs.length == 1){
+                mult = 1;
+            } else {
+                mult = 1.5;
+            }
+            
+            int exp = (int) (mult * (b * l / 7))/pokemonUsed.size();
+            
+            if(!over){
+                for(int i=0;i<theirs.length;i++){
+                    if(theirs[i].getCurrentHP()!=0){
+                        theirCurrent = theirs[i];
+                        break;
+                    }
+                }
+            }else{
+                theirCurrent = null;
+            }
+            
+
+            
+            yours.addExperience(exp);
+            frontEnd.setText(yours.getName()+" recieved "+exp+" experience!");
+            for(Pokemon p:pokemonUsed){
+                if(p!=yours){
+                    p.addExperience(exp);
+                    frontEnd.setText(p.getName()+" recieved "+exp+" experience!");
                 }
             }
-            frontEnd.setText(enemy.getName()+" uses "+theirCurrent.getName());
-            frontEnd.setPokemon(theirCurrent, false);
+            pokemonUsed = new ArrayList<Pokemon>();
+            pokemonUsed.add(yours);
+            if(!over){
+                frontEnd.setText(enemy.getName()+" uses "+theirCurrent.getName());
+                frontEnd.setPokemon(theirCurrent, false);
+            }
         }       
 
         
-        isOver = over && !frontEnd.waitingForHP() && !frontEnd.waiting() && !turnThread.isAlive();
+        isOver = over && !frontEnd.waitingForHPAndExp() && !frontEnd.waiting() && !turnThread.isAlive();
         
-        if(yours.getCurrentHP()==0 &&!frontEnd.waiting() && (turnThread==null || !turnThread.isAlive()) && (pkmChangeThread==null || !pkmChangeThread.isAlive()))
+        if(yours.getCurrentHP()==0 && !frontEnd.waiting() && (turnThread==null || !turnThread.isAlive()) && (pkmChangeThread==null || !pkmChangeThread.isAlive()))
         {
             frontEnd.makeMenu(BattleFrontEnd.POKEMON);
         }
         
         frontEnd.draw(g2);
         
-        if(!frontEnd.waiting() && !over && (turnThread==null || !turnThread.isAlive()) && !waitingForPkmThread && yours.getCurrentHP()!=0 && theirCurrent.getCurrentHP()!=0)
+        System.out.println(frontEnd.waitingForHPAndExp());
+        if(!frontEnd.waitingForHPAndExp() && !frontEnd.waiting() && !over && (turnThread==null || !turnThread.isAlive()) && !waitingForPkmThread && yours.getCurrentHP()!=0 && theirCurrent.getCurrentHP()!=0)
             frontEnd.makeMenu(BattleFrontEnd.MAIN);
         
         Object result = frontEnd.getResult();
@@ -174,6 +220,8 @@ public class Battle {
             while(frontEnd.waiting() && stop)
                 stop = !Thread.interrupted();
             yours = pokemen[index];
+            if(!pokemonUsed.contains(yours))
+                pokemonUsed.add(yours);
             frontEnd.setPokemon(yours,true);
             
         }

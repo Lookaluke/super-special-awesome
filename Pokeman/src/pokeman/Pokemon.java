@@ -305,6 +305,10 @@ public class Pokemon implements Serializable
        return element2;
    }
    
+   public int getBaseExp(){
+       return baseExp;
+   }
+   
    
    /**
     * this method accumulates experience and handles single level-ups

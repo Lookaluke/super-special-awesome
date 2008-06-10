@@ -3,7 +3,6 @@ package pokeman;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.FontFormatException;
 import java.awt.Graphics2D;
 import java.awt.Polygon;
 import java.awt.font.FontRenderContext;
@@ -11,6 +10,7 @@ import java.awt.image.BufferedImage;
 import java.awt.geom.*;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
@@ -36,7 +36,9 @@ public class BattleFrontEnd {
     private double yourCurrentPercent,theirCurrentPercent;
     private Character player;
     private int youDown,theirDown;
-    
+    private double currentExpPercent;
+    private int expLevelsToGo,oldLevel;
+    private ArrayList<String> queue = new ArrayList<String>();
 
 
     
@@ -52,6 +54,8 @@ public class BattleFrontEnd {
             pkmMenu = null;
             background = ImageIO.read(new File("Images\\BattleBackground4.png"));
             circle = ImageIO.read(new File("Images\\circle2.png"));
+            expLevelsToGo = 0;
+            currentExpPercent = 0;
         } catch (IOException ex) {
             Logger.getLogger(BattleFrontEnd.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -70,9 +74,16 @@ public class BattleFrontEnd {
 
             if(txt!=null){
                 txt.draw(g2);
+                if(this.waitingForHPAndExp())
+                    txt.removeKeyListener();
+                else
+                    txt.addKeyListener();
                 if(txt.isOver())
                 {
-                    txt = null;                
+                    if(queue.size()==0)
+                        txt = null;        
+                    else
+                        txt = new TextBox(frame,queue.remove(0),0,475,800,TXT_HEIGHT,true,false,Style.BATTLE_TEXT2);
                 }
             }
 
@@ -116,14 +127,23 @@ public class BattleFrontEnd {
         if(isYours){
             yours = p;
             yourCurrentPercent = yours.getCurrentHP()/(double)yours.getMaxHP();
+            currentExpPercent = (yours.expBetweenCurrentAndNext()-yours.expToNextLevel())/(double)yours.expBetweenCurrentAndNext();
+            oldLevel = yours.getLevel();
         }else{
             theirs = p;
             theirCurrentPercent = theirs.getCurrentHP()/(double)theirs.getMaxHP();
         }
     }
     
+    public void setExp(double currentPercent,int levelsToGo){
+        currentExpPercent = currentPercent;
+        expLevelsToGo = levelsToGo;
+    }
+    
     public void setText(String text){
-        txt = new TextBox(frame,text,0,475,800,TXT_HEIGHT,true,false,Style.BATTLE_TEXT2);
+        queue.add(text);
+        if(txt==null)
+            txt = new TextBox(frame,queue.remove(0),0,475,800,TXT_HEIGHT,true,false,Style.BATTLE_TEXT2);
     }
     
     public boolean removeKeyListener(){
@@ -202,8 +222,8 @@ public class BattleFrontEnd {
         return txt!=null || menu!=null || moveMenu!=null || pkmMenu!=null;
     }
     
-    public boolean waitingForHP(){
-        return Math.abs(yourCurrentPercent-yours.getCurrentHP()/(double)yours.getMaxHP())>.1 || Math.abs(theirCurrentPercent-theirs.getCurrentHP()/(double)theirs.getMaxHP())>.1;
+    public boolean waitingForHPAndExp(){
+        return Math.abs(yourCurrentPercent-yours.getCurrentHP()/(double)yours.getMaxHP())>.1 || Math.abs(theirCurrentPercent-theirs.getCurrentHP()/(double)theirs.getMaxHP())>.1 || Math.abs(currentExpPercent-(yours.expBetweenCurrentAndNext()-yours.expToNextLevel())/(double)yours.expBetweenCurrentAndNext())>.1;
     }
     
     public static double drawHpBar(Graphics2D g2, int x, int y, int totalHP, int currentHP,double currentPercent){
@@ -354,7 +374,7 @@ public class BattleFrontEnd {
             g2.fill(new Polygon(xPoints,yPoints,6));
             g2.fill(new Ellipse2D.Double(x+WIDTH-EXP_HEIGHT*2+EXP_EXTENSION,y+HEIGHT-EXP_HEIGHT,EXP_HEIGHT*2,EXP_HEIGHT*2));
             
-            drawExpBar(g2, x+50, y + HEIGHT - 3, p );
+            drawExpBar(g2, x+50, y + HEIGHT - 3, p);
             //g2.setFont(f.deriveFont(Font.BOLD, 10));
             //g2.setColor(new Color(239,229,7));
             //g2.drawString("EXP", x+8 , y+HEIGHT+EXP_HEIGHT-3);
@@ -391,13 +411,34 @@ public class BattleFrontEnd {
 
     }
     
+    public void drawExpBar(Graphics2D g2,int x,int y,Pokemon p){
+        int RectWidth = 128;
+        
+        if(p.getLevel()!=oldLevel)
+            expLevelsToGo = p.getLevel()-oldLevel;            
+        oldLevel = p.getLevel();
+        
+        
+        if(expLevelsToGo>0 || currentExpPercent<(yours.expBetweenCurrentAndNext()-yours.expToNextLevel())/(double)yours.expBetweenCurrentAndNext())
+        {
+            for(int i=0;i<3;i++){
+                currentExpPercent+=1.0/RectWidth;
+                if(currentExpPercent>=1){
+                    currentExpPercent = 0;
+                    expLevelsToGo--;
+                }
+            }
+        }
+        drawExpBar(g2, x, y , p , currentExpPercent);
+    }
+    
     /**
      * draws the bar that says exp
      * @param x
      * @param y
      * @param p
      */
-    public static void drawExpBar(Graphics2D g2, int x, int y, Pokemon p){
+    public static void drawExpBar(Graphics2D g2, int x, int y, Pokemon p, double currentPercent){
         int RectWidth = 128;
         int RectHeight = 6;
         
@@ -411,7 +452,8 @@ public class BattleFrontEnd {
         g2.setColor(new Color(192, 184, 112));
         g2.fill(new Rectangle2D.Double(x + 30, y+10-RectHeight, RectWidth, RectHeight));
         
-        int colorWidth = RectWidth - (RectWidth * p.expToNextLevel() / p.expBetweenCurrentAndNext() );
+        int colorWidth = (int)(RectWidth * currentPercent);
+
         g2.setColor(new Color(64, 200, 248));
         g2.fill(new Rectangle2D.Double(x+30, y+10-RectHeight, colorWidth, RectHeight ));
     }
