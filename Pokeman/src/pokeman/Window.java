@@ -135,6 +135,8 @@ public class Window extends JComponent implements Serializable{
             f[4] = "e";
             list = new List(frame ,f ,0 ,0 ,100 ,150 ,Style.STANDARD_TEXT);*/
             intro = new Intro(frame) ;
+            MUSIC.loadMusic("Music\\Intro.mid");
+            MUSIC.play(true);
             frame.add(this);
             this.setPreferredSize(new Dimension(WIDTH, HEIGHT));
             frame.pack();
@@ -196,6 +198,7 @@ public class Window extends JComponent implements Serializable{
             if(intro.result().equals("New Game"))
                 //START NEW GAME
             intro = null;
+            
         }
         if(control==0 || control==3){
             g2.setColor(Color.BLACK);
