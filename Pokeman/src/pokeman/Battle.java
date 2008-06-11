@@ -2,6 +2,7 @@
 package pokeman;
 
 import java.awt.Graphics2D;
+import java.io.Serializable;
 import java.util.ArrayList;
 import javax.swing.JFrame;
 
@@ -11,7 +12,7 @@ import javax.swing.JFrame;
  * @author Kunal
  */
 
-public class Battle {
+public class Battle implements Serializable {
     private Pokemon yours;
     private Pokemon[] theirs;
     private Character player;

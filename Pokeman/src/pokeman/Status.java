@@ -5,11 +5,13 @@
 
 package pokeman;
 
+import java.io.Serializable;
+
 /**
  *
  * @author Kunal
  */
-public enum Status {
+public enum Status implements Serializable{
     POISON, NORMAL, FROZEN, PARALYZED, BURN, FAINTED, SLEEP;
     
     public double getCatchMultipler(){

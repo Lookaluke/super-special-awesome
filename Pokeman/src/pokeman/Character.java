@@ -3,10 +3,19 @@ package pokeman;
 
 import java.awt.Graphics2D;
 import java.awt.Color;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * 
@@ -29,16 +38,87 @@ public class Character extends Person{
         press = 0;
         jumping=0;
         int levelX = 0;
-        int levelY = 4;
+        int levelY = 0;
         setX(levelX*Window.WIDTH+(int)(Window.COLUMNS/2)*Window.TILE_WIDTH);
         setY((-levelY)*Window.HEIGHT+(int)(Window.ROWS/2)*Window.TILE_HEIGHT);
         getWindow().setLevel(levelX,levelY);
+
         addPokemon(new Pokemon("Meh",17));
         addPokemon(new Pokemon("Rattata",8));
         addPokemon(new Pokemon("Bulbasaur",7));
         addPokemon(new Pokemon("Friger",6));
         addPokemon(new Pokemon("Charmander",16));
         addPokemon(new Pokemon("Magikarp",16));
+
+    }
+    
+    public void save(String file){
+    
+        ObjectOutputStream out = null;
+        DataOutputStream d = null;
+        
+        try {
+            File f = new File(file+".Tpkm");
+            d = new DataOutputStream(new FileOutputStream(f));
+            for(boolean b:trainersBeaten)
+                d.writeBoolean(b);
+            d.writeInt(getX());
+            d.writeInt(getY());
+            d.writeInt(getDirection());
+
+            
+
+            
+            
+            out = new ObjectOutputStream(new FileOutputStream(file+".Cpkm"));
+            out.writeObject(allPokemon);
+            out = new ObjectOutputStream(new FileOutputStream(file+".Ppkm"));
+            out.writeObject(pkmn);
+            } catch (IOException ex) {
+                Logger.getLogger(Window.class.getName()).log(Level.SEVERE, null, ex);
+            } finally {
+            try {
+                out.close();
+                d.close();
+            } catch (IOException ex) {
+                Logger.getLogger(Window.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+    
+    public void load(String file){
+        DataInputStream d = null;
+        ObjectInputStream in = null;
+        try {
+            File f = new File(file + ".Tpkm");
+            d = new DataInputStream(new FileInputStream(f));
+            for (int i = 0; i < trainersBeaten.length; i++) {
+                trainersBeaten[i] = d.readBoolean();
+            }
+            setX(d.readInt());
+            setY(d.readInt());
+            getWindow().setLevel((getX()-(int)(Window.COLUMNS/2)*Window.TILE_WIDTH)/Window.WIDTH,(getY()-(int)(Window.ROWS/2)*Window.TILE_HEIGHT)/-Window.HEIGHT);
+            setDirection(d.readInt());
+
+            
+
+            in = new ObjectInputStream(new FileInputStream(file + ".Cpkm"));
+            allPokemon = (ArrayList<Pokemon>) in.readObject();
+            in = new ObjectInputStream(new FileInputStream(file + ".Ppkm"));
+            pkmn = (Pokemon[]) in.readObject();
+            
+        } catch (IOException ex) {
+            Logger.getLogger(Character.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(Character.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                d.close();
+                in.close();
+            } catch (IOException ex) {
+                Logger.getLogger(Character.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
 
     }
     

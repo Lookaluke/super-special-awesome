@@ -3,18 +3,25 @@ package pokeman;
 
 import java.io.File;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 
 /**
  *
  * @author Mark Benjamin
  */
-public class Animation {
+public class Animation implements Serializable {
     
     public static final int  NONE = -1,UP = 0,DOWN = 1,RIGHT = 2,LEFT = 3;
-    private BufferedImage[][] animations;
+    private transient BufferedImage[][] animations;
     private int currentFrame,currentDirection,oldFrame;
     private int[] numberOfFrames = new int[4];
+    private String name;
     
     
     /** Creates a new instance of Animation */
@@ -29,6 +36,12 @@ public class Animation {
         
         currentDirection = DOWN;
         
+        this.name = name;
+        
+        load(name);
+    }   
+    
+    private void load(String name){
         File f = new File("Animations\\"+name);
         File[] files = f.listFiles();
         if(files!=null){
@@ -66,7 +79,9 @@ public class Animation {
                 }
             }        
         }
-    }   
+    }
+    
+    
     
     public BufferedImage getFrame(){        
         if(currentDirection>=0 && numberOfFrames[currentDirection]!=0)
@@ -120,6 +135,17 @@ public class Animation {
     
     public int getDirection(){
         return currentDirection;
+    }
+    
+    private void wirteobject(ObjectOutputStream out) throws IOException{
+
+        out.defaultWriteObject();
+
+    }
+    private void readObject(ObjectInputStream in) throws IOException,ClassNotFoundException{
+            in.defaultReadObject();
+            
+            load(name);
     }
     
 }

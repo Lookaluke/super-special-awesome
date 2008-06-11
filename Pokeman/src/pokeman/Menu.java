@@ -7,7 +7,6 @@ package pokeman;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.FontFormatException;
 import java.awt.Graphics2D;
 import java.awt.Polygon;
 import java.awt.event.KeyEvent;
@@ -15,13 +14,14 @@ import java.awt.event.KeyListener;
 import java.awt.font.FontRenderContext;
 import java.awt.geom.Rectangle2D;
 import java.awt.geom.RoundRectangle2D;
+import java.io.Serializable;
 import javax.swing.JFrame;
 
 /**
  *
  * @author Mark
  */
-public class Menu {
+public class Menu implements Serializable {
     private static final int widthFactor = 20, heightFactor = 5, curveFactor = 40, ySpaceFactor = 5, xSpaceFactor = 20;
     private Font f;
     

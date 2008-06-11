@@ -1,10 +1,10 @@
 package pokeman;
 
 import java.awt.Graphics2D;
+import java.io.Serializable;
 
 
-public class Person implements Comparable<Person>
-{
+public class Person implements Comparable<Person>,Serializable{
     private String name,speech;
     private int x,y,direction;
     private int xChange,yChange;

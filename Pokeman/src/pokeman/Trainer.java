@@ -9,7 +9,8 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
@@ -24,7 +25,7 @@ public class Trainer extends Person {
     private boolean battle,start;
     private String after;
     private int number;
-    private BufferedImage img;
+    private transient BufferedImage img;
     
     public Trainer(String n,String before,String after,int x,int y,Window w,Pokemon[] p,int number,int direction){
         super(n,before,x,y,w);
@@ -109,4 +110,17 @@ public class Trainer extends Person {
     public Pokemon[] getPokemon(){
         return p;
     }
+    
+        
+    private void wirteobject(ObjectOutputStream out) throws IOException{
+
+        System.out.println("before");
+        out.defaultWriteObject();
+        System.out.println("after");
+
+    }
+    private void readObject(ObjectInputStream in) throws IOException,ClassNotFoundException{
+            in.defaultReadObject();
+    }
+    
 }
