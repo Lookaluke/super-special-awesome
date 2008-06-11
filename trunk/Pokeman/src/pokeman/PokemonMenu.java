@@ -14,13 +14,14 @@ import java.awt.event.KeyListener;
 import java.awt.font.FontRenderContext;
 import java.awt.geom.Rectangle2D;
 import java.awt.geom.RoundRectangle2D;
+import java.io.Serializable;
 import javax.swing.JFrame;
 
 /**
  *
  * @author Mark
  */
-public class PokemonMenu {
+public class PokemonMenu implements Serializable {
 
     private Character character;
     private int selected;

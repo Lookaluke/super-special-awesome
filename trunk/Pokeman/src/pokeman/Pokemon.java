@@ -12,9 +12,13 @@ package pokeman;
 import java.awt.image.*;
 import java.io.File;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 
 public class Pokemon implements Serializable
@@ -26,7 +30,7 @@ public class Pokemon implements Serializable
            defense, special, speed,catchRate;
    
    private int attackmod, defensemod, specialmod, speedmod;
-   private BufferedImage front,back;
+   private transient BufferedImage front,back;
    private Move[] moves = new Move[4];
    private String evolution;
    private int evolutionLevel;
@@ -514,4 +518,21 @@ public class Pokemon implements Serializable
            throw new IllegalStateException("invalid pokemon growth rate");
        }
    }
+   
+       
+    private void wirteobject(ObjectOutputStream out) throws IOException{
+    
+        
+        out.defaultWriteObject();
+
+    }
+    private void readObject(ObjectInputStream in) throws IOException,ClassNotFoundException{
+            in.defaultReadObject();
+
+            String temp = "Pokemon\\" + name + "\\";
+            front = ImageIO.read(new File(temp + "front.png"));
+            back = ImageIO.read(new File(temp + "back.png"));
+
+    }
+   
 }

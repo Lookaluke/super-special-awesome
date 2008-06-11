@@ -1,5 +1,7 @@
 package pokeman;
 
+import java.io.Serializable;
+
 /**
  * For great justice, here is the Element class. the Move during battle should
  * run multiplerAgainst with both of the types of the second pokemon. Each
@@ -12,7 +14,7 @@ package pokeman;
  * @version 1
  */
 
-public enum Element {
+public enum Element implements Serializable{
     FIRE, WATER, GROUND, FLYING, POISON, NORMAL, PSYCHIC, GHOST, BUG, ROCK,
     GRASS, FIGHTING, ELECTRIC, ICE, DRAGON, NOTHING;
     

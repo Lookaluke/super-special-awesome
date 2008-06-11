@@ -7,7 +7,7 @@ package pokeman;
  * other names will throw exceptions
  * @author Kunal
  */
-public class Elixier extends Item<Pokemon> {
+public class Elixier extends Item<Pokemon>{
     
     private int amountToHeal;
     

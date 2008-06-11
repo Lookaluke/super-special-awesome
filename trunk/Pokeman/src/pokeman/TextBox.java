@@ -7,7 +7,6 @@ package pokeman;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.FontFormatException;
 import java.awt.Graphics2D;
 import java.awt.Polygon;
 import java.awt.event.KeyEvent;
@@ -15,8 +14,7 @@ import java.awt.event.KeyListener;
 import java.awt.font.FontRenderContext;
 import java.awt.geom.Rectangle2D;
 import java.awt.geom.RoundRectangle2D;
-import java.io.File;
-import java.io.IOException;
+import java.io.Serializable;
 import java.util.Scanner;
 import javax.swing.JFrame;
 
@@ -24,7 +22,7 @@ import javax.swing.JFrame;
  *
  * @author Mark
  */
-public class TextBox{
+public class TextBox implements Serializable {
     private static final int widthFactor = 20, heightFactor = 5, curveFactor = 40, spaceFactor = 5;
     private Font f;
     

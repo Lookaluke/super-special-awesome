@@ -18,7 +18,11 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Scanner;
@@ -34,9 +38,9 @@ import javax.swing.Timer;
  *
  * @author Mark
  */
-public class Window extends JComponent{
+public class Window extends JComponent implements Serializable{
     
-    private ArrayList<BufferedImage> img = new ArrayList<BufferedImage>(20); 
+    private transient ArrayList<BufferedImage> img = new ArrayList<BufferedImage>(20); 
     private ArrayList<String> imgNames = new ArrayList<String>(20); 
     private ArrayList<Person> people = new ArrayList<Person>();
         
@@ -52,7 +56,7 @@ public class Window extends JComponent{
     
     private static final String levelName = "Levels\\level";
     
-    private BufferedImage[][] background = new BufferedImage[3][3];
+    private transient BufferedImage[][] background = new BufferedImage[3][3];
     private String[][] music = new String[3][3];
     
     private int levelX,levelY;
@@ -119,15 +123,16 @@ public class Window extends JComponent{
 
 
             player = new Character(this);
+            player.load("Slot1");
             
             this.frame = frame;
-            String[] f = new String[5];
+            /*String[] f = new String[5];
             f[0] = "a";
             f[1] = "b";
             f[2] = "c";
             f[3] = "d";
             f[4] = "e";
-            list = new List(frame ,f ,0 ,0 ,100 ,150 ,Style.STANDARD_TEXT);
+            list = new List(frame ,f ,0 ,0 ,100 ,150 ,Style.STANDARD_TEXT);*/
             frame.add(this);
             this.setPreferredSize(new Dimension(WIDTH, HEIGHT));
             frame.pack();
@@ -265,13 +270,32 @@ public class Window extends JComponent{
                 if(menu.result()!=null)
                 {
                     if(menu!=null && menu.result().equals("Exit") || menu.result().equals("BACK")){
-                        menu = null;
+                        
                         player.allowUpdate(true);
                     }
                     if(menu!=null && menu.result().equals("Pokemon")){
-                        menu = null;
+                        
                         control = 2;
                         pkmMenu = new PokemonMenu(player,frame,false,true);
+                    }
+                    if(menu!=null && menu.result().equals("Save")){
+                        
+                        player.save("Slot1");
+                        /*ObjectOutputStream out = null;
+                        try {
+                            
+                            out = new ObjectOutputStream(new FileOutputStream("TextBox.pkm"));
+                            out.writeObject(new TextBox(getFrame(),"",0,475,800,10,true,false,Style.BATTLE_TEXT2));
+                        } catch (IOException ex) {
+                            Logger.getLogger(Window.class.getName()).log(Level.SEVERE, null, ex);
+                        } finally {
+                            try {
+                                out.close();
+                            } catch (IOException ex) {
+                                Logger.getLogger(Window.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                        }*/
+
                     }
                     menu = null;
                     player.allowUpdate(true);
@@ -814,4 +838,5 @@ public class Window extends JComponent{
             levelY = newY;
         }
     }   
+
 }

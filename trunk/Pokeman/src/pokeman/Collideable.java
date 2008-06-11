@@ -5,12 +5,14 @@
 
 package pokeman;
 
+import java.io.Serializable;
+
 /**
  * This class is rather unimportant it allows you to store a location where there
  * is a collideable object. Ex. grass or tree.
  * @author Mark
  */
-public class Collideable implements Comparable<Collideable>{
+public class Collideable implements Comparable<Collideable>, Serializable {
 
     private int xTile,yTile;
     private int[] collisionNumber = new int[3];

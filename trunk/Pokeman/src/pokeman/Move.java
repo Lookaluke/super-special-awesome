@@ -3,6 +3,7 @@ package pokeman;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.Serializable;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -11,7 +12,7 @@ import java.util.logging.Logger;
  * Stores information about the moves. 
  * @author Kunal
  */
-public class Move {
+public class Move implements Serializable {
     
     public static final int HP = 0,ATTACK=1,DEFENSE=2,SPECIAL=3,SPEED=4,
             ACCURACY=5,EVASION=6;

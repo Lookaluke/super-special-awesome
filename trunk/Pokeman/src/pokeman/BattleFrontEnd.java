@@ -20,7 +20,7 @@ import javax.swing.JFrame;
  *
  * @author Mark, Kunal
  */
-public class BattleFrontEnd {
+public class BattleFrontEnd{
     
     public static final int NONE = -1,MAIN = 0,MOVE = 1,POKEMON = 2;
     private static final int TXT_HEIGHT = 101;
@@ -457,4 +457,5 @@ public class BattleFrontEnd {
         g2.setColor(new Color(64, 200, 248));
         g2.fill(new Rectangle2D.Double(x+30, y+10-RectHeight, colorWidth, RectHeight ));
     }
+    
 }
