@@ -134,9 +134,6 @@ public class Window extends JComponent implements Serializable{
             f[3] = "d";
             f[4] = "e";
             list = new List(frame ,f ,0 ,0 ,100 ,150 ,Style.STANDARD_TEXT);*/
-            String[] s = new String[2];
-            s[0] = "New Game";
-            s[1] = "Continue";
             intro = new Intro(frame) ;
             frame.add(this);
             this.setPreferredSize(new Dimension(WIDTH, HEIGHT));
