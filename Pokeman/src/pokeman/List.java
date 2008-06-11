@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Polygon;
+import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.font.FontRenderContext;
@@ -19,7 +20,9 @@ import javax.swing.JFrame;
  */
 public class List implements Serializable 
 {
-    private static final int widthFactor = 35, heightFactor = 5, curveFactor = 40, ySpaceFactor = 0, xSpaceFactor = 20;
+    private static final int widthFactor = 30, heightFactor = 5, curveFactor = 40, ySpaceFactor = 5, xSpaceFactor = 20, totalFactor = 10;
+    private static final int styleWidth = 20, styleHeight = 5;
+    private int center;
     private Font f;
     
     private String[] items;
@@ -37,7 +40,7 @@ public class List implements Serializable
     public List(JFrame fr,String[] menuItems,int x,int y,int width,int height,Style s)
     {
         style = s;
-
+        center = width/2;
         f = Window.FONT;
         f = f.deriveFont(Font.PLAIN, 30);
 
@@ -73,21 +76,20 @@ public class List implements Serializable
         g2.setColor(style.getColor(true));
         
         if(style.getShape(true) == Style.ROUNDED_RECTANGLE)
-            g2.fill(new RoundRectangle2D.Double(x+widthFactor/2,y+heightFactor/2,width-widthFactor,height-heightFactor,curveFactor,curveFactor));
+            g2.fill(new RoundRectangle2D.Double(x+styleWidth/2,y+styleHeight/2,width-styleWidth,height-styleHeight,curveFactor,curveFactor));
         
         if(style.getShape(true) == Style.RECTANGLE)
-            g2.fill(new Rectangle2D.Double(x+widthFactor/2,y+heightFactor/2,width-widthFactor,height-heightFactor));
+            g2.fill(new Rectangle2D.Double(x+styleWidth/2,y+styleHeight/2,width-styleWidth,height-styleHeight));
         
         g2.setColor(Color.BLACK);
         
         g2.setFont(f);
         if(result==null)
         {
-            //g2.drawString("" + items.length + " t" + top + " b" + bottom + " s" + selected + " " + " " + items[getSelected()], 300,300);
+            g2.drawString("" + items.length + " t" + top + " b" + bottom + " s" + selected + " " + " " + items[getSelected()], 300,300);
             int perLine = items.length/lines;
             if(perLine==0)
                 perLine=1;
-            int xSpace = (width-2*widthFactor-xSpaceFactor)/perLine;
             for(int i=0;i<items.length;i++)
             {
                 int factor = i-top+1;
@@ -95,14 +97,31 @@ public class List implements Serializable
                 if(items[i]==null)
                     str = "---";
                 if(i <= bottom && i >= top)
-                    g2.drawString(str,x+widthFactor,y+heightFactor+ySpaceFactor*factor+textHeight*factor);
+                    g2.drawString(str,x+widthFactor,(int)(y+heightFactor+ySpaceFactor*factor+textHeight*(factor- 0.5)));
                 if(selected == i){
                     int x1 = x+widthFactor;
-                    int y1 = (int)(y+heightFactor+ySpaceFactor*factor+textHeight*(factor + 0.4));
+                    int y1 = (int)(y+heightFactor+ySpaceFactor*factor+textHeight*(factor -0.08));
                     int[] xCoords = {x1-15,x1-15,x1-5};
                     int[] yCoords = {y1-5-15,y1-19-15,y1-12-15}; 
                     g2.fill(new Polygon(xCoords,yCoords,3));
                 }
+            }
+            if(top > 0)
+            {
+                int x1 = x + center;
+                int y1 = (int)(y + heightFactor* 1.2);
+                int[] xCoords = {x1-10,x1+10,x1};
+                int[] yCoords = {y1,y1,y1-10}; 
+                g2.fill(new Polygon(xCoords,yCoords,3));
+            }
+            
+            if(bottom < items.length-1)
+            {
+                int x1 = x + center;
+                int y1 = (int)(y + height - heightFactor*1.5);
+                int[] xCoords = {x1-10,x1+10,x1};
+                int[] yCoords = {y1,y1,y1+10}; 
+                g2.fill(new Polygon(xCoords,yCoords,3));
             }
             
         }
