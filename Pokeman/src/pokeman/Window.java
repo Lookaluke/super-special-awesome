@@ -79,6 +79,7 @@ public class Window extends JComponent implements Serializable{
     private TextBox area;
     private int areaTime;
     private int times;
+    private Intro intro;
     private Menu menu;
     private List list;
     private Battle battle;
@@ -133,6 +134,10 @@ public class Window extends JComponent implements Serializable{
             f[3] = "d";
             f[4] = "e";
             list = new List(frame ,f ,0 ,0 ,100 ,150 ,Style.STANDARD_TEXT);*/
+            String[] s = new String[2];
+            s[0] = "New Game";
+            s[1] = "Continue";
+            intro = new Intro(frame) ;
             frame.add(this);
             this.setPreferredSize(new Dimension(WIDTH, HEIGHT));
             frame.pack();
@@ -184,6 +189,17 @@ public class Window extends JComponent implements Serializable{
     public void paintComponent(Graphics g){
 
         Graphics2D g2 = (Graphics2D)g;
+        if(intro != null && intro.isAlive())
+        {
+            intro.draw(g2);
+            return;
+        }
+        else
+        {
+            if(intro.result().equals("New Game"))
+                //START NEW GAME
+            intro = null;
+        }
         if(control==0 || control==3){
             g2.setColor(Color.BLACK);
             g2.fill(new Rectangle(0,0,WIDTH,HEIGHT));

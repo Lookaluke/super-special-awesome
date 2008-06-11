@@ -86,7 +86,7 @@ public class List implements Serializable
         g2.setFont(f);
         if(result==null)
         {
-            g2.drawString("" + items.length + " t" + top + " b" + bottom + " s" + selected + " " + " " + items[getSelected()], 300,300);
+            //g2.drawString("" + items.length + " t" + top + " b" + bottom + " s" + selected + " " + " " + items[getSelected()], 300,300);
             int perLine = items.length/lines;
             if(perLine==0)
                 perLine=1;
