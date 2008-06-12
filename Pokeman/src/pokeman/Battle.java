@@ -95,7 +95,7 @@ public class Battle implements Serializable {
                 over = false;
         }
         
-        if(!frontEnd.waiting() && trainer && theirCurrent!=null && theirCurrent.getCurrentHP()==0 && (turnThread==null || !turnThread.isAlive()) && (pkmChangeThread==null || !pkmChangeThread.isAlive())){
+        if(!frontEnd.waiting() && theirCurrent!=null && theirCurrent.getCurrentHP()==0 && (turnThread==null || !turnThread.isAlive()) && (pkmChangeThread==null || !pkmChangeThread.isAlive())){
             
             for(int i=0;i<pokemonUsed.size();i++){
                 if(pokemonUsed.get(i).getCurrentHP()==0){
