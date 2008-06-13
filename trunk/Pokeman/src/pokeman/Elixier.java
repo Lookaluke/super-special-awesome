@@ -25,22 +25,28 @@ public class Elixier extends Item<Pokemon>{
         }
     }
     
-    
+    /**
+     * Use it on the specified pokemon.
+     * @param other
+     * @return -1 if it was unable to heal anything, 1 if it was
+     */
     @Override
-    public boolean use(Pokemon other) {
+    public int use(Pokemon other) {
         int counter = 0;
         for(Move m: other.getMoves()){
             if(amountToHeal >= 0){
-                if(m.refilPP(amountToHeal))
-                    counter++;
+                counter += m.refilPP(amountToHeal);
             } else {
-                if(m.refilPP(m.getTotalPP())){
-                    counter++;
-                }
+                counter += m.refilPP(m.getTotalPP());
             }
         }
         
-        return counter != 0;
+        if (counter <= 0)
+            counter = -1;
+        else
+            counter = 1;
+        
+        return counter;
     }
 
 }

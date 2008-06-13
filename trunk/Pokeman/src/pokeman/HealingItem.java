@@ -34,15 +34,19 @@ public class HealingItem extends Item<Pokemon>{
         }
     }
     
-    public boolean use(Pokemon other){
-        if(other.getCurrentHP() == other.getMaxHP()){
-            return false;
+    public int use(Pokemon other){
+        int initialHP = other.getCurrentHP();
+        if(other.getCurrentHP() == other.getMaxHP() || other.getStatus() == Status.FAINTED){
+            return -1;
         } else if (amountToHeal == -1)  {
             other.heal(other.getMaxHP());
-            return true;
         } else {
             other.heal(amountToHeal);
-            return true;
         }
+        
+        if(other.getCurrentHP() < initialHP)
+            throw new IllegalStateException("did not heal, but was supposed to");
+        
+        return other.getCurrentHP() - initialHP;
     }
 }

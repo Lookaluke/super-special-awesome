@@ -172,14 +172,14 @@ public class Move implements Serializable {
     // if PP for all moves is 0, add a move called Struggle (handled by pokemon
     //and the front end, not by move.
     
-    public boolean refilPP(int amount){
+    public int refilPP(int amount){
         if (getPP() == getTotalPP()){
-            return false;
+            return -1;
         } else {
             currentPP += amount;
             if (currentPP > totalPP)
                 currentPP = totalPP;
-            return true;
+            return 1;
         }
     }
 }

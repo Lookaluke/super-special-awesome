@@ -5,8 +5,6 @@ package pokeman;
 /**
 * This class represents a pokemon , with all the information needed to
 * display, battle, and grow....
-*
-* Base Stats still need to be implemented......
 */
 
 import java.awt.image.*;
@@ -518,8 +516,8 @@ public class Pokemon implements Serializable
            throw new IllegalStateException("invalid pokemon growth rate");
        }
    }
-   
-       
+
+    
     private void wirteobject(ObjectOutputStream out) throws IOException{
     
         

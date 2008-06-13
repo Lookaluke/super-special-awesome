@@ -28,22 +28,37 @@ public class Pokeball extends Item<Pokemon> {
         }
     }
     
+    /**
+     * returns the number of shakes. If the number of shakes == 4, it is captured
+     * if it equals -1, then i dunno
+     * @param other
+     * @return
+     */
     @Override
-    public boolean use(Pokemon other) {
+    public int use(Pokemon other) {
         int catchrate = other.getCatchRate();
         int max = other.getMaxHP();
         int curr = other.getCurrentHP();
         double status = other.getStatus().getCatchMultipler();
         int a = (int) ((((3 * max - 2 * curr) * catchrate * multiplier) / (3 * max)) * status);
         if (a >= 255){
-            return true;
+            return 4;
         } else{
             int b = (int) (1048560 / Math.sqrt(Math.sqrt(16711680.0 / a)));
             int ran1 = (int) (Math.random() * 65535);
             int ran2 = (int) (Math.random() * 65535);
             int ran3 = (int) (Math.random() * 65535);
             int ran4 = (int) (Math.random() * 65535);
-            return (ran1 <= b && ran2 <= b && ran3 <= b && ran4 <= b);
+            int counter = 0;
+            if (ran1 <= b)
+                counter++;
+            if (ran2 <= b)
+                counter++;
+            if (ran3 <= b)
+                counter++;
+            if (ran4 <= b)
+                counter++;
+            return counter;
         }
     }
     

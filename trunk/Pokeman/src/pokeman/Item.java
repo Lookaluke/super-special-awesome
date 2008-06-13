@@ -26,9 +26,9 @@ public abstract class Item<T> implements Serializable {
      * false if it didn't for whatever reason. If the item has only one use,
      * this method should reduce the quantity.
      * @param other
-     * @return true if it was able to complete the action, false if not
+     * @return -1 if it failed otherwise, use as specified
      */
-    public abstract boolean use(T other);
+    public abstract int use(T other);
     
     /**
      * gets the price of the current item. The selling price will be half
