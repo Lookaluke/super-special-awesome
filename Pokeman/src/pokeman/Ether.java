@@ -22,7 +22,7 @@ public class Ether extends Item<Move> {
     }
     
     @Override
-    public boolean use(Move m) {
+    public int use(Move m) {
         if(amountToHeal >= 0)
             return m.refilPP(amountToHeal);
         else

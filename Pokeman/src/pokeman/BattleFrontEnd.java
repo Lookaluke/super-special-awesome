@@ -116,7 +116,7 @@ public class BattleFrontEnd{
             g2.drawImage(theirs.getFront(),null,Window.WIDTH-circle.getWidth()/2-theirs.getBack().getWidth()/2,yBorder);
 
             drawInterface(g2, true, yours, 485, Window.HEIGHT-101-85-20);
-            drawInterface(g2, false, theirs, 10, 30);   
+            drawInterface(g2, false, theirs, 10, 30);
 
         }
         
@@ -345,7 +345,7 @@ public class BattleFrontEnd{
     
     public void drawInterface(Graphics2D g2, boolean yours, Pokemon p,int x, int y){
         
-
+        
         Font f = Window.FONT;
         f = f.deriveFont(Font.BOLD, 20);
 
