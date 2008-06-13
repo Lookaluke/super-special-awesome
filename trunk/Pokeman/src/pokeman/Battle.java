@@ -156,7 +156,6 @@ public class Battle implements Serializable {
         
         frontEnd.draw(g2);
         
-        System.out.println(frontEnd.waitingForHPAndExp());
         if(!frontEnd.waitingForHPAndExp() && !frontEnd.waiting() && !over && (turnThread==null || !turnThread.isAlive()) && !waitingForPkmThread && yours.getCurrentHP()!=0 && theirCurrent.getCurrentHP()!=0)
             frontEnd.makeMenu(BattleFrontEnd.MAIN);
         

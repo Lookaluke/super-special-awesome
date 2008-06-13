@@ -111,16 +111,6 @@ public class Trainer extends Person {
         return p;
     }
     
-        
-    private void wirteobject(ObjectOutputStream out) throws IOException{
 
-        System.out.println("before");
-        out.defaultWriteObject();
-        System.out.println("after");
-
-    }
-    private void readObject(ObjectInputStream in) throws IOException,ClassNotFoundException{
-            in.defaultReadObject();
-    }
     
 }

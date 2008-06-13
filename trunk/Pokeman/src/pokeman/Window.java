@@ -18,10 +18,7 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -74,7 +71,7 @@ public class Window extends JComponent implements Serializable{
     private int timerCounter;
     private Collideable special;
     
-    private int control;
+    private int control = 4;
     private TextBox txt;
     private TextBox area;
     private int areaTime;
@@ -91,7 +88,8 @@ public class Window extends JComponent implements Serializable{
     
     private ArrayList<String> trainerSayings = new ArrayList<String>();
     private ArrayList<String> peopleSayings = new ArrayList<String>();
-        
+    private ArrayList<String> events = new ArrayList<String>();
+    
     /**
      * Makes a new window that draws all the specified stuff on
      * @param frame The frame that this window is in
@@ -124,7 +122,7 @@ public class Window extends JComponent implements Serializable{
 
 
             player = new Character(this);
-            player.load("Slot1");
+            
             
             this.frame = frame;
             /*String[] f = new String[5];
@@ -145,6 +143,7 @@ public class Window extends JComponent implements Serializable{
 
             loadTrainerSayings(peopleSayings, "Trainers\\People.txt");
             loadTrainerSayings(trainerSayings, "Trainers\\Trainers.txt");
+            loadTrainerSayings(events, "Trainers\\Events.txt");
             
             
             //levelX = 0;
@@ -167,7 +166,7 @@ public class Window extends JComponent implements Serializable{
             timerCounter = 0;
             pressBuffer = Animation.NONE;
 
-            control = 0;
+            
             people.add(player);
         } catch (FontFormatException ex) {
             Logger.getLogger(Window.class.getName()).log(Level.SEVERE, null, ex);
@@ -188,16 +187,19 @@ public class Window extends JComponent implements Serializable{
     public void paintComponent(Graphics g){
 
         Graphics2D g2 = (Graphics2D)g;
-        if(intro != null && intro.isAlive())
+        if(control==4 && intro != null && intro.isAlive())
         {
             intro.draw(g2);
             return;
         }
         else
         {
-            if(intro.result().equals("New Game"))
-                //START NEW GAME
-            intro = null;
+            if(intro!=null){
+                if(intro.result().equals("Continue"))
+                    player.load("Slot1");
+                intro = null;
+                control = 0;
+            }
             
         }
         if(control==0 || control==3){
@@ -528,7 +530,6 @@ public class Window extends JComponent implements Serializable{
                                     pokemon[i] = pkm.substring(lastIndex,index);
                                     lastIndex = pkm.indexOf(",")+1;
                                     pokemon[i].trim();
-                                    System.out.println(pokemon[i]);
                                     length = i+1;
                                     if(!cont)
                                         break;
@@ -539,8 +540,18 @@ public class Window extends JComponent implements Serializable{
                                     pokemen[i] = new Pokemon(pokemon[i].substring(0,pokemon[i].indexOf(" ")),Integer.parseInt(pokemon[i].substring(pokemon[i].indexOf(" ")+1)));
                                 }
                                 people.add(new Trainer(personName,string.substring(1,string.indexOf("after:")),string.substring(string.indexOf("after:")+"after:".length(),string.indexOf("pokemon:")),x1*TILE_WIDTH+xCoord*WIDTH,y1*TILE_HEIGHT+yCoord*-HEIGHT,this,pokemen,value-1001,Integer.parseInt(string.substring(0,1))));
-                            }else
+                            }else{
+                                if(value<-10){
+                                    String string = events.get(value);
+                                    String before = string.substring(1,string.indexOf("after:"));
+                                    String after = string.substring(string.indexOf("after:")+"after:".length(),string.indexOf("event:"));
+                                    int event = Integer.parseInt(string.substring(string.indexOf("event:")+"event:".length(),string.indexOf("do:")));
+                                    int do1 = Integer.parseInt(string.substring(string.indexOf("do:")+"do:".length(),string.indexOf("result:")));
+                                    int result = Integer.parseInt(string.substring(string.indexOf("result:")+"result:".length()));
+                                    people.add(new Eventers(personName,value,before,after,event,result,x,y,this));
+                                }
                                 people.add(new Person(personName,peopleSayings.get(value),x1*TILE_WIDTH+xCoord*WIDTH,y1*TILE_HEIGHT+yCoord*-HEIGHT,this));
+                            }
                         }
                     }
                         
@@ -576,6 +587,7 @@ public class Window extends JComponent implements Serializable{
                     collision.remove(collision.get(c));
                 int p = Collections.binarySearch(people,new Person("","",x1*TILE_WIDTH+xCoord*WIDTH,y1*TILE_HEIGHT-yCoord*HEIGHT,null));
                 if(p>=0 && player!=people.get(p)){
+                    System.out.println(people.get(p).getName());
                     people.remove(people.get(p));
                     
                 }

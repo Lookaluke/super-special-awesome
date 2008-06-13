@@ -1,9 +1,9 @@
-0 Welcome to MarkTown named after our creator Mark. Kunal and Hurshal are trying to get credit for the game, but between you and me they didn't do anything!
-1 I'm one of Professor Field's lab assistance
-2 The work here is very interesting!
-3 Professor Field is right over there.
-4 Go ahead and choose a pokemon.
-5 Be careful out there honey.
-6 Are you going to Veridian city? yes:Ok then be careful! no:You should really go!
-7 I work for the store in Veridian city come on down and buy some stuff!
-8 You can get your pokemon healed here, just talk to Nurse Joy.
+000 Welcome to MarkTown named after our creator Mark. Kunal and Hurshal are trying to get credit for the game, but between you and me they didn't do anything!
+001 I'm one of Professor Field's lab assistance
+002 The work here is very interesting!
+003 Professor Field is right over there.
+004 Go ahead and choose a pokemon.
+005 Be careful out there honey.
+006 Are you going to Veridian city? yes:Ok then be careful! no:You should really go!
+007 I work for the store in Veridian city come on down and buy some stuff!
+008 You can get your pokemon healed here, just talk to Nurse Joy.
