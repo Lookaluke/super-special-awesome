@@ -34,7 +34,7 @@ public class PokemonMenu implements Serializable {
     private boolean inBattle;
     private boolean refreshZ;
     private boolean hasCancel;
-    private int toalButtons;
+    private int totalButtons;
     
     private static final int X_SHIFT = 50,Y_SHIFT=150,WIDTH1=200,HEIGHT1=120,Y_SHIFT2 = 100,X_SHIFT2 = X_SHIFT+WIDTH1+20,WIDTH2 = Window.WIDTH -X_SHIFT2-20,HEIGHT2 = 50,WIDTH3=150,HEIGHT3=50;
     private static final Color SELECTED_OUT_LINE = new Color(247,144,47),NOT_SELECTED_OUT_LINE = new Color(58,76,98),SELECTED_UP = new Color(248,185,144),SELECTED_DOWN = new Color(253,208,203),
@@ -55,7 +55,10 @@ public class PokemonMenu implements Serializable {
         switching = false;
         switchIndex = -1;
         refreshZ = false;
-        toalButtons = hasCancel?7:6;
+        totalButtons = hasCancel?7:6;
+        for(Pokemon p:c.currentPokemon())
+            if(p==null)
+                totalButtons--;
     }
     
     public void draw(Graphics2D g2){
@@ -68,7 +71,7 @@ public class PokemonMenu implements Serializable {
             smallPkm(selected==i,g2,character.currentPokemon()[i],i-1);
         }
         if(hasCancel)
-            cancelButton(selected==6, g2,Window.WIDTH-WIDTH3-20,Window.HEIGHT-HEIGHT3-20);
+            cancelButton(selected==totalButtons-1, g2,Window.WIDTH-WIDTH3-20,Window.HEIGHT-HEIGHT3-20);
         if(switching)
             switchingTxt.draw(g2);
         else
@@ -92,7 +95,7 @@ public class PokemonMenu implements Serializable {
     }
     
     public Pokemon getResult(){
-        if(switchIndex>=6 || switchIndex<0)
+        if(switchIndex>=totalButtons || switchIndex<0)
             return null;
         Pokemon p = character.currentPokemon()[switchIndex];
         return p;
@@ -218,7 +221,7 @@ public class PokemonMenu implements Serializable {
                 if(e.getKeyChar()=='z' && !refreshZ){
                     refreshZ = true;
                     if(!switching){
-                        if(selected == 6){
+                        if(selected == totalButtons-1 && hasCancel){
                             over = true;
                             return;
                         }
@@ -248,8 +251,8 @@ public class PokemonMenu implements Serializable {
                         switchIndex = -1;
                     }
                 }
-                if(e.getKeyChar()=='x'){
-                    selected = 6;
+                if(e.getKeyChar()=='x' && hasCancel){
+                    selected = totalButtons-1;
                 }
             }
         }
@@ -259,13 +262,13 @@ public class PokemonMenu implements Serializable {
                 if(e.getKeyCode()==KeyEvent.VK_RIGHT || e.getKeyCode()==KeyEvent.VK_DOWN){
                     System.out.println(selected);
                     selected+=1;
-                    selected%=toalButtons;
+                    selected%=totalButtons;
                 }
                 if(e.getKeyCode()==KeyEvent.VK_LEFT || e.getKeyCode()==KeyEvent.VK_UP){
                     selected-=1;
                     if(selected<0)
-                        selected+=toalButtons;
-                    selected%=toalButtons;
+                        selected+=totalButtons;
+                    selected%=totalButtons;
                 }
             }
         }
