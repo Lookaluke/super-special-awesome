@@ -39,7 +39,7 @@ public class Window extends JComponent implements Serializable{
     
     private transient ArrayList<BufferedImage> img = new ArrayList<BufferedImage>(20); 
     private ArrayList<String> imgNames = new ArrayList<String>(20); 
-    private ArrayList<Person> people = new ArrayList<Person>();
+    private ArrayList<Dynamic> dynamic = new ArrayList<Dynamic>();
         
     public static final int COLUMNS = 25,ROWS=18,WIDTH = 800,HEIGHT = 576,TILE_WIDTH = WIDTH/COLUMNS,TILE_HEIGHT = HEIGHT/ROWS,
             BACKGROUND = 0,STATIC = 1,DYNAMIC = 2;
@@ -88,7 +88,7 @@ public class Window extends JComponent implements Serializable{
     
     private ArrayList<String> trainerSayings = new ArrayList<String>();
     private ArrayList<String> peopleSayings = new ArrayList<String>();
-    private ArrayList<String> events = new ArrayList<String>();
+    private ArrayList<Event> events = new ArrayList<Event>();
     
     /**
      * Makes a new window that draws all the specified stuff on
@@ -143,8 +143,7 @@ public class Window extends JComponent implements Serializable{
 
             loadTrainerSayings(peopleSayings, "Trainers\\People.txt");
             loadTrainerSayings(trainerSayings, "Trainers\\Trainers.txt");
-            loadTrainerSayings(events, "Trainers\\Events.txt");
-            
+            loadEvents(events,"Trainers\\Events.txt");
             
             //levelX = 0;
             //levelY = 0;
@@ -167,7 +166,7 @@ public class Window extends JComponent implements Serializable{
             pressBuffer = Animation.NONE;
 
             
-            people.add(player);
+            dynamic.add(player);
         } catch (FontFormatException ex) {
             Logger.getLogger(Window.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
@@ -241,12 +240,16 @@ public class Window extends JComponent implements Serializable{
                     }
                 }
             }
-            Collections.sort(people);
-            for(int i = 0;i<people.size();i++){
-                people.get(i).draw(g2, x, y);    
+            Collections.sort(dynamic);
+            for(int i = 0;i<dynamic.size();i++){
+                dynamic.get(i).draw(g2, x, y); 
+                dynamic.get(i).updateEvent();                   
             }
-            for(int i = 0;i<people.size();i++){
-                people.get(i).drawTextAndMenus(g2);
+            for(int i = 0;i<dynamic.size();i++){
+                Dynamic d = dynamic.get(i);
+                if(d instanceof Person){                    
+                    ((Person)(d)).drawTextAndMenus(g2);
+                }
             }
             
             /*g2.setColor(Color.RED);
@@ -280,6 +283,7 @@ public class Window extends JComponent implements Serializable{
                     player.unRead();
                 }
             }
+            
             if(list != null)
                 list.draw(g2);
             
@@ -511,7 +515,7 @@ public class Window extends JComponent implements Serializable{
                     personName = personName.replaceAll(".png", "").replaceAll(".PNG","");
                     if(personName.length()>1){
                         if(value==-5){
-                            people.add(new NurseJoy(x1*TILE_WIDTH+xCoord*WIDTH,y1*TILE_HEIGHT+yCoord*-HEIGHT,this));
+                            dynamic.add(new NurseJoy(x1*TILE_WIDTH+xCoord*WIDTH,y1*TILE_HEIGHT+yCoord*-HEIGHT,this));
                         }else{
                             if(value>1000){
                                 String string = trainerSayings.get(value-1001);
@@ -539,22 +543,22 @@ public class Window extends JComponent implements Serializable{
                                 for(int i=0;i<length;i++){                                    
                                     pokemen[i] = new Pokemon(pokemon[i].substring(0,pokemon[i].indexOf(" ")),Integer.parseInt(pokemon[i].substring(pokemon[i].indexOf(" ")+1)));
                                 }
-                                people.add(new Trainer(personName,string.substring(1,string.indexOf("after:")),string.substring(string.indexOf("after:")+"after:".length(),string.indexOf("pokemon:")),x1*TILE_WIDTH+xCoord*WIDTH,y1*TILE_HEIGHT+yCoord*-HEIGHT,this,pokemen,value-1001,Integer.parseInt(string.substring(0,1))));
+                                dynamic.add(new Trainer(personName,string.substring(1,string.indexOf("after:")),string.substring(string.indexOf("after:")+"after:".length(),string.indexOf("pokemon:")),x1*TILE_WIDTH+xCoord*WIDTH,y1*TILE_HEIGHT+yCoord*-HEIGHT,this,pokemen,value-1001,Integer.parseInt(string.substring(0,1))));
                             }else{
-                                if(value<-10){
-                                    String string = events.get(value);
-                                    String before = string.substring(1,string.indexOf("after:"));
-                                    String after = string.substring(string.indexOf("after:")+"after:".length(),string.indexOf("event:"));
-                                    int event = Integer.parseInt(string.substring(string.indexOf("event:")+"event:".length(),string.indexOf("do:")));
-                                    int do1 = Integer.parseInt(string.substring(string.indexOf("do:")+"do:".length(),string.indexOf("result:")));
-                                    int result = Integer.parseInt(string.substring(string.indexOf("result:")+"result:".length()));
-                                    people.add(new Eventers(personName,value,before,after,event,result,x,y,this));
-                                }
-                                people.add(new Person(personName,peopleSayings.get(value),x1*TILE_WIDTH+xCoord*WIDTH,y1*TILE_HEIGHT+yCoord*-HEIGHT,this));
+                                if(value<=-10){                                            
+                                    dynamic.add(new DynamicSquare(personName,"",x1*TILE_WIDTH+xCoord*WIDTH,y1*TILE_HEIGHT+yCoord*-HEIGHT,value,this));
+                                }else
+                                    dynamic.add(new Person(personName,peopleSayings.get(value),x1*TILE_WIDTH+xCoord*WIDTH,y1*TILE_HEIGHT+yCoord*-HEIGHT,value,this));
                             }
                         }
-                    }
-                        
+                        int index = Collections.binarySearch(events, new Event(value,"","","","","",0));
+                        if(index>=0){
+                            System.out.println(dynamic.get(dynamic.size()-1).getSpeech());
+                            dynamic.get(dynamic.size()-1).addEvent(events.get(index));
+                        }
+                    }                    
+                    
+
                     
                     str = str.substring(str.indexOf(",")+1);
                     
@@ -562,7 +566,7 @@ public class Window extends JComponent implements Serializable{
                
             }
             
-            Collections.sort(people);
+            Collections.sort(dynamic);
             
         } catch (FileNotFoundException ex) {
             System.out.println("File" + name + "not found");
@@ -585,10 +589,10 @@ public class Window extends JComponent implements Serializable{
                 int c = Collections.binarySearch(collision,new Collideable(this,x1+xCoord*COLUMNS,y1+yCoord*-ROWS,0,0,0));
                 if(c>=0)
                     collision.remove(collision.get(c));
-                int p = Collections.binarySearch(people,new Person("","",x1*TILE_WIDTH+xCoord*WIDTH,y1*TILE_HEIGHT-yCoord*HEIGHT,null));
-                if(p>=0 && player!=people.get(p)){
-                    System.out.println(people.get(p).getName());
-                    people.remove(people.get(p));
+                int p = Collections.binarySearch(dynamic,new Person("","",x1*TILE_WIDTH+xCoord*WIDTH,y1*TILE_HEIGHT-yCoord*HEIGHT,0,null));
+                if(p>=0 && player!=dynamic.get(p)){
+                    System.out.println(dynamic.get(p).getName());
+                    dynamic.remove(dynamic.get(p));
                     
                 }
 
@@ -605,6 +609,28 @@ public class Window extends JComponent implements Serializable{
             while(s.hasNextLine()){
                 s.next();
                 strs.add(s.nextLine().trim());
+            }
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(Window.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    public void loadEvents(ArrayList<Event> events,String file){
+        try {
+            Scanner s = new Scanner(new File(file));
+            while (s.hasNextLine()) {
+                int number = s.nextInt();
+                String string = s.nextLine();
+                String before = string.substring(0, string.indexOf("after:"));
+                String after = string.substring(string.indexOf("after:") + "after:".length(), string.indexOf("event:"));
+
+                String doBefore = string.substring(string.indexOf("dobefore:") + "dobefore:".length(), string.indexOf("doafter:"));
+                String doAfter = string.substring(string.indexOf("doafter:") + "doafter:".length(), string.indexOf("dotocharacter:"));
+                String doToCharacter = string.substring(string.indexOf("dotocharacter:") + "dotocharacter:".length(), string.indexOf("event:"));
+
+                int event = Integer.parseInt(string.substring(string.indexOf("event:") + "event:".length()).trim());
+                System.out.println(number);
+                events.add(new Event(number, before, after, doBefore, doAfter, doToCharacter, event));
             }
         } catch (FileNotFoundException ex) {
             Logger.getLogger(Window.class.getName()).log(Level.SEVERE, null, ex);
@@ -631,6 +657,17 @@ public class Window extends JComponent implements Serializable{
             return false;
     }
     
+    public boolean removeFromDynamic(Dynamic d){
+        int pos = dynamic.indexOf(d);
+        if(pos>=0)
+        {
+            dynamic.remove(pos);
+            return true;
+        }
+        else
+            return false;
+    }
+    
     public ArrayList<Collideable> getCollision(){
         return collision;
     }
@@ -648,6 +685,14 @@ public class Window extends JComponent implements Serializable{
         levelY = y;
     }
     
+    public int getLevelX(){
+        return levelX;
+    }
+    
+    public int getLevelY(){
+        return levelY;
+    }
+    
     public void startBattle(Battle b){
         control = 3;
         battle = b;
@@ -659,6 +704,10 @@ public class Window extends JComponent implements Serializable{
     
     public Character getPerson(){
         return player;
+    }
+    
+    public void startTextBox(TextBox t){
+        txt = t;
     }
     
      /**

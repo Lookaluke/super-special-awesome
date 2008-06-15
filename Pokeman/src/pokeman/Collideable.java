@@ -52,14 +52,14 @@ public class Collideable implements Comparable<Collideable>, Serializable {
     }
 
     public int compareTo(Collideable c) {
-        if(this.getX()<c.getX())
+        if(this.getY()<c.getY())
             return -1;
-        if(this.getX()==c.getX())
+        if(this.getY()==c.getY())
         {
-            if(this.getY()<c.getY())
+            if(this.getX()<c.getX())
                 return -1;
         }
-        if(this.getX()==c.getX() && this.getY()==c.getY())
+        if(this.getY()==c.getY() && this.getX()==c.getX())
             return 0;
         
         return 1;
