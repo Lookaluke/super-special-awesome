@@ -32,19 +32,19 @@ public class Character extends Person{
     private boolean[] eventsComplete = new boolean[1000];
     
     public Character(Window w){
-        super("Walking","",(int)(Window.COLUMNS/2)*Window.TILE_WIDTH,(int)(Window.ROWS/2)*Window.TILE_HEIGHT,w);
+        super("Walking","",(int)(Window.COLUMNS/2)*Window.TILE_WIDTH,(int)(Window.ROWS/2)*Window.TILE_HEIGHT,0,w);
         walking = new Animation("Walking");
         press = 0;
         jumping=0;
-        int levelX = 0;
-        int levelY = -1;
+        int levelX = -502;
+        int levelY = -502;
         setX(levelX*Window.WIDTH+(int)(Window.COLUMNS/2)*Window.TILE_WIDTH);
         setY((-levelY)*Window.HEIGHT+(int)(Window.ROWS/2)*Window.TILE_HEIGHT);
         getWindow().setLevel(levelX,levelY);
 
-        addPokemon(new Pokemon("Meh",17));
-        addPokemon(new Pokemon("Rattata",8));
-        addPokemon(new Pokemon("Bulbasaur",7));
+        //addPokemon(new Pokemon("Meh",17));
+        //addPokemon(new Pokemon("Rattata",8));
+        //addPokemon(new Pokemon("Bulbasaur",7));
         //addPokemon(new Pokemon("Friger",6));
         //addPokemon(new Pokemon("Charmander",16));
         //addPokemon(new Pokemon("Magikarp",16));
@@ -79,9 +79,23 @@ public class Character extends Person{
             s = (SaveData) in.readObject();
 
             
+
+            for(int i=-1;i<=1;i++)
+                for(int j=-1;j<=1;j++)
+                    getWindow().unload(getWindow().getX()+i,getWindow().getY()+j);
+
             setX(s.getX());
             setY(s.getY());
-            getWindow().setLevel((getX()-(int)(Window.COLUMNS/2)*Window.TILE_WIDTH)/Window.WIDTH,(getY()-(int)(Window.ROWS/2)*Window.TILE_HEIGHT)/-Window.HEIGHT);
+
+            int levelX = (s.getX()-(int)(Window.COLUMNS/2)*Window.TILE_WIDTH)/Window.WIDTH;
+            int levelY = (int)(((s.getY()-(int)(Window.ROWS/2)*Window.TILE_HEIGHT)/-Window.HEIGHT));
+
+            for(int i=-1;i<=1;i++)
+                for(int j=-1;j<=1;j++)
+                    getWindow().loadLevel(levelX+i,levelY+j,i,j);
+            
+            getWindow().setLevel(levelX,levelY);
+            
             setDirection(s.getDirection());
             trainersBeaten = s.getTrainersBeaten();
             eventsComplete = s.getEventsComplete();
@@ -151,26 +165,18 @@ public class Character extends Person{
 
             int oldX = getX()/Window.WIDTH;
             int oldY = -getY()/Window.HEIGHT;
-
+            
             if(getX()<0)
                 oldX--;
             if(getY()<0)
                 oldY++;
-
-            for(int i=-1;i<=1;i++)
-                for(int j=-1;j<=1;j++)
-                    getWindow().unload(oldX+i,oldY+j);
+            
             int levelX = col.getNumber(1);
             int levelY = col.getNumber(2);
+            
+            warp(levelX,levelY);
+            
 
-            setX(levelX*Window.WIDTH+(int)(Window.COLUMNS/2)*Window.TILE_WIDTH);
-            setY((-levelY)*Window.HEIGHT+(int)(Window.ROWS/2)*Window.TILE_HEIGHT);
-
-
-
-            for(int i=-1;i<=1;i++)
-                for(int j=-1;j<=1;j++)
-                    getWindow().loadLevel(levelX+i,levelY+j,i,j);
 
             for(Collideable door:getWindow().getCollision()){
                 if(door.getNumber(0)>=-4 && door.getNumber(0)<=-1 && Math.abs(door.getNumber(1)-oldX)<=0 && Math.abs(door.getNumber(2)-oldY)<=0){
@@ -224,6 +230,32 @@ public class Character extends Person{
         
         
     }
+    
+    public void warp(int levelX,int levelY){
+                      
+        int oldX = getX()/Window.WIDTH;
+        int oldY = -getY()/Window.HEIGHT;
+        
+        if(getX()<0)
+            oldX--;
+        if(getY()<0)
+            oldY++;
+
+        for(int i=-1;i<=1;i++)
+            for(int j=-1;j<=1;j++)
+                getWindow().unload(oldX+i,oldY+j);
+
+
+        setX(levelX*Window.WIDTH+(int)(Window.COLUMNS/2)*Window.TILE_WIDTH);
+        setY((-levelY)*Window.HEIGHT+(int)(Window.ROWS/2)*Window.TILE_HEIGHT);
+
+
+
+        for(int i=-1;i<=1;i++)
+            for(int j=-1;j<=1;j++)
+                getWindow().loadLevel(levelX+i,levelY+j,i,j);
+    }
+
     
     public int getWidth(){
         return walking.getFrame().getWidth();

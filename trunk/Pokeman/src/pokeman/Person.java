@@ -1,12 +1,12 @@
 package pokeman;
 
 import java.awt.Graphics2D;
-import java.io.Serializable;
 
 
-public class Person implements Comparable<Person>,Serializable{
-    private String name,speech;
-    private int x,y,direction;
+
+public class Person extends Dynamic{
+    private String name;
+    private int direction;
     private int xChange,yChange;
     private Animation walk;
     private boolean moving,allowedToUpdate;
@@ -25,17 +25,15 @@ public class Person implements Comparable<Person>,Serializable{
     /**
      * Constructor for objects of class Person
      */
-    public Person(String n,String s,int x,int y,Window w)
+    public Person(String n,String s,int x,int y,int number,Window w)
     {
-        
+        super(n,s,x,y,number,w);
         this.w = w;
-        speech = s;
         name = n;
         direction = Animation.DOWN;
         screenX = x/Window.WIDTH;
         screenY = y/Window.HEIGHT;
-        this.x = x;
-        this.y = y;
+
         
         allowedToUpdate = true;
         
@@ -48,10 +46,7 @@ public class Person implements Comparable<Person>,Serializable{
 
     }
 
-    public String getName()
-    {
-        return name;
-    }
+
     
     public void draw(Graphics2D g,int currentX,int currentY){
         counter++;
@@ -62,7 +57,7 @@ public class Person implements Comparable<Person>,Serializable{
             update();
         if(!moving)
             walk.standingFrame();
-        g.drawImage(walk.getFrame(),null,x+currentX,y+currentY);
+        g.drawImage(walk.getFrame(),null,getX()+currentX,getY()+currentY);
         
         if(counter%4==0 || walk.getDirection()!=direction){
             walk.nextFrame(direction);
@@ -70,13 +65,13 @@ public class Person implements Comparable<Person>,Serializable{
         
         if(moving && !stationary){   
             if(direction == Animation.RIGHT)
-                x += Window.TILE_WIDTH/Window.numberOfCounts;
+                setX(getX() + Window.TILE_WIDTH/Window.numberOfCounts);
             if(direction == Animation.LEFT)
-                x -= Window.TILE_WIDTH/Window.numberOfCounts;
+                setX(getX() - Window.TILE_WIDTH/Window.numberOfCounts);
             if(direction == Animation.UP)
-                y -= Window.TILE_WIDTH/Window.numberOfCounts;
+                setY(getY() - Window.TILE_WIDTH/Window.numberOfCounts);
             if(direction == Animation.DOWN)
-                y += Window.TILE_WIDTH/Window.numberOfCounts;
+                setY(getY() + Window.TILE_WIDTH/Window.numberOfCounts);
 
 
             if(counter>=(Window.numberOfCounts-1))
@@ -183,7 +178,7 @@ public class Person implements Comparable<Person>,Serializable{
 
                     Collideable col = getCollision(dir);
 
-                    newEdition = new Collideable(this,x/Window.TILE_WIDTH+xChange,y/Window.TILE_HEIGHT+1+yChange,1,0,0);
+                    newEdition = new Collideable(this,getX()/Window.TILE_WIDTH+xChange,getY()/Window.TILE_HEIGHT+1+yChange,1,0,0);
                     w.addToCollision(newEdition);
                 }
             }else{
@@ -203,28 +198,10 @@ public class Person implements Comparable<Person>,Serializable{
         return (col==null || col.getNumber(0)==0); 
     }
     
-    public int getX(){
-        return x;
-    }
-    
-    public void setX(int x){
-        this.x = x;
-    }
-        
-    public void setY(int y){
-        this.y = y;
-    }
-    
-    public int getY(){
-        return y;
-    }
+
     
     public void setStationary(boolean s){
         stationary = s;
-    }
-    
-    public String getSpeech(){
-        return speech;
     }
     
     public void allowUpdate(boolean allow){
@@ -239,9 +216,6 @@ public class Person implements Comparable<Person>,Serializable{
         this.direction = direction;
     }
     
-    public Window getWindow(){
-        return w;
-    }
     
     public int getDirection(){
         return direction;
@@ -265,9 +239,7 @@ public class Person implements Comparable<Person>,Serializable{
         return player;
     }
     
-    public void setSpeech(String s){
-        speech = s;
-    }
+
     
     public void talk(Character player){
         
@@ -292,19 +264,19 @@ public class Person implements Comparable<Person>,Serializable{
     protected Collideable getCollision(int dir){
         Collideable col = null;
         if(dir==Animation.UP){
-            col = w.inCollision(new Collideable(this,x/Window.TILE_WIDTH,y/Window.TILE_HEIGHT-1+1,0,0,0));
+            col = w.inCollision(new Collideable(this,getX()/Window.TILE_WIDTH,getY()/Window.TILE_HEIGHT-1+1,0,0,0));
         }
         if(dir==Animation.DOWN){
-            col = w.inCollision(new Collideable(this,x/Window.TILE_WIDTH,y/Window.TILE_HEIGHT+1+1,0,0,0));
+            col = w.inCollision(new Collideable(this,getX()/Window.TILE_WIDTH,getY()/Window.TILE_HEIGHT+1+1,0,0,0));
         }
         if(dir==Animation.RIGHT){
-            col = w.inCollision(new Collideable(this,x/Window.TILE_WIDTH+1,y/Window.TILE_HEIGHT+1,0,0,0));
+            col = w.inCollision(new Collideable(this,getX()/Window.TILE_WIDTH+1,getY()/Window.TILE_HEIGHT+1,0,0,0));
         }
         if(dir==Animation.LEFT){
-            col = w.inCollision(new Collideable(this,x/Window.TILE_WIDTH-1,y/Window.TILE_HEIGHT+1,0,0,0));
+            col = w.inCollision(new Collideable(this,getX()/Window.TILE_WIDTH-1,getY()/Window.TILE_HEIGHT+1,0,0,0));
         }
         if(dir==Animation.NONE){
-            col = w.inCollision(new Collideable(this,x/Window.TILE_WIDTH,y/Window.TILE_HEIGHT+1,0,0,0));
+            col = w.inCollision(new Collideable(this,getX()/Window.TILE_WIDTH,getY()/Window.TILE_HEIGHT+1,0,0,0));
         }
         if(col!=null && col.getMaker()!=this)
             return col;
@@ -312,17 +284,5 @@ public class Person implements Comparable<Person>,Serializable{
             return null;
     }
 
-    public int compareTo(Person p) {
-        if(this.getX()<p.getX())
-            return -1;
-        if(this.getX()==p.getX())
-        {
-            if(this.getY()<p.getY())
-                return -1;
-        }
-        if(this.getX()==p.getX() && this.getY()==p.getY())
-            return 0;
-        
-        return 1;
-    }
+
 }

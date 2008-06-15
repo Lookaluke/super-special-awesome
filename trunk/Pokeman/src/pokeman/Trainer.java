@@ -9,8 +9,6 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
@@ -24,15 +22,13 @@ public class Trainer extends Person {
     private Pokemon[] p;
     private boolean battle,start;
     private String after;
-    private int number;
     private transient BufferedImage img;
     
     public Trainer(String n,String before,String after,int x,int y,Window w,Pokemon[] p,int number,int direction){
-        super(n,before,x,y,w);
+        super(n,before,x,y,number,w);
         try {
             this.setDirection(direction);
             this.p = p;
-            this.number = number;
             battle = false;
             this.after = after;
             img = ImageIO.read(new File("Images\\Exlimation Mark.png"));
@@ -49,7 +45,7 @@ public class Trainer extends Person {
     
     public void update(){
 
-        if(this.getPlayerTalkingTo()!=null && !this.getPlayerTalkingTo().hasBeaten(number)){
+        if(this.getPlayerTalkingTo()!=null && !this.getPlayerTalkingTo().hasBeaten(getNumber())){
             if(battle){
                 getWindow().startBattle(new Battle(this.getPlayerTalkingTo(),this,getWindow().getFrame()));
                 this.allowUpdate(false);
@@ -57,7 +53,7 @@ public class Trainer extends Person {
             }
         }  
         
-        if(!getWindow().getPerson().hasBeaten(number)){
+        if(!getWindow().getPerson().hasBeaten(getNumber())){
             if(start){
                 if(this.getCollision(this.getDirection())!=null && this.getCollision(this.getDirection()).getMaker() instanceof Character){
                     talk((Character)this.getCollision(this.getDirection()).getMaker());
@@ -91,11 +87,11 @@ public class Trainer extends Person {
                 dead = false;
         }
         if(dead){
-            this.getPlayerTalkingTo().beaten(number);
+            this.getPlayerTalkingTo().beaten(getNumber());
             this.allowUpdate(false);
             setSpeech(after);
         }
-        if(c.hasBeaten(number))
+        if(c.hasBeaten(getNumber()))
             setSpeech(after);
         else{
             if(!Window.MUSIC.getName().equals("Music\\Trainer Confrontation.mid")){

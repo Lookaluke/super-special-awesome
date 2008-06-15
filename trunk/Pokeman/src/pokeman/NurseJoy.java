@@ -16,7 +16,7 @@ public class NurseJoy extends Person{
     private int counter;
     
     public NurseJoy(int x,int y,Window w){
-        super("NurseJoy","Welcome to the pokemon center. Would you like me to heal your pokemon? yes:Alright no:Ok come again",x,y,w);
+        super("NurseJoy","Welcome to the pokemon center. Would you like me to heal your pokemon? yes:Alright no:Ok come again",x,y,-5,w);
         setStationary(true);
     }
     
@@ -25,8 +25,10 @@ public class NurseJoy extends Person{
         Character player = this.getPlayerTalkingTo();
         if(saidYes()){
             for(int i=0;i<player.currentPokemon().length;i++){
-                player.currentPokemon()[i].reset();
-                player.currentPokemon()[i].heal(player.currentPokemon()[i].getMaxHP());
+                if(player.currentPokemon()[i]!=null){
+                    player.currentPokemon()[i].reset();
+                    player.currentPokemon()[i].heal(player.currentPokemon()[i].getMaxHP());
+                }
             }
             Window.MUSIC.loadMusic("Music\\heal.mid");
             Window.MUSIC.play(false);
