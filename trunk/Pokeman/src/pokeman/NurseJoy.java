@@ -22,7 +22,7 @@ public class NurseJoy extends Person{
     
     @Override
     public void draw(Graphics2D g,int currentX,int currentY){
-        Character player = this.getPlayerTalkingTo();
+        Character player = getWindow().getPerson();
         if(saidYes()){
             for(int i=0;i<player.currentPokemon().length;i++){
                 if(player.currentPokemon()[i]!=null){

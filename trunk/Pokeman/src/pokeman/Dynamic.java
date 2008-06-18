@@ -74,6 +74,8 @@ public abstract class Dynamic implements Comparable<Dynamic> {
             event.update(w.getPerson(), this);
     }
     
+
+    
     public abstract void draw(Graphics2D g,int currentX,int currentY);
     public abstract void talk(Character player);
     

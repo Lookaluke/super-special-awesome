@@ -27,6 +27,19 @@ public class Event implements Comparable<Event>{
         this.number = number;
     }
     
+    public Event(String string){
+        number = Integer.parseInt(string.substring(0,string.indexOf(" ")));
+        before = string.substring(string.indexOf(" ")+" ".length(), string.indexOf("after:"));
+        after = string.substring(string.indexOf("after:") + "after:".length(), string.indexOf("dobefore:"));
+
+        doBefore = string.substring(string.indexOf("dobefore:") + "dobefore:".length(), string.indexOf("dotocharacter:"));
+        
+        doToCharacter = string.substring(string.indexOf("dotocharacter:") + "dotocharacter:".length(), string.indexOf("event:"));
+
+        event = Integer.parseInt(string.substring(string.indexOf("event:") + "event:".length(), string.indexOf("doafter:")).trim());
+        doAfter = string.substring(string.indexOf("doafter:") + "doafter:".length());
+    }
+    
     public void update(Character c,Dynamic d){
         
         if(!complete){
@@ -35,8 +48,6 @@ public class Event implements Comparable<Event>{
             complete = hasCompleten(c,d);
             if(c.getCollision(Animation.NONE)!=null){
                 if(c.getCollision(Animation.NONE).getMaker()==d){
-
-                    System.out.println("here");
                     this.doToCharacter(c, d);
                 }
             }
@@ -63,14 +74,16 @@ public class Event implements Comparable<Event>{
    
     
     public void doToCharacter(Character c,Dynamic d){
-        System.out.println("here");
         int[] ints = getInts(doToCharacter);
 
         if(ints.length>0){
             switch(ints[0]){
+                case -1:
+                    break;
                 case 0:                    
                     c.warp(ints[1], ints[2]);
                     break;
+                    
             }
         }
         d.talk(c);        
@@ -114,7 +127,7 @@ public class Event implements Comparable<Event>{
                 
         }
         if(result){            
-            c.complete(d.getNumber());
+            //c.complete(d.getNumber());
         }
         return result;
     }

@@ -212,7 +212,10 @@ public class Turn implements Runnable{
             
             if(typeModifer<=5)
                 frontEnd.setText("It's not very effective...");
-            return (int)(((((Math.min(((((2*level/5.0 + 2)*attack*power)/(double)Math.max(1, defense))/50.0), 997) + 2)*stab)*typeModifer)/10.0)*randomNumber)/255;
+            
+            int damage = (int)(((((Math.min(((((2*level/5.0 + 2)*attack*power)/(double)Math.max(1, defense))/50.0), 997) + 2)*stab)*typeModifer)/10.0)*randomNumber)/255;
+            System.out.println(damage);
+            return damage;
         } else {
             return -1;
         }
