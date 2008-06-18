@@ -25,7 +25,7 @@ public class Character extends Person{
     private int press,jumping;
     private Pokemon[] pkmn = new Pokemon[6];
     private int justUsed;
-    private Person currentlyReading;
+    private Dynamic currentlyReading;
     private ArrayList<Pokemon> allPokemon = new ArrayList<Pokemon>();
     private static final int MAX_NUMBER_OF_POKEMON = 200;
     private boolean[] trainersBeaten = new boolean[1000];
@@ -119,6 +119,7 @@ public class Character extends Person{
     
     public void draw(Graphics2D g,int currentX,int currentY){
 
+        
         int moreHeight = 0;
         if(jumping<Window.numberOfCounts+1){
             if(jumping>=Window.numberOfCounts/2)
@@ -231,30 +232,7 @@ public class Character extends Person{
         
     }
     
-    public void warp(int levelX,int levelY){
-                      
-        int oldX = getX()/Window.WIDTH;
-        int oldY = -getY()/Window.HEIGHT;
-        
-        if(getX()<0)
-            oldX--;
-        if(getY()<0)
-            oldY++;
 
-        for(int i=-1;i<=1;i++)
-            for(int j=-1;j<=1;j++)
-                getWindow().unload(oldX+i,oldY+j);
-
-
-        setX(levelX*Window.WIDTH+(int)(Window.COLUMNS/2)*Window.TILE_WIDTH);
-        setY((-levelY)*Window.HEIGHT+(int)(Window.ROWS/2)*Window.TILE_HEIGHT);
-
-
-
-        for(int i=-1;i<=1;i++)
-            for(int j=-1;j<=1;j++)
-                getWindow().loadLevel(levelX+i,levelY+j,i,j);
-    }
 
     
     public int getWidth(){
@@ -264,43 +242,60 @@ public class Character extends Person{
     public void read(){
         if(!this.allowedToUpdate())
             return;
+        Dynamic d = getDynamic(getDirection());
         Collideable c = getCollision(getDirection());
-        if(c==null)
+        if(d==null && c==null)
             return;
-        Object maker = c.getMaker();
-        if(maker instanceof Person){
-            
-            Person p = (Person)maker;
-            
-            if(getDirection() == Animation.UP)
-                p.setDirection(Animation.DOWN);
-            if(getDirection() == Animation.DOWN)
-                p.setDirection(Animation.UP);
-            if(getDirection() == Animation.RIGHT)
-                p.setDirection(Animation.LEFT);
-            if(getDirection() == Animation.LEFT)
-                p.setDirection(Animation.RIGHT);
-            p.talk(this);
-            this.allowUpdate(false);
-            currentlyReading = p;
-            return;
-        }
-        if(c.getNumber(0)==-5){
-            for(Collideable col:getWindow().getCollision()){
-                if(col.getMaker() instanceof NurseJoy){
-                    NurseJoy p = (NurseJoy)col.getMaker();
-                    this.allowUpdate(false);
-                    currentlyReading = p;
-                    p.talk(this);
+        
+        if(c!=null){
+            if(c.getMaker() instanceof Person){
+
+                Person p = (Person)c.getMaker();
+
+                if(getDirection() == Animation.UP)
+                    p.setDirection(Animation.DOWN);
+                if(getDirection() == Animation.DOWN)
+                    p.setDirection(Animation.UP);
+                if(getDirection() == Animation.RIGHT)
+                    p.setDirection(Animation.LEFT);
+                if(getDirection() == Animation.LEFT)
+                    p.setDirection(Animation.RIGHT);
+                p.talk(this);
+                this.allowUpdate(false);
+                currentlyReading = p;
+                return;
+            }
+
+            if(c.getNumber(0)==-5){
+                for(Collideable col:getWindow().getCollision()){
+                    if(col.getMaker() instanceof NurseJoy){
+                        NurseJoy p = (NurseJoy)col.getMaker();
+                        this.allowUpdate(false);
+                        currentlyReading = p;
+                        p.talk(this);
+                    }
                 }
+            }   
+
+        }
+    
+        if(d!=null){
+            if(d instanceof DynamicItem){
+                DynamicItem di = (DynamicItem)d;
+                di.talk(this);
+                this.allowUpdate(false);
+                currentlyReading = di;
+                return;
             }
         }
+        
+
 
     } 
     
     public void unRead(){
-        if(currentlyReading!=null)
-            currentlyReading.allowUpdate(true);
+        if(currentlyReading!=null && currentlyReading instanceof Person)
+            ((Person)currentlyReading).allowUpdate(true);
         this.allowUpdate(true);
     }
     

@@ -19,7 +19,7 @@ public class Person extends Dynamic{
     private boolean yes;
     private Menu menu;
     private boolean stationary;
-    private Character player;
+    private Cinematic c;
     
 
     /**
@@ -78,8 +78,10 @@ public class Person extends Dynamic{
             {
                 counter = 0;
                 moving = false;
-                w.removeFromCollision(lastEdition);
+                if(lastEdition!=null)
+                    w.removeFromCollision(lastEdition);
                 lastEdition = newEdition;
+                
             }
         }
     }
@@ -91,7 +93,7 @@ public class Person extends Dynamic{
                 if(!question){
                     System.out.println("here");
                     this.allowUpdate(true);
-                    this.getPlayerTalkingTo().allowUpdate(true);
+                    getWindow().getPerson().allowUpdate(true);
                     txt = null;
                 }else{
                     if(menu==null){
@@ -188,6 +190,36 @@ public class Person extends Dynamic{
         }
     }
     
+    public void warp(int levelX,int levelY){
+                      
+        int oldX = getX()/Window.WIDTH;
+        int oldY = -getY()/Window.HEIGHT;
+        
+        if(getX()<0)
+            oldX--;
+        if(getY()<0)
+            oldY++;
+
+        for(int i=-1;i<=1;i++)
+            for(int j=-1;j<=1;j++)
+                getWindow().unload(oldX+i,oldY+j);
+
+
+        setX(levelX*Window.WIDTH+(int)(Window.COLUMNS/2)*Window.TILE_WIDTH);
+        setY((-levelY)*Window.HEIGHT+(int)(Window.ROWS/2)*Window.TILE_HEIGHT);
+
+
+
+        for(int i=-1;i<=1;i++)
+            for(int j=-1;j<=1;j++)
+                getWindow().loadLevel(levelX+i,levelY+j,i,j);
+        
+        w.removeFromCollision(lastEdition);
+        newEdition = new Collideable(this,getX()/Window.TILE_WIDTH+xChange,getY()/Window.TILE_HEIGHT+1,1,0,0);
+        w.addToCollision(newEdition);
+        lastEdition = newEdition;
+    }
+    
     /**
      * Override this method to determine when a person can move
      * @param dir The direction to move
@@ -198,7 +230,9 @@ public class Person extends Dynamic{
         return (col==null || col.getNumber(0)==0); 
     }
     
-
+    public void setCinematic(Cinematic c){
+        this.c = c;
+    }
     
     public void setStationary(boolean s){
         stationary = s;
@@ -235,16 +269,15 @@ public class Person extends Dynamic{
             txt.addKeyListener();
     }
     
-    public Character getPlayerTalkingTo(){
-        return player;
+    public boolean isTalking(){
+        return txt!=null;
     }
-    
+        
 
     
     public void talk(Character player){
         
         if(!moving){
-            this.player = player;
             this.allowUpdate(false);
             String str = getSpeech();
             if(getSpeech().indexOf("?")!=-1){
@@ -264,24 +297,44 @@ public class Person extends Dynamic{
     protected Collideable getCollision(int dir){
         Collideable col = null;
         if(dir==Animation.UP){
-            col = w.inCollision(new Collideable(this,getX()/Window.TILE_WIDTH,getY()/Window.TILE_HEIGHT-1+1,0,0,0));
+            col = w.inCollision(new Collideable(this,getX()/Window.TILE_WIDTH,getY()/Window.TILE_HEIGHT-1+1,0,0,0),this);
         }
         if(dir==Animation.DOWN){
-            col = w.inCollision(new Collideable(this,getX()/Window.TILE_WIDTH,getY()/Window.TILE_HEIGHT+1+1,0,0,0));
+            col = w.inCollision(new Collideable(this,getX()/Window.TILE_WIDTH,getY()/Window.TILE_HEIGHT+1+1,0,0,0),this);
         }
         if(dir==Animation.RIGHT){
-            col = w.inCollision(new Collideable(this,getX()/Window.TILE_WIDTH+1,getY()/Window.TILE_HEIGHT+1,0,0,0));
+            col = w.inCollision(new Collideable(this,getX()/Window.TILE_WIDTH+1,getY()/Window.TILE_HEIGHT+1,0,0,0),this);
         }
         if(dir==Animation.LEFT){
-            col = w.inCollision(new Collideable(this,getX()/Window.TILE_WIDTH-1,getY()/Window.TILE_HEIGHT+1,0,0,0));
+            col = w.inCollision(new Collideable(this,getX()/Window.TILE_WIDTH-1,getY()/Window.TILE_HEIGHT+1,0,0,0),this);
         }
         if(dir==Animation.NONE){
-            col = w.inCollision(new Collideable(this,getX()/Window.TILE_WIDTH,getY()/Window.TILE_HEIGHT+1,0,0,0));
+            col = w.inCollision(new Collideable(this,getX()/Window.TILE_WIDTH,getY()/Window.TILE_HEIGHT+1,0,0,0),this);
         }
         if(col!=null && col.getMaker()!=this)
             return col;
         else
             return null;
+    }
+    
+    protected Dynamic getDynamic(int dir){
+        Dynamic d = null;
+        if(dir==Animation.UP){
+            d = w.inDynamic(new DynamicLooker(getX(),getY()), this);
+        }
+        if(dir==Animation.DOWN){
+            d = w.inDynamic(new DynamicLooker(getX(),getY()+2*Window.TILE_HEIGHT), this);
+        }
+        if(dir==Animation.RIGHT){
+            d = w.inDynamic(new DynamicLooker(getX()+Window.TILE_WIDTH,getY()+Window.TILE_HEIGHT), this);
+        }
+        if(dir==Animation.LEFT){
+            d = w.inDynamic(new DynamicLooker(getX()-Window.TILE_WIDTH,getY()+Window.TILE_HEIGHT), this);
+        }
+        if(dir==Animation.NONE){
+            d = w.inDynamic(new DynamicLooker(getX(),getY()+Window.TILE_HEIGHT), this);
+        }
+        return d;
     }
 
 

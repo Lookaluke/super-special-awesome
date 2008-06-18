@@ -45,11 +45,11 @@ public class Trainer extends Person {
     
     public void update(){
 
-        if(this.getPlayerTalkingTo()!=null && !this.getPlayerTalkingTo().hasBeaten(getNumber())){
+        if(this.isTalking() && getWindow().getPerson().hasBeaten(getNumber())){
             if(battle){
-                getWindow().startBattle(new Battle(this.getPlayerTalkingTo(),this,getWindow().getFrame()));
+                getWindow().startBattle(new Battle(getWindow().getPerson(),this,getWindow().getFrame()));
                 this.allowUpdate(false);
-                this.getPlayerTalkingTo().allowUpdate(false);
+                this.getWindow().getPerson().allowUpdate(false);
             }
         }  
         
@@ -87,7 +87,7 @@ public class Trainer extends Person {
                 dead = false;
         }
         if(dead){
-            this.getPlayerTalkingTo().beaten(getNumber());
+            this.getWindow().getPerson().beaten(getNumber());
             this.allowUpdate(false);
             setSpeech(after);
         }
