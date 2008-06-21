@@ -5,6 +5,12 @@
 
 package pokeman;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  *
  * @author Mark
@@ -15,6 +21,7 @@ public class Event implements Comparable<Event>{
     private String doBefore,doAfter,doToCharacter;
     private boolean complete;
     private int number;
+    private boolean actedOnce = false;
     
 
     public Event(int number,String before,String after,String doBefore,String doAfter,String doToCharacter,int event){
@@ -61,15 +68,77 @@ public class Event implements Comparable<Event>{
         
         int[] ints = getInts(what);
         
+   
+        
         if(ints.length>0){
+            if(ints[0]!=2)
+                if(d instanceof Person)
+                    ((Person)d).makeInvisible(false);  
+            if(ints[0]!=-1)
+                if(d instanceof Person)
+                    ((Person)d).allowUpdate(true);
+                     
             switch(ints[0]){
+                case -1:
+                    if(d instanceof Person)
+                        ((Person)d).allowUpdate(false);
+                    break;                    
                 case 0:
                     break;
                 case 1:
-                    d.getWindow().removeFromDynamic(d);
+                    d.destroy();
                     break;
+                case 2:
+                    if(d instanceof Person)
+                        ((Person)d).makeInvisible(true);
+                    break;
+                case 3:
+                    if(d instanceof Person && !actedOnce){
+                        System.out.println("here");
+                        try {
+                            Scanner s = new Scanner(new File("Trainers\\Cinematics.txt"));
+                            for (int i = 0; i < ints[1] - 1; i++) {
+                                s.nextLine();
+                            }
+                            s.next();
+                            ((Person) d).setCinematic(new Cinematic((Person) d, s.nextLine().trim()));
+                        } catch (FileNotFoundException ex) {
+                            System.out.println("cannot load cinematic");
+                        }
+                    }
+                    break;
+                case 4:
+                    if(d instanceof Person && !actedOnce){
+                        int xChange = d.getX()-d.getWindow().getPerson().getX()<0?1:-1;
+                        int yChange = d.getY()-d.getWindow().getPerson().getY()<0?1:-1;
+                        String str="";
+                        
+                        
+                        if(xChange>0)
+                            for(int x=d.getX();x<d.getWindow().getPerson().getX()-Window.TILE_WIDTH;x+=xChange*Window.TILE_WIDTH)
+                                str+="2:";
+                        if(xChange<0)
+                            for(int x=d.getX();x>d.getWindow().getPerson().getX()+Window.TILE_WIDTH;x+=xChange*Window.TILE_WIDTH)
+                                str+="3:";
+                        
+                        if(yChange>0)
+                            for(int y=d.getY();y<d.getWindow().getPerson().getY()-Window.TILE_HEIGHT;y+=yChange*Window.TILE_HEIGHT)
+                                str+="1:";
+                        if(yChange<0)
+                            for(int y=d.getY();y>d.getWindow().getPerson().getY()+Window.TILE_HEIGHT;y+=yChange*Window.TILE_HEIGHT)
+                                str+="0:";
+                            
+                        
+                        str = str.substring(0,str.length()-1);
+                        
+                        ((Person) d).setCinematic(new Cinematic((Person) d, str.trim()));
+                    }
+                    break;
+                default:
+              
             }
         }
+        actedOnce = true;
     }
    
     
@@ -86,7 +155,7 @@ public class Event implements Comparable<Event>{
                     
             }
         }
-        d.talk(c);        
+        d.talk();        
     }
     
     public int[] getInts(String str){
@@ -116,19 +185,29 @@ public class Event implements Comparable<Event>{
     
     private boolean hasCompleten(Character c,Dynamic d){
         boolean result = false;
+        boolean hold;
         switch(event){
             case 0:
-                boolean hold = false;
+                hold = false;
                 for(Pokemon p:c.currentPokemon())
                     if(p!=null)
                         hold = true;
                 result = hold;
                 break;
+            case 1:
+                hold = false;
+                for(Pokemon p:c.currentPokemon())
+                    if(p!=null)
+                        hold = true;
+                result = hold && !c.isComplete(0);
+                if(result){
+                    c.complete(0); //First rival battle done
+                }
+                break;
                 
         }
-        if(result){            
-            //c.complete(d.getNumber());
-        }
+        if(result)
+            actedOnce = false;
         return result;
     }
     

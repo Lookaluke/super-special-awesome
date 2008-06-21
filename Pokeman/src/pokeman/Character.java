@@ -20,7 +20,7 @@ import java.util.logging.Logger;
  * @author Mark
  */
 public class Character extends Person{
-    private Animation walking;
+
     private int direction;
     private int press,jumping;
     private Pokemon[] pkmn = new Pokemon[6];
@@ -29,18 +29,23 @@ public class Character extends Person{
     private ArrayList<Pokemon> allPokemon = new ArrayList<Pokemon>();
     private static final int MAX_NUMBER_OF_POKEMON = 200;
     private boolean[] trainersBeaten = new boolean[1000];
-    private boolean[] eventsComplete = new boolean[1000];
+    private boolean[] beaten = new boolean[1000];
     
     public Character(Window w){
-        super("Walking","",(int)(Window.COLUMNS/2)*Window.TILE_WIDTH,(int)(Window.ROWS/2)*Window.TILE_HEIGHT,0,w);
-        walking = new Animation("Walking");
-        press = 0;
-        jumping=0;
-        int levelX = -502;
-        int levelY = -502;
-        setX(levelX*Window.WIDTH+(int)(Window.COLUMNS/2)*Window.TILE_WIDTH);
-        setY((-levelY)*Window.HEIGHT+(int)(Window.ROWS/2)*Window.TILE_HEIGHT);
-        getWindow().setLevel(levelX,levelY);
+        super("Mark","",(int)(Window.COLUMNS/2)*Window.TILE_WIDTH,(int)(Window.ROWS/2)*Window.TILE_HEIGHT,0,w);
+        try {
+            this.setAnimation(new Animation("Walking"));
+            press = 0;
+            jumping = 0;
+            int levelX = -502;
+            int levelY = -502;
+            setX(levelX * Window.WIDTH + (int) (Window.COLUMNS/2) * Window.TILE_WIDTH);
+            setY((-levelY) * Window.HEIGHT + (int) (Window.ROWS/2) * Window.TILE_HEIGHT);
+            getWindow().setLevel(levelX, levelY);
+
+        } catch (IOException ex) {
+            Logger.getLogger(Character.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
         //addPokemon(new Pokemon("Meh",17));
         //addPokemon(new Pokemon("Rattata",8));
@@ -54,7 +59,7 @@ public class Character extends Person{
     public void save(String file){
     
         ObjectOutputStream out = null;
-        SaveData save = new SaveData(getX(),getY(),getDirection(),pkmn,allPokemon,trainersBeaten,eventsComplete);
+        SaveData save = new SaveData(getX(),getY(),getDirection(),pkmn,allPokemon,trainersBeaten,beaten);
         
         try {        
             out = new ObjectOutputStream(new FileOutputStream(file+".pkm"));
@@ -98,7 +103,7 @@ public class Character extends Person{
             
             setDirection(s.getDirection());
             trainersBeaten = s.getTrainersBeaten();
-            eventsComplete = s.getEventsComplete();
+            beaten = s.getEventsComplete();
             pkmn = s.getPkmn();
             allPokemon = s.getAllPokemon();
             
@@ -224,20 +229,10 @@ public class Character extends Person{
 
         
         direction = Animation.NONE;
-        
-        
 
-        
-        
-        
     }
     
 
-
-    
-    public int getWidth(){
-        return walking.getFrame().getWidth();
-    }
     
     public void read(){
         if(!this.allowedToUpdate())
@@ -260,7 +255,7 @@ public class Character extends Person{
                     p.setDirection(Animation.LEFT);
                 if(getDirection() == Animation.LEFT)
                     p.setDirection(Animation.RIGHT);
-                p.talk(this);
+                p.talk();
                 this.allowUpdate(false);
                 currentlyReading = p;
                 return;
@@ -272,7 +267,7 @@ public class Character extends Person{
                         NurseJoy p = (NurseJoy)col.getMaker();
                         this.allowUpdate(false);
                         currentlyReading = p;
-                        p.talk(this);
+                        p.talk();
                     }
                 }
             }   
@@ -282,7 +277,7 @@ public class Character extends Person{
         if(d!=null){
             if(d instanceof DynamicItem){
                 DynamicItem di = (DynamicItem)d;
-                di.talk(this);
+                di.talk();
                 this.allowUpdate(false);
                 currentlyReading = di;
                 return;
@@ -299,9 +294,7 @@ public class Character extends Person{
         this.allowUpdate(true);
     }
     
-    public int getHeight(){
-        return walking.getFrame().getHeight();
-    }
+
     
     public void direction(int dir){
         direction = dir;
@@ -340,11 +333,11 @@ public class Character extends Person{
     }
     
     public void complete(int number){
-        eventsComplete[number] = true;
+        beaten[number] = true;
     }
     
     public boolean isComplete(int number){
-        return eventsComplete[number];
+        return beaten[number];
     }
     
     public void switchPokemon(int index1,int index2){

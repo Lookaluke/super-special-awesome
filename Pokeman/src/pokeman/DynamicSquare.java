@@ -23,8 +23,8 @@ public class DynamicSquare extends Dynamic {
     }
 
     @Override
-    public void talk(Character player) {
-        player.allowUpdate(false);
+    public void talk() {
+        getWindow().getPerson().allowUpdate(false);
         getWindow().startTextBox(new TextBox(getWindow().getFrame(),getSpeech(),0,475,800,101,true,false,Style.STANDARD_TEXT));
     }
 

@@ -23,7 +23,7 @@ public class DynamicLooker extends Dynamic{
     }
 
     @Override
-    public void talk(Character player) {
+    public void talk() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

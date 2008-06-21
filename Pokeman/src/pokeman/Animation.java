@@ -7,8 +7,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 
 /**
@@ -25,7 +23,7 @@ public class Animation implements Serializable {
     
     
     /** Creates a new instance of Animation */
-    public Animation(String name) {
+    public Animation(String name) throws IOException {
         
         for(int i=0;i<4;i++)
         {
@@ -41,7 +39,7 @@ public class Animation implements Serializable {
         load(name);
     }   
     
-    private void load(String name){
+    private void load(String name) throws IOException{
         File f = new File("Animations\\"+name);
         File[] files = f.listFiles();
         if(files!=null){
@@ -56,7 +54,6 @@ public class Animation implements Serializable {
                     char firstLetter = newName.charAt(0);
                     newName = newName.substring(1,newName.length());
 
-                    try{
                         int number=-1;
                         switch(firstLetter)
                         {
@@ -75,7 +72,7 @@ public class Animation implements Serializable {
                         }
                         numberOfFrames[number]++;
                         animations[number][Integer.parseInt(newName)-1] = ImageIO.read(files[i]);
-                    }catch(Exception e){System.out.println("Cannot load animation image");}
+
                 }
             }        
         }

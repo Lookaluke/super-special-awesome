@@ -57,10 +57,10 @@ public class TextBox implements Serializable {
         
         
         
-        textHeight = (int)f.getStringBounds(s, new FontRenderContext(null,true,true)).getHeight();
+        textHeight = (int)f.getStringBounds(s, new FontRenderContext(null,false,false)).getHeight();
         lines = (int)((height-heightFactor+15)/(textHeight+spaceFactor));
         
-        str = new String[(int)f.getStringBounds(s, new FontRenderContext(null,true,true)).getWidth()/(width-widthFactor)+1];
+        str = new String[(int)(f.getStringBounds(s, new FontRenderContext(null,false,false)).getWidth()/(width-widthFactor))+1];
         
         Scanner string = new Scanner(s);
         String words="";
@@ -69,13 +69,14 @@ public class TextBox implements Serializable {
             String last = words;
             String next = string.next()+" ";
             words+=next;
-            if(f.getStringBounds(words, new FontRenderContext(null,true,true)).getWidth()>width-widthFactor){
+            if((int)f.getStringBounds(words, new FontRenderContext(null,false,false)).getWidth()>width-widthFactor){
                 str[i] = last;
                 words = next;
                 i++;
             }
         }
-        str[i] = words;
+        System.out.println(words);
+            str[i] = words;
         
         index = 0;
         finalIndex = 0;
@@ -142,7 +143,7 @@ public class TextBox implements Serializable {
                         if(index-tempIndex+str[i+line].length()>0){
                             String string = str[i+line].substring(0,index-tempIndex+str[i+line].length());
                             if(centered)
-                                g2.drawString(string, (int)(x+width/2-f.getStringBounds(string, new FontRenderContext(null,true,true)).getWidth()/2), y+heightFactor+textHeight*(i+1)+spaceFactor*(i-1)-15);
+                                g2.drawString(string, (int)(x+width/2-f.getStringBounds(string, new FontRenderContext(null,false,false)).getWidth()/2), y+heightFactor+textHeight*(i+1)+spaceFactor*(i-1)-15);
                             else
                                 g2.drawString(string, x+widthFactor, y+heightFactor+textHeight*(i+1)+spaceFactor*(i-1)-15);
                         }

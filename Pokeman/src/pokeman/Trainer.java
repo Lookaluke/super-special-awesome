@@ -99,7 +99,7 @@ public class Trainer extends Person {
                 Window.MUSIC.play(false);
             }
         }
-        super.talk(c);
+        super.talk();
         battle = true;
     }
     

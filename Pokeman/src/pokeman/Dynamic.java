@@ -77,7 +77,7 @@ public abstract class Dynamic implements Comparable<Dynamic> {
 
     
     public abstract void draw(Graphics2D g,int currentX,int currentY);
-    public abstract void talk(Character player);
+    public abstract void talk();
     
     public int compareTo(Dynamic d) {
         if(this.getX()<d.getX())
@@ -91,5 +91,10 @@ public abstract class Dynamic implements Comparable<Dynamic> {
             return 0;
         
         return 1;
+    }
+
+    public void destroy() {
+        getWindow().removeFromDynamic(this);
+        event = null;
     }
 }
