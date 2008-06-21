@@ -53,7 +53,7 @@ public class List implements Serializable
         fr.addKeyListener(new Key());
         frame = fr;
         
-        textHeight = (int)f.getStringBounds(items[0], new FontRenderContext(null,true,true)).getHeight();
+        textHeight = (int)f.getStringBounds(items[0], new FontRenderContext(null,false,false)).getHeight();
         lines = (height)/(textHeight) - 1;
         if(lines>items.length)
             lines = items.length;

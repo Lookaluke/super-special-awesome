@@ -45,7 +45,7 @@ public class DynamicItem extends Dynamic {
     }
 
     @Override
-    public void talk(Character player){
+    public void talk(){
         String str = getSpeech();
         txt = new TextBox(getWindow().getFrame(),str,0,475,800,101,true,false,Style.STANDARD_TEXT);
         System.out.println("talk");

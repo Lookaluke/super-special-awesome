@@ -81,6 +81,7 @@ public class Window extends JComponent implements Serializable{
     private List list;
     private Battle battle;
     private PokemonMenu pkmMenu;
+    private String name;
     
     private int currentFilledBox,maximumBoxes = COLUMNS*ROWS;
     
@@ -168,6 +169,8 @@ public class Window extends JComponent implements Serializable{
             pressBuffer = Animation.NONE;
 
             
+            name = "Mark";
+            
             dynamic.add(player);
         } catch (FontFormatException ex) {
             Logger.getLogger(Window.class.getName()).log(Level.SEVERE, null, ex);
@@ -244,9 +247,9 @@ public class Window extends JComponent implements Serializable{
             }
             Collections.sort(dynamic);
             for(int i = 0;i<dynamic.size();i++){
-                dynamic.get(i).draw(g2, x, y); 
+                dynamic.get(i).updateEvent();   
                 if(i<dynamic.size())
-                    dynamic.get(i).updateEvent();                   
+                    dynamic.get(i).draw(g2, x, y); 
             }
 
             for(int i = 0;i<dynamic.size();i++){
@@ -560,8 +563,12 @@ public class Window extends JComponent implements Serializable{
                                         String string = items.get(-value-1000);
                                         DynamicItem item = new DynamicItem(string.substring(0,string.indexOf("pokemon:")).trim(),x1*TILE_WIDTH+xCoord*WIDTH,y1*TILE_HEIGHT+yCoord*-HEIGHT,value,string.substring(string.indexOf("pokemon:")+"pokemon:".length()).trim().equals("1"),this);
                                         dynamic.add(item);
-                                    }else
-                                        dynamic.add(new Person(personName,peopleSayings.get(value),x1*TILE_WIDTH+xCoord*WIDTH,y1*TILE_HEIGHT+yCoord*-HEIGHT,value,this));
+                                    }else{
+                                        if(value==-1)
+                                            dynamic.add(new Person(personName,"",x1*TILE_WIDTH+xCoord*WIDTH,y1*TILE_HEIGHT+yCoord*-HEIGHT,value,this));
+                                        else
+                                            dynamic.add(new Person(personName,peopleSayings.get(value),x1*TILE_WIDTH+xCoord*WIDTH,y1*TILE_HEIGHT+yCoord*-HEIGHT,value,this));
+                                    }
                                 }
                             }
                         }
@@ -725,6 +732,14 @@ public class Window extends JComponent implements Serializable{
     
     public void startTextBox(TextBox t){
         txt = t;
+    }
+    
+    public boolean talking(){
+        return txt!=null;
+    }
+    
+    public boolean battling(){
+        return battle!=null;
     }
     
      /**

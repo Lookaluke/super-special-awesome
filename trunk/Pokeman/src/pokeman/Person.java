@@ -1,6 +1,9 @@
 package pokeman;
 
 import java.awt.Graphics2D;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 
@@ -10,7 +13,6 @@ public class Person extends Dynamic{
     private int xChange,yChange;
     private Animation walk;
     private boolean moving,allowedToUpdate;
-    private int screenX,screenY;
     private int counter;
     private Window w;
     private Collideable lastEdition,newEdition;
@@ -20,6 +22,7 @@ public class Person extends Dynamic{
     private Menu menu;
     private boolean stationary;
     private Cinematic c;
+    private boolean invisible = false;
     
 
     /**
@@ -31,16 +34,22 @@ public class Person extends Dynamic{
         this.w = w;
         name = n;
         direction = Animation.DOWN;
-        screenX = x/Window.WIDTH;
-        screenY = y/Window.HEIGHT;
+
+
 
         
         allowedToUpdate = true;
         
         if(w!=null){
-            lastEdition = new Collideable(this,x/Window.TILE_WIDTH,y/Window.TILE_HEIGHT+1,1,0,0);
+            lastEdition = new Collideable(this, x / Window.TILE_WIDTH, y / Window.TILE_HEIGHT + 1, 1, 0, 0);
             w.addToCollision(lastEdition);
-            walk = new Animation(name);
+            
+            try {
+                walk = new Animation(name);
+            } catch (IOException ex) {
+                Logger.getLogger(Person.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
         }
         
 
@@ -57,7 +66,8 @@ public class Person extends Dynamic{
             update();
         if(!moving)
             walk.standingFrame();
-        g.drawImage(walk.getFrame(),null,getX()+currentX,getY()+currentY);
+        if(!invisible)
+            g.drawImage(walk.getFrame(),null,getX()+currentX,getY()+currentY);
         
         if(counter%4==0 || walk.getDirection()!=direction){
             walk.nextFrame(direction);
@@ -91,7 +101,6 @@ public class Person extends Dynamic{
             txt.draw(g);
             if(txt.isOver()){
                 if(!question){
-                    System.out.println("here");
                     this.allowUpdate(true);
                     getWindow().getPerson().allowUpdate(true);
                     txt = null;
@@ -132,12 +141,18 @@ public class Person extends Dynamic{
      * just wanders around
      */
     protected void update(){
+        if(c!=null && !isMoving()){
+            c.update();
+            if(c.over())
+                c=null;
+        }else{
+            if(counter>=50){
+                if(Math.random()<.1){
 
-        if(counter>=50 && Math.random()<.1)
-        {
-            int dir = (int)(Math.random()*4);
-            makeMove(dir);            
-            
+                    int dir = (int)(Math.random()*4);
+                    makeMove(dir);            
+                }           
+            }
         }
     }
     
@@ -259,6 +274,19 @@ public class Person extends Dynamic{
         return moving;
     }
     
+    public void makeInvisible(boolean b){
+
+        if(lastEdition!=null){
+            if(b==true && invisible==false)
+                w.removeFromCollision(lastEdition);
+            if(b==false && invisible==true)
+                w.addToCollision(lastEdition);
+        }
+        
+        invisible = b;
+        allowedToUpdate = !b;
+    }
+    
     public void removeKeyListener(){
         if(txt!=null)
             txt.removeKeyListener();
@@ -272,10 +300,20 @@ public class Person extends Dynamic{
     public boolean isTalking(){
         return txt!=null;
     }
-        
-
     
-    public void talk(Character player){
+    public int getHeight(){
+        return walk.getFrame().getHeight();
+    }
+    
+    public int getWidth(){
+        return walk.getFrame().getWidth();
+    }        
+
+    public void setAnimation(Animation animation){
+        walk = animation;
+    }
+    
+    public void talk(){
         
         if(!moving){
             this.allowUpdate(false);
@@ -337,5 +375,14 @@ public class Person extends Dynamic{
         return d;
     }
 
-
+    @Override
+    public void destroy(){
+        super.destroy();
+        if(lastEdition!=null)
+            getWindow().removeFromCollision(lastEdition);
+        if(newEdition!=null)
+            getWindow().removeFromCollision(newEdition);
+        c = null;
+    }
+    
 }
