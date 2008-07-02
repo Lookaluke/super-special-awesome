@@ -3,6 +3,7 @@ package pokeman;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.Scanner;
 import java.util.logging.Level;
@@ -96,7 +97,7 @@ public class Move implements Serializable {
             }
             statusPercentage = Integer.parseInt(getInfo(input.nextLine(),":"));
             input.close();
-        } catch (FileNotFoundException ex) {
+        } catch (IOException ex) {
             Logger.getLogger(Move.class.getName()).log(Level.SEVERE, null, ex);
         }
     }

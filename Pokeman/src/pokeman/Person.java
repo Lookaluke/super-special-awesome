@@ -64,6 +64,7 @@ public class Person extends Dynamic{
         
         if(allowedToUpdate)
             update();
+        cinematicUpdate();
         if(!moving)
             walk.standingFrame();
         if(!invisible)
@@ -136,16 +137,22 @@ public class Person extends Dynamic{
         }
     }
     
+    public void cinematicUpdate() {
+        if(getName().equals("ProfessorOak"))
+        System.out.println(""+(c==null)+" "+isMoving());
+        if(c!=null && !isMoving()){
+            c.update();
+            if(c!=null && c.over())
+                c=null;
+        }
+    }
+    
     /**
      * Override this method to make the person do what you want. This person 
      * just wanders around
      */
     protected void update(){
-        if(c!=null && !isMoving()){
-            c.update();
-            if(c.over())
-                c=null;
-        }else{
+        if(c==null || isMoving()){
             if(counter>=50){
                 if(Math.random()<.1){
 
@@ -215,10 +222,13 @@ public class Person extends Dynamic{
         if(getY()<0)
             oldY++;
 
+        
+        
         for(int i=-1;i<=1;i++)
             for(int j=-1;j<=1;j++)
                 getWindow().unload(oldX+i,oldY+j);
 
+        
 
         setX(levelX*Window.WIDTH+(int)(Window.COLUMNS/2)*Window.TILE_WIDTH);
         setY((-levelY)*Window.HEIGHT+(int)(Window.ROWS/2)*Window.TILE_HEIGHT);
@@ -384,5 +394,7 @@ public class Person extends Dynamic{
             getWindow().removeFromCollision(newEdition);
         c = null;
     }
+
+
     
 }

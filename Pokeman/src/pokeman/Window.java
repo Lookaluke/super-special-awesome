@@ -265,10 +265,11 @@ public class Window extends JComponent implements Serializable{
             g2.setColor(Color.RED);
 
             for(Collideable c:collision){
-                if(c.getNumber(0)!=0)
+                if(c.getNumber(0)!=0 || c.getMaker() instanceof DynamicSquare)
                     g2.draw(new Rectangle(c.getX()*TILE_WIDTH+x, c.getY()*TILE_HEIGHT+y, TILE_WIDTH, TILE_HEIGHT));
-            }
-            */
+                
+            }*/
+            
             if(area != null)
             {
                 if(times < 100)
@@ -603,21 +604,26 @@ public class Window extends JComponent implements Serializable{
      */
     public void unload(int xCoord,int yCoord){
 
-            
-        for (int y1 = 0; y1 < ROWS; y1++) {
-            for (int x1 = 0; x1 < COLUMNS; x1++) {
+
+        for (int y1 = 0; y1 <= ROWS; y1++) {
+            for (int x1 = 0; x1 <= COLUMNS; x1++) {
                 int c = Collections.binarySearch(collision,new Collideable(this,x1+xCoord*COLUMNS,y1+yCoord*-ROWS,0,0,0));
-                if(c>=0)
+                
+                if(c>=0){
                     collision.remove(collision.get(c));
-                int p = Collections.binarySearch(dynamic,new Person("","",x1*TILE_WIDTH+xCoord*WIDTH,y1*TILE_HEIGHT-yCoord*HEIGHT,0,null));
-                if(p>=0 && player!=dynamic.get(p)){
-                    System.out.println(dynamic.get(p).getName());
-                    dynamic.remove(dynamic.get(p));
-                    
                 }
-                    
             }
         }
+        for(int i=0;i<dynamic.size();i++){
+            Dynamic d = dynamic.get(i);
+            if(d!=getPerson()){
+                if(d.getX()>=xCoord*WIDTH && d.getX()<=(xCoord+1)*WIDTH && d.getY()>=yCoord*-HEIGHT && d.getY()<=(yCoord-1)*-HEIGHT){
+                    dynamic.remove(d);
+                    i--;
+                }
+            }
+        }
+
       
     }
     
@@ -688,7 +694,10 @@ public class Window extends JComponent implements Serializable{
             return null;
     }
 
-    
+    public ArrayList<Dynamic> getDynamic(){
+        return dynamic;
+    }
+        
     public ArrayList<Collideable> getCollision(){
         return collision;
     }

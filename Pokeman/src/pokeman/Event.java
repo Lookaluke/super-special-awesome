@@ -8,8 +8,6 @@ package pokeman;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -32,6 +30,7 @@ public class Event implements Comparable<Event>{
         this.doAfter = doAfter;
         this.doToCharacter = doToCharacter;
         this.number = number;
+        
     }
     
     public Event(String string){
@@ -48,7 +47,7 @@ public class Event implements Comparable<Event>{
     }
     
     public void update(Character c,Dynamic d){
-        
+        complete = hasCompleten(c,d);
         if(!complete){
             d.setSpeech(before);
             act(d,doBefore);
@@ -108,31 +107,7 @@ public class Event implements Comparable<Event>{
                     }
                     break;
                 case 4:
-                    if(d instanceof Person && !actedOnce){
-                        int xChange = d.getX()-d.getWindow().getPerson().getX()<0?1:-1;
-                        int yChange = d.getY()-d.getWindow().getPerson().getY()<0?1:-1;
-                        String str="";
-                        
-                        
-                        if(xChange>0)
-                            for(int x=d.getX();x<d.getWindow().getPerson().getX()-Window.TILE_WIDTH;x+=xChange*Window.TILE_WIDTH)
-                                str+="2:";
-                        if(xChange<0)
-                            for(int x=d.getX();x>d.getWindow().getPerson().getX()+Window.TILE_WIDTH;x+=xChange*Window.TILE_WIDTH)
-                                str+="3:";
-                        
-                        if(yChange>0)
-                            for(int y=d.getY();y<d.getWindow().getPerson().getY()-Window.TILE_HEIGHT;y+=yChange*Window.TILE_HEIGHT)
-                                str+="1:";
-                        if(yChange<0)
-                            for(int y=d.getY();y>d.getWindow().getPerson().getY()+Window.TILE_HEIGHT;y+=yChange*Window.TILE_HEIGHT)
-                                str+="0:";
-                            
-                        
-                        str = str.substring(0,str.length()-1);
-                        
-                        ((Person) d).setCinematic(new Cinematic((Person) d, str.trim()));
-                    }
+                    d.addEvent(new Event(doAfter.substring(doAfter.indexOf(":")+1)));
                     break;
                 default:
               
@@ -172,7 +147,11 @@ public class Event implements Comparable<Event>{
         index = str.indexOf(":");
         counter = 0;
         while(index!=-1){
-            ints[counter] = Integer.parseInt(str.substring(lastIndex+1,index).trim());
+            try{
+                ints[counter] = Integer.parseInt(str.substring(lastIndex+1,index).trim());
+            }catch(NumberFormatException e){
+                ints[counter] = 0;
+            }
             lastIndex = index;
             counter++;
             index = str.indexOf(":",index+1);
@@ -200,9 +179,12 @@ public class Event implements Comparable<Event>{
                     if(p!=null)
                         hold = true;
                 result = hold && !c.isComplete(0);
-                if(result){
-                    c.complete(0); //First rival battle done
-                }
+                break;
+            case 2:
+                result = c.isComplete(0);
+                break;
+            case 3:
+                result = c.isComplete(1);
                 break;
                 
         }
